@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "message.api"
+
+type MessageChatReq {
+	ToUserID string `form:"to_user_id"` 
+	Token    string `form:"token"`      
+}
+
+type MessageChatResp {
+	MessageList []Message `json:"message_list"`        
+	StatusCode  string    `json:"status_code"`         
+	StatusMsg   string    `json:"status_msg,optional"` 
+}

@@ -1,0 +1,14 @@
+syntax = "v1"
+
+type LoginReq {
+	Username 	string `json:"username,optional"` 
+	UserEmail string `json:"user_email,optional"`
+	Password 	string `json:"password"` 
+}
+
+type LoginResp {
+	StatusCode int32  `json:"status_code"`        
+	StatusMsg  string `json:"status_msg,optional"` 
+	Token      string `json:"token"`               
+	UserID     int64  `json:"user_id"`             
+}

@@ -1,0 +1,10 @@
+syntax = "v1"
+
+import "../user.api"
+
+type Comment {
+	ID         	int64  	`form:"id"`          
+	Content    	string 	`form:"content"`     
+	CreateDate 	string 	`form:"create_date"` 
+	UserInfo		UserInfo	`form:"user_info"`        
+}

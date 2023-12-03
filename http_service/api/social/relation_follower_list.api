@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "../user.api"
+
+type RelationFollowerListReq {
+	Token  string `form:"token"`   
+	UserID string `form:"user_id"` 
+}
+
+type RelationFollowerListResp {
+	StatusCode string 		`json:"status_code"`         
+	StatusMsg  string 		`json:"status_msg,optional"` 
+	UserList   []UserInfo `json:"follower_list"`           
+}

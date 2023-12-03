@@ -1,0 +1,14 @@
+syntax = "v1"
+
+type UserInfo {
+	Id              int64  	`json:"id"`
+	Name            string 	`json:"name"`
+	Email 					string 	`json:"email"`
+	AvatarUrl				string 	`json:"avatar_url,optional"`          
+	BackgroundUrl 	string 	`json:"background_url"`         
+	FollowCount     int64  	`json:"follow_count,optional"`    
+	FollowerCount   int64  	`json:"follower_count,optional"`  
+	IsFollow        bool   	`json:"is_follow"`                
+	Signature       string 	`json:"signature,optional"`       
+	WorkCount       int64  	`json:"work_count,optional"`      
+}

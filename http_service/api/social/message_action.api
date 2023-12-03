@@ -1,0 +1,13 @@
+syntax = "v1"
+
+type MessageActionReq {
+	ActionType string `form:"action_type"` 
+	Content    string `form:"content"`     
+	ToUserID   string `form:"to_user_id"`  
+	Token      string `form:"token"`       
+}
+
+type MessageActionResp {
+	StatusCode int32  `json:"status_code"`         
+	StatusMsg  string `json:"status_msg,optional"` 
+}

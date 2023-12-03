@@ -1,0 +1,12 @@
+syntax = "v1"
+
+type RelationActionReq {
+	ActionType string `form:"action_type"`
+	ToUserID   int64 `form:"to_user_id"`
+	Token      string `form:"token"`       
+}
+
+type RelationActionResp {
+	StatusCode int32  `json:"status_code"`         
+	StatusMsg  string `json:"status_msg,optional"` 
+}

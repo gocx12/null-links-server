@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "../user.api"
+
+type UserInfoReq {
+	Token  string `form:"token"`   	
+	UserID int64 `form:"user_id"` 	
+}
+
+type UserInfoResp {
+	StatusCode 	int32			`json:"status_code"`         	
+	StatusMsg  	string		`json:"status_msg,optional"` 	
+	UserInfo 		UserInfo	`json:"user_info"`						
+}

@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "../user.api"
+
+type RelationFriendListReq {
+	Token  string `form:"token"`   
+	UserID string `form:"user_id"` 
+}
+
+type RelationFriendListResp {
+	StatusCode string `json:"status_code"`         
+	StatusMsg  string `json:"status_msg,optional"` 
+	UserList   []UserInfo `json:"friend_list"`           
+}
