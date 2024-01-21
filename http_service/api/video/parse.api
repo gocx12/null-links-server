@@ -1,0 +1,15 @@
+syntax = "v1"
+
+import "../video.api"
+
+type ParseReq {
+	Token     string `form:"token"`       
+	Url       string `form:"url"` 
+}
+
+type ParseResp {
+	StatusCode  int32   			`json:"status_code,optional"`
+	StatusMsg   string  			`json:"status_msg"`
+	NextTime    int64   			`json:"next_time"`
+  PlayUrl     string        `json:"play_url"`
+}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package video;
+
+option go_package = "./video";
+
+message ParseReq {
+  string token = 1;
+  string url = 2;
+}
+
+message ParseResp {
+  int32 status_code = 1;
+  string status_msg = 2; 
+  int64 play_url = 3; 
+}
+
+service VideoService{
+  rpc Parse (ParseReq) returns (ParseResp);
+}

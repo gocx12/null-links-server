@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"nulltv/internal/config"
-	"nulltv/internal/server"
-	"nulltv/internal/svc"
-	"nulltv/rpc_service/user/pb/user"
+	"nulltv/rpc_service/video/internal/config"
+	"nulltv/rpc_service/video/internal/server"
+	"nulltv/rpc_service/video/internal/svc"
+	"nulltv/rpc_service/video/pb/video"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/user.yaml", "the config file")
+var configFile = flag.String("f", "etc/video.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		user.RegisterUserServiceServer(grpcServer, server.NewUserServiceServer(ctx))
+		video.RegisterVideoServiceServer(grpcServer, server.NewVideoServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

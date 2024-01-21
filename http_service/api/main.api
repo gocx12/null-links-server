@@ -11,6 +11,7 @@ import "./video/favorite_action.api"
 import "./video/favorite_list.api"
 import "./video/comment_action.api"
 import "./video/comment_list.api"
+import "./video/parse.api"
 
 import "./social/relation_action.api"
 import "./social/relation_follow_list.api"
@@ -18,6 +19,19 @@ import "./social/relation_follower_list.api"
 import "./social/relation_friend_list.api"
 import "./social/message_action.api"
 import "./social/message_chat.api"
+
+type PingReq {
+}
+
+type PingResp {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+	Data       string `json:"data"`
+}
+service service {
+	@handler Ping
+	get /ping (PingReq) returns (PingResp)
+}
 
 @server (
 	prefix: /user
@@ -50,6 +64,9 @@ service service {
 	group:  video
 )
 service service {
+	@handler Parse
+	post /parse (ParseReq) returns (ParseResp)
+
 	@handler PublishAction
 	post /publish/action (PublishActionReq) returns (PublishActionResp)
 
