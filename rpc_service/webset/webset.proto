@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package webset;
+
+option go_package = "./webset";
+
+message FeedReq {
+  string token = 1;
+}
+
+message FeedResp {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated Webset webset_list = 3;
+}
+
+message PublishActionReq {
+  string token = 1;
+  int64 webset_id = 2;
+  Webset webset = 2;
+}
+
+message PublishActionResp {
+  int32 status_code = 1;
+  string status_msg = 2;
+}
+
+message PublishListReq {
+  string token = 1;
+}
+
+message PublishListResp {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated Webset webset_list = 3;
+}
+
+message LikeActionReq {
+  string token = 1;
+  int64 webset_id = 2;
+}
+
+message LikeActionResp {
+  int32 status_code = 1;
+  string status_msg = 2; 
+  int64 play_url = 3; 
+}
+
+message FavoriteListReq {
+  string token = 1;
+}
+
+message FavoriteListResp {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated Webset favorite_webset_list = 3;
+}
+
+message Webset {
+  int64  id = 1;
+  string title = 2;
+  string describe = 3;
+  UserInfo author_info = 4;
+  string cover_url = 5;
+  int64 like_count = 6;
+  bool is_like = 7;
+  int64 favorite_count = 8;
+  bool is_favorite = 9;
+  repeated WebLink web_link_list = 10;
+}
+
+message WebLink {
+  int64 id = 1;
+  string title = 2;
+  string url = 3;
+  UserInfo author_info = 4;
+}
+
+message UserInfo {
+  int64 id = 1; 
+  string name = 2; 
+  string email = 3;
+  string avatar_url = 4;
+  string background_url = 5; 
+  int64 follow_count = 6; 
+  int64 follower_count = 7; 
+  bool is_follow = 8; 
+  string signature = 9; 
+  int64 work_count = 10; 
+}
+
+service WebsetService{
+  rpc Feed (FeedReq) returns (FeedResp);
+
+  rpc PublishAction (PublishActionReq) returns (PublishActionResp);
+  rpc PublishList (PublishListReq) returns (PublishListResp);
+
+  rpc LikeAction (LikeActionReq) returns (LikeActionResp);
+  
+  rpc FavoriteAction (FavoriteActionReq) returns (FavoriteActionResp);
+  rpc FavoriteList (FavoriteListReq) returns (FavoriteListResp);
+}

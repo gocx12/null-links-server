@@ -6,7 +6,7 @@ import (
 
 	social "nulltv/http_service/internal/handler/social"
 	user "nulltv/http_service/internal/handler/user"
-	video "nulltv/http_service/internal/handler/video"
+	webset "nulltv/http_service/internal/handler/webset"
 	"nulltv/http_service/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -49,12 +49,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/feed",
-				Handler: video.FeedHandler(serverCtx),
+				Handler: webset.FeedHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/chat/list",
+				Handler: webset.ChatListHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/comment/list",
-				Handler: video.CommentListHandler(serverCtx),
+				Path:    "/chat/websocket",
+				Handler: webset.ChatWebSocketHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/info",
+				Handler: webset.WebsetInfoHandler(serverCtx),
 			},
 		},
 	)
@@ -63,33 +73,33 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/parse",
-				Handler: video.ParseHandler(serverCtx),
+				Path:    "/like",
+				Handler: webset.LikeHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/publish/action",
-				Handler: video.PublishActionHandler(serverCtx),
+				Handler: webset.PublishActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/publish/list",
-				Handler: video.PublishListHandler(serverCtx),
+				Handler: webset.PublishListHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
 				Path:    "/favorite/action",
-				Handler: video.FavoriteActionHandler(serverCtx),
+				Handler: webset.FavoriteActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
 				Path:    "/favorite/list",
-				Handler: video.FavoriteListHandler(serverCtx),
+				Handler: webset.FavoriteListHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/comment/action",
-				Handler: video.CommentActionHandler(serverCtx),
+				Path:    "/chat/action",
+				Handler: webset.ChatActionHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

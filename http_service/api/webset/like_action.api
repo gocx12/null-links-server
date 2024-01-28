@@ -1,0 +1,12 @@
+syntax = "v1"
+
+type LikeActionReq {
+	ActionType int32 `form:"action_type"` 
+	WebsetID   int64 `form:"webset_id"`    
+	Token      string `form:"token"`       
+}
+
+type LikeActionResp {
+	StatusCode int32  `json:"status_code"`         
+	StatusMsg  string `json:"status_msg,optional"` 
+}

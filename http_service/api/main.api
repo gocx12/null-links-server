@@ -4,14 +4,16 @@ import "./user/login.api"
 import "./user/register.api"
 import "./user/userinfo.api"
 
-import "./video/feed.api"
-import "./video/publish_action.api"
-import "./video/publish_list.api"
-import "./video/favorite_action.api"
-import "./video/favorite_list.api"
-import "./video/comment_action.api"
-import "./video/comment_list.api"
-import "./video/parse.api"
+import "./webset/feed.api"
+import "./webset/publish_action.api"
+import "./webset/publish_list.api"
+import "./webset/favorite_action.api"
+import "./webset/favorite_list.api"
+import "./webset/chat_action.api"
+import "./webset/chat_list.api"
+import "./webset/chat_websocket.api"
+import "./webset/like_action.api"
+import "./webset/webset_info.api"
 
 import "./social/relation_action.api"
 import "./social/relation_follow_list.api"
@@ -49,23 +51,30 @@ service service {
 }
 
 @server (
-	group:  video
+	group:  webset
 )
 service service {
 	@handler Feed
 	get /feed (FeedReq) returns (FeedResp)
 
-	@handler CommentList
-	post /comment/list (CommentListReq) returns (CommentListResp)
+	@handler ChatList
+	get /chat/list (ChatListReq) returns (ChatListResp)
+
+	@handler ChatWebSocket
+	post /chat/websocket (ChatWebSocketReq) returns (ChatWebSocketResp)
+
+	@handler WebsetInfo
+	get /info (WebsetInfoReq) returns (WebsetInfoResp)
+
 }
 
 @server (
 	jwt:	Auth
-	group:  video
+	group:  webset
 )
 service service {
-	@handler Parse
-	post /parse (ParseReq) returns (ParseResp)
+	@handler Like
+	post /like (LikeActionReq) returns (LikeActionResp)
 
 	@handler PublishAction
 	post /publish/action (PublishActionReq) returns (PublishActionResp)
@@ -79,8 +88,8 @@ service service {
 	@handler FavoriteList
 	get /favorite/list (FavoriteListReq) returns (FavoriteListResp)
 
-	@handler CommentAction
-	post /comment/action (CommentActionReq) returns (CommentActionResp)
+	@handler ChatAction
+	post /chat/action (ChatActionReq) returns (ChatActionResp)
 }
 
 @server (

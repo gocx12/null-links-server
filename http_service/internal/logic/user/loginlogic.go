@@ -2,11 +2,11 @@ package user
 
 import (
 	"context"
-	"net/http"
 	"time"
 
 	"nulltv/http_service/internal/svc"
 	"nulltv/http_service/internal/types"
+	"nulltv/internal"
 	"nulltv/rpc_service/user/pb/user"
 
 	"github.com/golang-jwt/jwt"
@@ -32,7 +32,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	// check whether both username and email are empty
 	if req.Username == "" && req.UserEmail == "" {
 		resp = &types.LoginResp{
-			StatusCode: http.StatusOK,
+			StatusCode: internal.StatusParamErr,
 			StatusMsg:  "请输入用户名或邮箱",
 			UserID:     -1,
 		}
@@ -47,20 +47,21 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	})
 	if err != nil {
 		resp = &types.LoginResp{
-			StatusCode: http.StatusOK,
+			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "登录失败",
 			UserID:     respRpc.UserId, // is -1
 		}
-		logc.Alert(l.ctx, "call UserRpc failed"+err.Error())
+		logc.Error(l.ctx, "call UserRpc failed, err: "+err.Error())
 		err = nil
 		return
 	} else if respRpc.UserId == -1 {
 		// the username does not exsit or the password is incorrect
 		resp = &types.LoginResp{
-			StatusCode: http.StatusOK,
+			StatusCode: respRpc.StatusCode,
 			StatusMsg:  respRpc.StatusMsg,
 			UserID:     respRpc.UserId, // is -1
 		}
+		logc.Error(l.ctx, "call UserRpc failed, err: "+respRpc.StatusMsg)
 		err = nil
 		return
 	}
@@ -73,18 +74,18 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	token, err := getJwtToken(secretKey, iat, seconds, payload)
 	if err != nil {
 		resp = &types.LoginResp{
-			StatusCode: http.StatusOK,
-			StatusMsg:  "Login fail",
+			StatusCode: internal.StatusGatewayErr,
+			StatusMsg:  "登录失败",
 			UserID:     respRpc.UserId, // is -1
 		}
-		logc.Alert(l.ctx, "getJwtToken() "+err.Error())
+		logc.Error(l.ctx, "getJwtToken() "+err.Error())
 		err = nil
 		return
 	}
 
 	resp = &types.LoginResp{
-		StatusCode: http.StatusOK,
-		StatusMsg:  respRpc.StatusMsg,
+		StatusCode: internal.StatusSuccess,
+		StatusMsg:  "登录成功",
 		UserID:     respRpc.UserId,
 		Token:      token,
 	}

@@ -3,11 +3,11 @@ package user
 import (
 	"context"
 	"log"
-	"net/http"
 	"time"
 
 	"nulltv/http_service/internal/svc"
 	"nulltv/http_service/internal/types"
+	"nulltv/internal"
 	"nulltv/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,7 +34,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	})
 	if err != nil {
 		resp = &types.RegisterResp{
-			StatusCode: http.StatusOK,
+			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "注册失败",
 			UserID:     respRpc.UserId, // is -1
 		}
@@ -44,7 +44,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	} else if respRpc.UserId == -1 {
 		// the username does not exsit or the password is incorrect
 		resp = &types.RegisterResp{
-			StatusCode: http.StatusOK,
+			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  respRpc.StatusMsg,
 			UserID:     respRpc.UserId, // is -1
 		}
@@ -59,8 +59,8 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	token, err := getJwtToken(secretKey, iat, seconds, payload)
 	if err != nil {
 		resp = &types.RegisterResp{
-			StatusCode: http.StatusOK,
-			StatusMsg:  "Login fail",
+			StatusCode: internal.StatusGatewayErr,
+			StatusMsg:  "注册失败",
 			UserID:     respRpc.UserId, // is -1
 		}
 		log.Fatal(err)
@@ -69,7 +69,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	}
 
 	resp = &types.RegisterResp{
-		StatusCode: http.StatusOK,
+		StatusCode: internal.StatusSuccess,
 		StatusMsg:  respRpc.StatusMsg,
 		UserID:     respRpc.UserId,
 		Token:      token,

@@ -125,6 +125,7 @@ DROP TABLE IF EXISTS `t_weblink`;
 CREATE TABLE `t_weblink`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `link_id` bigint(20) unsigned NOT NULL COMMENT '网页id',
   `author_id` bigint(20) unsigned NOT NULL  COMMENT '添加者id',
   `describe`  varchar(255) NOT NULL COMMENT '描述',
   `url`       text COMMENT '网址',

@@ -1,0 +1,10 @@
+syntax = "v1"
+
+import "../user.api"
+
+type Chat {
+	ID         	int64  	`form:"id"`
+  UserId      int64   `form:"user_id"`
+	Content    	string 	`form:"content"`     
+	CreateDate 	string 	`form:"create_date"` 
+}

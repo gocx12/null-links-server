@@ -6,7 +6,7 @@ option go_package = "./user";
 
 message RegisterReq {
   string username = 1;
-  string user_email = 2;
+  string email = 2;
   string password = 3; 
 }
 
@@ -18,11 +18,23 @@ message RegisterResp {
 
 message LoginReq {
   string username = 1; 
-  string user_email = 2;
+  string email = 2;
   string password = 3; 
 }
 
 message LoginResp {
+  int32 status_code = 1;
+  string status_msg = 2; 
+  int64 user_id = 3; 
+}
+
+message RegisterReq {
+  string username = 1;
+  string email = 2;
+  string password = 3; 
+}
+
+message RegisterResp {
   int32 status_code = 1;
   string status_msg = 2; 
   int64 user_id = 3; 

@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "../webset.api"
+
+type PublishListReq {
+	Token  string `form:"token"`   
+	UserID int64 `form:"user_id"` 
+}
+
+type PublishListResp {
+	StatusCode int32   `json:"status_code"`         
+	StatusMsg  string  `json:"status_msg,optional"` 
+	WebsetList  []WebsetInfo `json:"webset_list"`          
+}

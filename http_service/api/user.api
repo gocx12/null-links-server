@@ -12,3 +12,10 @@ type UserInfo {
 	Signature       string 	`json:"signature,optional"`       
 	WorkCount       int64  	`json:"work_count,optional"`      
 }
+
+type UserInfoShort {
+	Id              int64  	`json:"id"`
+	Name            string 	`json:"name"`
+	Email 					string 	`json:"email"`
+	AvatarUrl				string 	`json:"avatar_url,optional"`          
+}

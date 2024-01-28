@@ -60,29 +60,51 @@ type UserInfo struct {
 	WorkCount     int64  `json:"work_count,optional"`
 }
 
+type UserInfoShort struct {
+	Id        int64  `json:"id"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	AvatarUrl string `json:"avatar_url,optional"`
+}
+
 type FeedReq struct {
 	LatestTime string `form:"latest_time,optional"`
 	Token      string `form:"token,optional"`
 }
 
 type FeedResp struct {
-	StatusCode int32       `json:"status_code,optional"`
-	StatusMsg  string      `json:"status_msg"`
-	NextTime   int64       `json:"next_time"`
-	VideoList  []VideoInfo `json:"video_list,optional"`
+	StatusCode int32        `json:"status_code,optional"`
+	StatusMsg  string       `json:"status_msg"`
+	NextTime   int64        `json:"next_time"`
+	WebsetList []WebsetInfo `json:"webset_list"`
 }
 
-type VideoInfo struct {
+type WebsetInfo struct {
 	ID            int64    `json:"id"`
 	Title         string   `json:"title"`
+	Describe      string   `json:"describe"`
 	AuthorInfo    UserInfo `json:"author_info"`
 	CoverURL      string   `json:"cover_url"`
-	PlayURL       string   `json:"play_url"`
-	CommentCount  int64    `json:"comment_count"`
 	LikeCount     int64    `json:"like_count"`
 	IsLike        bool     `json:"is_like"`
 	FavoriteCount int64    `json:"favorite_count"`
 	IsFavorite    bool     `json:"is_favorite"`
+	WebLinkList   WebLink  `json:"weblink_list"`
+}
+
+type WebsetInfoShort struct {
+	ID         int64    `json:"id"`
+	Title      string   `json:"title"`
+	Describe   string   `json:"describe"`
+	AuthorInfo UserInfo `json:"author_info"`
+}
+
+type WebLink struct {
+	ID         int64    `json:"id"`
+	Describe   string   `json:"describe"`
+	Url        string   `json:"url"`
+	AuthorInfo UserInfo `json:"author_info"`
+	CoverURL   string   `json:"cover_url"`
 }
 
 type PublishActionReq struct {
@@ -101,15 +123,15 @@ type PublishListReq struct {
 }
 
 type PublishListResp struct {
-	StatusCode int32       `json:"status_code"`
-	StatusMsg  string      `json:"status_msg,optional"`
-	VideoList  []VideoInfo `json:"video_list"`
+	StatusCode int32        `json:"status_code"`
+	StatusMsg  string       `json:"status_msg,optional"`
+	WebsetList []WebsetInfo `json:"webset_list"`
 }
 
 type FavoriteActionReq struct {
 	ActionType int32  `form:"action_type"`
 	Token      string `form:"token"`
-	VideoID    int64  `form:"video_id"`
+	WebsetID   int64  `form:"webset_id"`
 }
 
 type FavoriteActionResp struct {
@@ -123,53 +145,76 @@ type FavoriteListReq struct {
 }
 
 type FavoriteListResp struct {
-	StatusCode int32       `json:"status_code"`
-	StatusMsg  string      `json:"status_msg,optional"`
-	VideoList  []VideoInfo `json:"video_list"`
+	StatusCode int32        `json:"status_code"`
+	StatusMsg  string       `json:"status_msg,optional"`
+	WebsetList []WebsetInfo `json:"webset_list"`
 }
 
-type CommentActionReq struct {
-	ActionType  int32  `form:"action_type"`
-	CommentID   int64  `form:"comment_id,optional"`
-	CommentText string `form:"comment_text,optional"`
-	Token       string `form:"token"`
-	VideoID     int64  `form:"video_id"`
+type ChatActionReq struct {
+	ActionType int32  `form:"action_type"`
+	ChatID     int64  `form:"chat_id,optional"`
+	Content    string `form:"content,optional"`
+	WebsetID   int64  `form:"webset_id"`
+	Token      string `form:"token"`
 }
 
-type CommentActionResp struct {
-	Comment    Comment `json:"comment"`
-	StatusCode int32   `json:"status_code,optional"`
-	StatusMsg  string  `json:"status_msg"`
-}
-
-type Comment struct {
-	ID         int64    `form:"id"`
-	Content    string   `form:"content"`
-	CreateDate string   `form:"create_date"`
-	UserInfo   UserInfo `form:"user_info"`
-}
-
-type CommentListReq struct {
-	Token   string `form:"token,optional"`
-	VideoID int64  `form:"video_id"`
-}
-
-type CommentListResp struct {
-	CommentList []Comment `json:"comment_list"`
-	StatusCode  int64     `json:"status_code,optional"`
-	StatusMsg   string    `json:"status_msg"`
-}
-
-type ParseReq struct {
-	Token string `form:"token"`
-	Url   string `form:"url"`
-}
-
-type ParseResp struct {
+type ChatActionResp struct {
+	Chat       Chat   `json:"comment"`
 	StatusCode int32  `json:"status_code,optional"`
 	StatusMsg  string `json:"status_msg"`
-	NextTime   int64  `json:"next_time"`
-	PlayUrl    string `json:"play_url"`
+}
+
+type Chat struct {
+	ID         int64  `form:"id"`
+	UserId     int64  `form:"user_id"`
+	Content    string `form:"content"`
+	CreateDate string `form:"create_date"`
+}
+
+type ChatListReq struct {
+	Token    string `form:"token,optional"`
+	WebsetID int64  `form:"webset_id"`
+}
+
+type ChatListResp struct {
+	ChatList   []Chat `json:"chat_list"`
+	StatusCode int64  `json:"status_code,optional"`
+	StatusMsg  string `json:"status_msg"`
+}
+
+type ChatWebSocketReq struct {
+	Token    string `form:"token,optional"`
+	WebsetID int64  `form:"webset_id"`
+	Content  string `form:"content"`
+}
+
+type ChatWebSocketResp struct {
+	StatusCode int64  `json:"status_code,optional"`
+	StatusMsg  string `json:"status_msg"`
+	ChatList   []Chat `json:"chat_list"`
+}
+
+type LikeActionReq struct {
+	ActionType int32  `form:"action_type"`
+	WebsetID   int64  `form:"webset_id"`
+	Token      string `form:"token"`
+}
+
+type LikeActionResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
+type WebsetInfoReq struct {
+	Token    string `form:"token"`
+	UserID   int64  `form:"user_id"`
+	WebsetID int64  `form:"webset_id"`
+}
+
+type WebsetInfoResp struct {
+	StatusCode int32           `json:"status_code"`
+	StatusMsg  string          `json:"status_msg,optional"`
+	WebsetInfo WebsetInfoShort `json:"webset_info"`
 }
 
 type RelationActionReq struct {

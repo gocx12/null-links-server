@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package social;
+
+option go_package = "./social";
+
+service WebsetService{
+  
+}

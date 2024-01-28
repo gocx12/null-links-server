@@ -1,0 +1,31 @@
+syntax = "v1"
+
+import "user.api"
+
+type WebsetInfo {
+	ID            int64  		`json:"id"`
+	Title         string 		`json:"title"`
+	Describe 			string 		`json:"describe"`
+	AuthorInfo		UserInfo	`json:"author_info"`
+	CoverURL      string 		`json:"cover_url"`
+	LikeCount			int64			`json:"like_count"`
+	IsLike				bool 			`json:"is_like"`
+	FavoriteCount int64  		`json:"favorite_count"`
+	IsFavorite    bool   		`json:"is_favorite"`
+	WebLinkList		WebLink		`json:"weblink_list"`
+}
+
+type WebsetInfoShort {
+	ID            int64  		`json:"id"`
+	Title         string 		`json:"title"`
+	Describe 			string 		`json:"describe"`
+	AuthorInfo		UserInfo	`json:"author_info"`
+}
+
+type WebLink {
+	ID            int64  		`json:"id"`
+	Describe 			string 		`json:"describe"`
+	Url 					string 		`json:"url"`
+	AuthorInfo		UserInfo	`json:"author_info"`
+	CoverURL			string 		`json:"cover_url"`
+}
