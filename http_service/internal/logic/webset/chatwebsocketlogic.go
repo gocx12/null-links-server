@@ -30,7 +30,18 @@ func (l *ChatWebSocketLogic) ChatWebSocket(req *types.ChatWebSocketReq) (resp *t
 	return
 }
 
-func (l *ChatWebSocketLogic) ChatWs(conn *websocket.Conn) {
+// Define our message object
+type Message struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Message  string `json:"message"`
+}
+
+var clients = make(map[*websocket.Conn]bool) // connected clients
+var broadcast = make(chan Message)           // broadcast channel
+
+func (l *ChatWebSocketLogic) HandleConnection(conn *websocket.Conn) {
+	clients[conn] = true
 	for {
 		messageType, message, err := conn.ReadMessage()
 		if err != nil {
