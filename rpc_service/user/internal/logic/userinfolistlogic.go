@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"nulltv/rpc_service/user/internal/svc"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/internal/svc"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

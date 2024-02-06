@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"nulltv/http_service/internal/config"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/http_service/internal/config"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
 )

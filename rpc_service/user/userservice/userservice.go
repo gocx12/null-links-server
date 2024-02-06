@@ -6,7 +6,7 @@ package userservice
 import (
 	"context"
 
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

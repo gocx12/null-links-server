@@ -1,0 +1,17 @@
+Name: service
+Host: 0.0.0.0
+Port: 8888
+
+Log:
+  ServiceName: "chat_service"
+  Mode: "console"
+  Encoding: "plain"
+  Level: "debug"
+  Path: "chat_service/logs"
+
+Auth:
+  AccessSecret: "AccessSecret"
+  AccessExpire: 604800
+
+DB:
+  DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true

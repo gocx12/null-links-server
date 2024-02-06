@@ -3,8 +3,8 @@ package social
 import (
 	"context"
 
-	"nulltv/http_service/internal/svc"
-	"nulltv/http_service/internal/types"
+	"null-links/http_service/internal/svc"
+	"null-links/http_service/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

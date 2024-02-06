@@ -1,24 +1,24 @@
-package webset
+package chat
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"nulltv/http_service/internal/logic/webset"
-	"nulltv/http_service/internal/svc"
-	"nulltv/http_service/internal/types"
+	"null-links/chat_service/internal/logic/chat"
+	"null-links/chat_service/internal/svc"
+	"null-links/chat_service/internal/types"
 )
 
-func ChatListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ChatHistoryHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ChatListReq
+		var req types.ChatHistoryReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := webset.NewChatListLogic(r.Context(), svcCtx)
-		resp, err := l.ChatList(&req)
+		l := chat.NewChatHistoryLogic(r.Context(), svcCtx)
+		resp, err := l.ChatHistory(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

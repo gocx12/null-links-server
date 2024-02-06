@@ -4,10 +4,10 @@ package handler
 import (
 	"net/http"
 
-	social "nulltv/http_service/internal/handler/social"
-	user "nulltv/http_service/internal/handler/user"
-	webset "nulltv/http_service/internal/handler/webset"
-	"nulltv/http_service/internal/svc"
+	social "null-links/http_service/internal/handler/social"
+	user "null-links/http_service/internal/handler/user"
+	webset "null-links/http_service/internal/handler/webset"
+	"null-links/http_service/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -53,16 +53,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/chat/list",
-				Handler: webset.ChatListHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/chat/websocket",
-				Handler: webset.ChatWebSocketHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
 				Path:    "/info",
 				Handler: webset.WebsetInfoHandler(serverCtx),
 			},
@@ -95,11 +85,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/favorite/list",
 				Handler: webset.FavoriteListHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/chat/action",
-				Handler: webset.ChatActionHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

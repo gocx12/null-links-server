@@ -3,12 +3,11 @@ package user
 import (
 	"context"
 	"log"
-	"time"
 
-	"nulltv/http_service/internal/svc"
-	"nulltv/http_service/internal/types"
-	"nulltv/internal"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/http_service/internal/svc"
+	"null-links/http_service/internal/types"
+	"null-links/internal"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,32 +34,42 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "获取信息失败",
-			UserID:     respRpc.UserId, // is -1
+			UserInfo: types.UserInfo{
+				Id:            respRpc.UserInfo.Id,
+				Name:          respRpc.UserInfo.Name,
+				Email:         respRpc.UserInfo.Email,
+				AvatarUrl:     respRpc.UserInfo.AvatarUrl,
+				BackgroundUrl: respRpc.UserInfo.BackgroundUrl,
+				FollowCount:   respRpc.UserInfo.FollowCount,
+				FollowerCount: respRpc.UserInfo.FollowerCount,
+				IsFollow:      respRpc.UserInfo.IsFollow,
+				Signature:     respRpc.UserInfo.Signature,
+				WorkCount:     respRpc.UserInfo.WorkCount,
+			},
 		}
 		log.Fatal(err)
 		err = nil
 		return
-	} else if respRpc.UserId == -1 {
+	} else if respRpc.UserInfo.Id == -1 {
 		// the username does not exsit or the password is incorrect
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  respRpc.StatusMsg,
-			UserID:     respRpc.UserId, // is -1
+			UserInfo: types.UserInfo{
+				Id: respRpc.UserInfo.Id, // is -1
+			},
 		}
 		err = nil
 		return
 	}
 
-	secretKey := l.svcCtx.Config.Auth.AccessSecret
-	iat := time.Now().Unix()
-	seconds := l.svcCtx.Config.Auth.AccessExpire
-	payload := respRpc.UserId
-	token, err := getJwtToken(secretKey, iat, seconds, payload)
 	if err != nil {
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusGatewayErr,
 			StatusMsg:  "获取信息失败",
-			UserID:     respRpc.UserId, // is -1
+			UserInfo: types.UserInfo{
+				Id: respRpc.UserInfo.Id, // is -1
+			},
 		}
 		log.Fatal(err)
 		err = nil
@@ -70,8 +79,9 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 	resp = &types.UserInfoResp{
 		StatusCode: internal.StatusSuccess,
 		StatusMsg:  respRpc.StatusMsg,
-		UserID:     respRpc.UserId,
-		Token:      token,
+		UserInfo: types.UserInfo{
+			Id: respRpc.UserInfo.Id,
+		},
 	}
 
 	return

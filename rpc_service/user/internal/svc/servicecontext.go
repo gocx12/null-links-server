@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"nulltv/rpc_service/user/internal/config"
-	"nulltv/rpc_service/user/internal/model"
+	"null-links/rpc_service/user/internal/config"
+	"null-links/rpc_service/user/internal/model"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )

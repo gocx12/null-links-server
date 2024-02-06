@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"nulltv/http_service/internal/svc"
-	"nulltv/http_service/internal/types"
-	"nulltv/internal"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/http_service/internal/svc"
+	"null-links/http_service/internal/types"
+	"null-links/internal"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/zeromicro/go-zero/core/logc"

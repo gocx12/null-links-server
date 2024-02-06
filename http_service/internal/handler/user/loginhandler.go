@@ -3,9 +3,9 @@ package user
 import (
 	"net/http"
 
-	"nulltv/http_service/internal/logic/user"
-	"nulltv/http_service/internal/svc"
-	"nulltv/http_service/internal/types"
+	"null-links/http_service/internal/logic/user"
+	"null-links/http_service/internal/svc"
+	"null-links/http_service/internal/types"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )

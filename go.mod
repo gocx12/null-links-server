@@ -1,4 +1,4 @@
-module nulltv
+module null-links
 
 go 1.20
 

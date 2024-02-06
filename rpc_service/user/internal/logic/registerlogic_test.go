@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/pb/user"
 	"testing"
 )
 

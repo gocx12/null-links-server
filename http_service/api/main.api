@@ -9,9 +9,6 @@ import "./webset/publish_action.api"
 import "./webset/publish_list.api"
 import "./webset/favorite_action.api"
 import "./webset/favorite_list.api"
-import "./webset/chat_action.api"
-import "./webset/chat_list.api"
-import "./webset/chat_websocket.api"
 import "./webset/like_action.api"
 import "./webset/webset_info.api"
 
@@ -20,7 +17,6 @@ import "./social/relation_follow_list.api"
 import "./social/relation_follower_list.api"
 import "./social/relation_friend_list.api"
 import "./social/message_action.api"
-import "./social/message_chat.api"
 
 type PingReq {
 }
@@ -57,15 +53,8 @@ service service {
 	@handler Feed
 	get /feed (FeedReq) returns (FeedResp)
 
-	@handler ChatList
-	get /chat/list (ChatListReq) returns (ChatListResp)
-
-	@handler ChatWebSocket
-	post /chat/websocket (ChatWebSocketReq) returns (ChatWebSocketResp)
-
 	@handler WebsetInfo
 	get /info (WebsetInfoReq) returns (WebsetInfoResp)
-
 }
 
 @server (
@@ -73,8 +62,8 @@ service service {
 	group:  webset
 )
 service service {
-	@handler Like
-	post /like (LikeActionReq) returns (LikeActionResp)
+	@handler LikeAction
+	post /like/action (LikeActionReq) returns (LikeActionResp)
 
 	@handler PublishAction
 	post /publish/action (PublishActionReq) returns (PublishActionResp)
@@ -87,9 +76,6 @@ service service {
 
 	@handler FavoriteList
 	get /favorite/list (FavoriteListReq) returns (FavoriteListResp)
-
-	@handler ChatAction
-	post /chat/action (ChatActionReq) returns (ChatActionResp)
 }
 
 @server (
@@ -111,7 +97,4 @@ service service {
 
 	@handler MessageAction
 	post /message/action (MessageActionReq) returns (MessageActionResp)
-
-	@handler MessageChat
-	get /message/chat (MessageChatReq) returns (MessageChatResp)
 }

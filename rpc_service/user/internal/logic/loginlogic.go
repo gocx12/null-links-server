@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/base64"
 
-	"nulltv/rpc_service/user/internal/model"
-	"nulltv/rpc_service/user/internal/svc"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/internal/model"
+	"null-links/rpc_service/user/internal/svc"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/crypto/scrypt"

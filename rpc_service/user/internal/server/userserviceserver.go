@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"nulltv/rpc_service/user/internal/logic"
-	"nulltv/rpc_service/user/internal/svc"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/internal/logic"
+	"null-links/rpc_service/user/internal/svc"
+	"null-links/rpc_service/user/pb/user"
 )
 
 type UserServiceServer struct {

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -38,7 +37,7 @@ func (c *customUserModel) FindOneByName(ctx context.Context, username string) (*
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlc.ErrNotFound:
+	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -52,7 +51,7 @@ func (c *customUserModel) FindMulti(ctx context.Context, userIds []int64) ([]*Us
 	switch err {
 	case nil:
 		return resp, nil
-	case sqlc.ErrNotFound:
+	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err

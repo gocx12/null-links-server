@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"nulltv/http_service/internal/logic/social"
-	"nulltv/http_service/internal/svc"
-	"nulltv/http_service/internal/types"
+	"null-links/http_service/internal/logic/social"
+	"null-links/http_service/internal/svc"
+	"null-links/http_service/internal/types"
 )
 
 func RelationFollowerListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

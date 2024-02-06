@@ -2,8 +2,8 @@ syntax = "v1"
 
 type LoginReq {
 	Username 	string `json:"username,optional"` 
-	UserEmail string `json:"user_email,optional"`
-	Password 	string `json:"password"` 
+	UserEmail 	string `json:"user_email,optional"`
+	Password	string `json:"password"` 
 }
 
 type LoginResp {

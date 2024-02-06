@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"nulltv/rpc_service/user/internal/config"
-	"nulltv/rpc_service/user/internal/server"
-	"nulltv/rpc_service/user/internal/svc"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/internal/config"
+	"null-links/rpc_service/user/internal/server"
+	"null-links/rpc_service/user/internal/svc"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

@@ -6,4 +6,4 @@ Etcd:
   Key: user.rpc
 
 DB:
-  DataSource: root:123456@tcp(127.0.0.1:3306)/null_tv?charset=utf8mb4&parseTime=true
+  DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true

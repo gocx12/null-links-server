@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"flag"
-	"nulltv/rpc_service/user/internal/config"
-	"nulltv/rpc_service/user/internal/svc"
-	"nulltv/rpc_service/user/pb/user"
+	"null-links/rpc_service/user/internal/config"
+	"null-links/rpc_service/user/internal/svc"
+	"null-links/rpc_service/user/pb/user"
 	"testing"
 
 	"github.com/zeromicro/go-zero/core/conf"
