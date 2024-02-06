@@ -6,7 +6,7 @@ package chat
 
 import (
 	"bytes"
-	"log"
+	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -64,7 +64,7 @@ func (c *Client) ReadPump() {
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
+				logx.Error("error: %v", err)
 			}
 			break
 		}
