@@ -11,11 +11,8 @@ type Chat struct {
 }
 
 type ChatWsReq struct {
-	Token      string `form:"token"`
-	ActionType int32 `form:"action_type"` 
+	Token      string `form:"token,optional"`
 	WebsetID   int64 `form:"webset_id"`
-    ChatID     int64 `form:"chat_id"`
-    Content    string `form:"content"`
 }
 
 type ChatHistoryReq struct {

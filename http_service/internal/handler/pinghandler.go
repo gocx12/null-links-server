@@ -3,10 +3,11 @@ package handler
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"null-links/http_service/internal/logic"
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func PingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
