@@ -1,8 +1,17 @@
 syntax = "v1"
 
 type PublishActionReq {
-	Token string `form:"token,omitempty"` 
-	Title string `form:"title"`
+	Token 		string 		`json:"token,omitempty"` 
+	Title 		string 		`json:"title"`
+	Category	string		`json:"category"`
+	AuthorId	int64		`json:"author_id"`
+	Describe 	string 		`json:"describe"`
+	WebLinkList []WebLink	`json:"weblink_list"`
+}
+
+type WebLink {
+	Url 		string 	`json:"url"`
+	Describe 	string 	`json:"describe"`
 }
 
 type PublishActionResp {

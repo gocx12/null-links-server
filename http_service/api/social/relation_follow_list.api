@@ -3,7 +3,7 @@ syntax = "v1"
 import "../user.api"
 
 type FriendUser {
-	UserInfo	UserInfo	`json:"friend_user_info"`
+	User	User	`json:"friend_user_info"`
 	Message 	string 		`json:"message,optional"`
 	MsgType 	int    		`json:"msg_type"`
 }

@@ -1,6 +1,6 @@
 syntax = "v1"
 
-type UserInfo {
+type User {
 	Id              int64  	`json:"id"`
 	Name            string 	`json:"name"`
 	Email 					string 	`json:"email"`
@@ -13,9 +13,8 @@ type UserInfo {
 	WorkCount       int64  	`json:"work_count,optional"`      
 }
 
-type UserInfoShort {
+type UserShort {
 	Id              int64  	`json:"id"`
 	Name            string 	`json:"name"`
-	Email 					string 	`json:"email"`
-	AvatarUrl				string 	`json:"avatar_url,optional"`          
+	AvatarUrl		string 	`json:"avatar_url,optional"`          
 }

@@ -8,7 +8,7 @@ type FavoriteListReq {
 }
 
 type FavoriteListResp {
-	StatusCode int32  			`json:"status_code"`         
-	StatusMsg  string  			`json:"status_msg,optional"` 
-	WebsetList []WebsetInfo 	`json:"webset_list"`          
+	StatusCode int32		`json:"status_code"`         
+	StatusMsg  string		`json:"status_msg,optional"` 
+	WebsetList []Webset		`json:"webset_list"`          
 }

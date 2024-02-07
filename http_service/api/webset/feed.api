@@ -3,13 +3,15 @@ syntax = "v1"
 import "../webset.api"
 
 type FeedReq {
-	LatestTime string `form:"latest_time,optional"` 
-	Token      string `form:"token,optional"`       
+	LatestTime 	string `form:"latest_time,optional"` 
+	Token      	string `form:"token,optional"`       
+	Page		string	`form:"page,optional"`
+	PageSize	string 	`form:"page_size,optional"`
 }
 
 type FeedResp {
-	StatusCode int32   			`json:"status_code,optional"`
-	StatusMsg  string  			`json:"status_msg"`
-	NextTime   int64   			`json:"next_time"`
-	WebsetList []WebsetInfo `json:"webset_list"`  
+	StatusCode int32   			`json:"status_code"`
+	StatusMsg  string  			`json:"status_msg,optional"`
+	NextTime   int64			`json:"next_time"`
+	WebsetList []WebsetShort	`json:"webset_list"`  
 }

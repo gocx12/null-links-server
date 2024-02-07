@@ -10,5 +10,5 @@ type RelationFollowerListReq {
 type RelationFollowerListResp {
 	StatusCode string 		`json:"status_code"`         
 	StatusMsg  string 		`json:"status_msg,optional"` 
-	UserList   []UserInfo	`json:"follower_list"`           
+	UserList   []User	`json:"follower_list"`           
 }

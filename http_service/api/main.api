@@ -43,7 +43,7 @@ service service {
 	post /login (LoginReq) returns (LoginResp)
 
 	@handler UserInfo
-	get /info (UserInfoReq) returns (UserInfoResp)
+	get /info (UserReq) returns (UserResp)
 }
 
 @server (
