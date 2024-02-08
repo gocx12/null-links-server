@@ -129,6 +129,9 @@ CREATE TABLE `t_webset`
   `describe` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
   `cover_url` varchar(255) NOT NULL DEFAULT '' COMMENT '封面地址',
   `category` varchar(255) NOT NULL DEFAULT '' COMMENT '分区',
+  `view_cnt` int NOT NULL DEFAULT 0 COMMENT '观看数'
+  `like_cnt` int NOT NULL DEFAULT 0 COMMENT '点赞数'
+  `favorite_cnt` int NOT NULL DEFAULT 0 COMMENT '收藏数'
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -145,8 +148,9 @@ CREATE TABLE `t_weblink`
   `link_id` bigint(20) unsigned NOT NULL COMMENT '网页id',
   `author_id` bigint(20) unsigned NOT NULL  COMMENT '添加者id',
   `describe`  varchar(255) NOT NULL COMMENT '描述',
-  `url`       text COMMENT '网址',
+  `url`       text NOT NULL COMMENT '网址',
   `cover_url` varchar(255) NOT NULL COMMENT '封面地址',
+  `click_cnt` int NOT NULL DEFAULT 0 COMMENT '点击数',
   `status`    tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
