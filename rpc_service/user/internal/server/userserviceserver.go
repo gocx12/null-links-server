@@ -32,6 +32,16 @@ func (s *UserServiceServer) Login(ctx context.Context, in *user.LoginReq) (*user
 	return l.Login(in)
 }
 
+func (s *UserServiceServer) CheckUsername(ctx context.Context, in *user.CheckUsernameReq) (*user.CheckUsernameResp, error) {
+	l := logic.NewCheckUsernameLogic(ctx, s.svcCtx)
+	return l.CheckUsername(in)
+}
+
+func (s *UserServiceServer) GetValidtaionCode(ctx context.Context, in *user.GetValidtaionCodeReq) (*user.GetValidtaionCodeResp, error) {
+	l := logic.NewGetValidtaionCodeLogic(ctx, s.svcCtx)
+	return l.GetValidtaionCode(in)
+}
+
 func (s *UserServiceServer) UserInfo(ctx context.Context, in *user.UserInfoReq) (*user.UserInfoResp, error) {
 	l := logic.NewUserInfoLogic(ctx, s.svcCtx)
 	return l.UserInfo(in)

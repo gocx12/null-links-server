@@ -37,8 +37,8 @@ func (l *UserInfoListLogic) UserInfoList(in *user.UserInfoListReq) (*user.UserIn
 	userList := make([]*user.UserInfo, len(userListDb))
 	for i, userDb := range userListDb {
 		userInfo := &user.UserInfo{
-			Id:            userDb.Id,
-			IsFollow:      userDb.IsFollow != 0,
+			Id: userDb.Id,
+			// IsFollow:      userDb.IsFollow != 0,
 			Name:          userDb.Username,
 			Signature:     userDb.Signature,
 			AvatarUrl:     userDb.AvatarUrl,
@@ -54,49 +54,6 @@ func (l *UserInfoListLogic) UserInfoList(in *user.UserInfoListReq) (*user.UserIn
 		UserList:   userList,
 	}, nil
 
-	// DEPRECATED
-	// userList := make([]*user.UserInfo, len(in.UserIdList))
-
-	// // When the length of user id list is small, it is not necessary to use goroutine.
-	// // The cost of create goroutines is higher than the cost of get user info synchronously
-	// if len(in.UserIdList) < 16 {
-	// 	for i, userId := range in.UserIdList {
-	// 		userInfo, err := l.getUserInfo(userId)
-	// 		if err != nil {
-	// 			userList[i] = &user.UserInfo{Id: userId}
-	// 			logc.Info(l.ctx, "UserInfoList() try to get user %d info error: %v", userId, err)
-	// 		}
-	// 		userList[i] = userInfo
-	// 	}
-
-	// 	return &user.UserInfoListResp{
-	// 		StatusCode: 0,
-	// 		StatusMsg:  "成功",
-	// 		UserList:   userList,
-	// 	}, nil
-	// }
-
-	// var wg sync.WaitGroup
-	// wg.Add(len(in.UserIdList))
-
-	// for i, userId := range in.UserIdList {
-	// 	go func(i int, userId int64) {
-	// 		userInfo, err := l.getUserInfo(userId)
-	// 		if err != nil {
-	// 			userList[i] = &user.UserInfo{Id: userId}
-	// 			logc.Info(l.ctx, "UserInfoList() try to get user %d info error: %v", userId, err)
-	// 		}
-	// 		userList[i] = userInfo
-	// 		wg.Done()
-	// 	}(i, userId)
-	// }
-	// wg.Wait()
-
-	// return &user.UserInfoListResp{
-	// 	StatusCode: 0,
-	// 	StatusMsg:  "成功",
-	// 	UserList:   userList,
-	// }, nil
 }
 
 func (l *UserInfoListLogic) getUserInfo(userId int64) (*user.UserInfo, error) {
@@ -107,8 +64,8 @@ func (l *UserInfoListLogic) getUserInfo(userId int64) (*user.UserInfo, error) {
 	}
 
 	userInfo := &user.UserInfo{
-		Id:            resp.Id,
-		IsFollow:      resp.IsFollow != 0,
+		Id: resp.Id,
+		// IsFollow:      resp.IsFollow != 0,
 		Name:          resp.Username,
 		Signature:     resp.Signature,
 		AvatarUrl:     resp.AvatarUrl,

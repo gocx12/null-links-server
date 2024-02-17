@@ -5,19 +5,22 @@ package webset;
 option go_package = "./webset";
 
 message FeedReq {
-  string token = 1;
+  int64 user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
 }
 
 message FeedResp {
   int32 status_code = 1;
   string status_msg = 2;
-  repeated Webset webset_list = 3;
+  repeated WebsetShort webset_list = 3;
 }
 
 message PublishActionReq {
-  string token = 1;
-  int64 webset_id = 2;
-  Webset webset = 2;
+  int32 action_type = 1;
+  int64 user_id = 2;
+  int64 webset_id = 3;
+  Webset webset = 4;
 }
 
 message PublishActionResp {
@@ -26,7 +29,7 @@ message PublishActionResp {
 }
 
 message PublishListReq {
-  string token = 1;
+  string user_id = 1;
 }
 
 message PublishListResp {
@@ -36,24 +39,61 @@ message PublishListResp {
 }
 
 message LikeActionReq {
-  string token = 1;
-  int64 webset_id = 2;
+  int64 user_id = 1;
+  int32 action_type = 2;
+  int64 webset_id = 3;
 }
 
 message LikeActionResp {
   int32 status_code = 1;
   string status_msg = 2; 
-  int64 play_url = 3; 
+}
+
+message LikeInfoListReq {
+  int64 user_id = 1;
+  repeated int64 webset_id_list = 2;
+}
+
+message LikeInfoListResp {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated LikeInfo like_info_list = 3;
+}
+message LikeInfo {
+  int64 webset_id = 1;
+  int64 like_count = 2;
+  bool is_like = 3;
+}
+
+message FavoriteActionReq {
+  int64 user_id = 1;
+  int64 webset_id = 2;
+}
+
+message FavoriteActionResp {
+  int32 status_code = 1;
+  string status_msg = 2; 
 }
 
 message FavoriteListReq {
-  string token = 1;
+  int64 user_id = 1;
 }
 
 message FavoriteListResp {
   int32 status_code = 1;
   string status_msg = 2;
   repeated Webset favorite_webset_list = 3;
+}
+
+message WebsetShort {
+  int64  id = 1;
+  string title = 2;
+  UserInfoShort author_info = 3;
+  string cover_url = 4;
+  int64 like_count = 5;
+  bool is_like = 6;
+  int64 favorite_count = 7;
+  bool is_favorite = 8;
 }
 
 message Webset {
@@ -76,6 +116,15 @@ message WebLink {
   UserInfo author_info = 4;
 }
 
+message UserInfoShort {
+  int64 id = 1; 
+  string name = 2; 
+  string avatar_url = 3;
+  int64 follow_count = 4; 
+  int64 follower_count = 5; 
+  bool is_follow = 6;
+}
+
 message UserInfo {
   int64 id = 1; 
   string name = 2; 
@@ -96,6 +145,7 @@ service WebsetService{
   rpc PublishList (PublishListReq) returns (PublishListResp);
 
   rpc LikeAction (LikeActionReq) returns (LikeActionResp);
+  rpc LikeInfoList (LikeInfoListReq) returns (LikeInfoListResp);
   
   rpc FavoriteAction (FavoriteActionReq) returns (FavoriteActionResp);
   rpc FavoriteList (FavoriteListReq) returns (FavoriteListResp);

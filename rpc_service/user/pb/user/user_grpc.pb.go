@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_Register_FullMethodName     = "/user.UserService/Register"
-	UserService_Login_FullMethodName        = "/user.UserService/Login"
-	UserService_UserInfo_FullMethodName     = "/user.UserService/UserInfo"
-	UserService_UserInfoList_FullMethodName = "/user.UserService/UserInfoList"
+	UserService_Register_FullMethodName          = "/user.UserService/Register"
+	UserService_Login_FullMethodName             = "/user.UserService/Login"
+	UserService_CheckUsername_FullMethodName     = "/user.UserService/CheckUsername"
+	UserService_GetValidtaionCode_FullMethodName = "/user.UserService/GetValidtaionCode"
+	UserService_UserInfo_FullMethodName          = "/user.UserService/UserInfo"
+	UserService_UserInfoList_FullMethodName      = "/user.UserService/UserInfoList"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -31,6 +33,8 @@ const (
 type UserServiceClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	CheckUsername(ctx context.Context, in *CheckUsernameReq, opts ...grpc.CallOption) (*CheckUsernameResp, error)
+	GetValidtaionCode(ctx context.Context, in *GetValidtaionCodeReq, opts ...grpc.CallOption) (*GetValidtaionCodeResp, error)
 	UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 	UserInfoList(ctx context.Context, in *UserInfoListReq, opts ...grpc.CallOption) (*UserInfoListResp, error)
 }
@@ -61,6 +65,24 @@ func (c *userServiceClient) Login(ctx context.Context, in *LoginReq, opts ...grp
 	return out, nil
 }
 
+func (c *userServiceClient) CheckUsername(ctx context.Context, in *CheckUsernameReq, opts ...grpc.CallOption) (*CheckUsernameResp, error) {
+	out := new(CheckUsernameResp)
+	err := c.cc.Invoke(ctx, UserService_CheckUsername_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetValidtaionCode(ctx context.Context, in *GetValidtaionCodeReq, opts ...grpc.CallOption) (*GetValidtaionCodeResp, error) {
+	out := new(GetValidtaionCodeResp)
+	err := c.cc.Invoke(ctx, UserService_GetValidtaionCode_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
 	out := new(UserInfoResp)
 	err := c.cc.Invoke(ctx, UserService_UserInfo_FullMethodName, in, out, opts...)
@@ -85,6 +107,8 @@ func (c *userServiceClient) UserInfoList(ctx context.Context, in *UserInfoListRe
 type UserServiceServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
+	CheckUsername(context.Context, *CheckUsernameReq) (*CheckUsernameResp, error)
+	GetValidtaionCode(context.Context, *GetValidtaionCodeReq) (*GetValidtaionCodeResp, error)
 	UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
 	UserInfoList(context.Context, *UserInfoListReq) (*UserInfoListResp, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -99,6 +123,12 @@ func (UnimplementedUserServiceServer) Register(context.Context, *RegisterReq) (*
 }
 func (UnimplementedUserServiceServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServiceServer) CheckUsername(context.Context, *CheckUsernameReq) (*CheckUsernameResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUsername not implemented")
+}
+func (UnimplementedUserServiceServer) GetValidtaionCode(context.Context, *GetValidtaionCodeReq) (*GetValidtaionCodeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetValidtaionCode not implemented")
 }
 func (UnimplementedUserServiceServer) UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInfo not implemented")
@@ -155,6 +185,42 @@ func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_CheckUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUsernameReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).CheckUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_CheckUsername_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).CheckUsername(ctx, req.(*CheckUsernameReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetValidtaionCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetValidtaionCodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetValidtaionCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetValidtaionCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetValidtaionCode(ctx, req.(*GetValidtaionCodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_UserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserInfoReq)
 	if err := dec(in); err != nil {
@@ -205,6 +271,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _UserService_Login_Handler,
+		},
+		{
+			MethodName: "CheckUsername",
+			Handler:    _UserService_CheckUsername_Handler,
+		},
+		{
+			MethodName: "GetValidtaionCode",
+			Handler:    _UserService_GetValidtaionCode_Handler,
 		},
 		{
 			MethodName: "UserInfo",

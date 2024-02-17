@@ -2,6 +2,8 @@ syntax = "v1"
 
 import "./user/login.api"
 import "./user/register.api"
+import "./user/check_username.api"
+import "./user/get_validation_code.api"
 import "./user/userinfo.api"
 
 import "./webset/feed.api"
@@ -42,11 +44,18 @@ service service {
 	@handler Login
 	post /login (LoginReq) returns (LoginResp)
 
+	@handler CheckUsername
+	get /check_username (CheckUsernameReq) returns (CheckUsernameResp)
+
+	@handler GetValidationCode
+	get /get_validation_code (GetValidationCodeReq) returns (GetValidationCodeResp)
+
 	@handler UserInfo
-	get /info (UserReq) returns (UserResp)
+	get /info (UserInfoReq) returns (UserInfoResp)
 }
 
 @server (
+	prefix: /webset
 	group:  webset
 )
 service service {
@@ -59,11 +68,12 @@ service service {
 
 @server (
 	jwt:	Auth
+	prefix: /webset
 	group:  webset
 )
 service service {
 	@handler LikeAction
-	post /like/action (LikeActionReq) returns (LikeActionResp)
+	get /like/action (LikeActionReq) returns (LikeActionResp)
 
 	@handler PublishAction
 	post /publish/action (PublishActionReq) returns (PublishActionResp)
@@ -80,6 +90,7 @@ service service {
 
 @server (
 	jwt:	Auth
+	prefix: /social
 	group:  social
 )
 service service {
@@ -94,7 +105,4 @@ service service {
 
 	@handler RelationFriendList
 	get /relation/friend/list (RelationFriendListReq) returns (RelationFriendListResp)
-
-	@handler MessageAction
-	post /message/action (MessageActionReq) returns (MessageActionResp)
 }

@@ -45,7 +45,7 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	respUser.Name = resp.Username
 	respUser.Signature = resp.Signature
 	respUser.AvatarUrl = resp.AvatarUrl
-	respUser.IsFollow = resp.IsFollow != 0
+	// respUser.IsFollow = resp.IsFollow != 0
 	respUser.BackgroundUrl = resp.BackgroundUrl
 	respUser.FollowCount = resp.FollowCount
 	respUser.FollowerCount = resp.FollowerCount

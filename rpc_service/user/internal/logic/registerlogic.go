@@ -33,7 +33,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		return nil, err
 	}
 	encodedHash := base64.StdEncoding.EncodeToString(hash)
-	data := &model.User{
+	data := &model.TUser{
 		Username: in.Username,
 		Password: encodedHash,
 	}

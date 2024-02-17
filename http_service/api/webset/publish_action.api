@@ -6,12 +6,13 @@ type PublishActionReq {
 	Category	string		`json:"category"`
 	AuthorId	int64		`json:"author_id"`
 	Describe 	string 		`json:"describe"`
-	WebLinkList []WebLink	`json:"weblink_list"`
+	WebLinkList []WebLinkPublish	`json:"weblink_list"`
 }
 
-type WebLink {
+type WebLinkPublish {
 	Url 		string 	`json:"url"`
 	Describe 	string 	`json:"describe"`
+	CoverURL	string 		`json:"cover_url"`
 }
 
 type PublishActionResp {

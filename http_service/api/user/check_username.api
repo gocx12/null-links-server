@@ -1,0 +1,11 @@
+syntax = "v1"
+
+type CheckUsernameReq {
+	Username 	string `form:"username,optional"` 
+}
+
+type CheckUsernameResp {
+	StatusCode int32  `json:"status_code"`        
+	StatusMsg  string `json:"status_msg,optional"` 
+	result int32  `json:"result"`   
+}

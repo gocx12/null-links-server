@@ -9,7 +9,6 @@ import (
 	"null-links/internal"
 	"null-links/rpc_service/user/pb/user"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -41,9 +40,9 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	}
 
 	respRpc, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
-		Username:  req.Username,
-		UserEmail: req.UserEmail,
-		Password:  req.Password,
+		Username: req.Username,
+		Email:    req.UserEmail,
+		Password: req.Password,
 	})
 	if err != nil {
 		resp = &types.LoginResp{
@@ -71,7 +70,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	seconds := l.svcCtx.Config.Auth.AccessExpire
 	payload := respRpc.UserId // save user id in payload
 
-	token, err := getJwtToken(secretKey, iat, seconds, payload)
+	token, err := internal.GetJwtToken(secretKey, iat, seconds, payload)
 	if err != nil {
 		resp = &types.LoginResp{
 			StatusCode: internal.StatusGatewayErr,
@@ -90,18 +89,4 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		Token:      token,
 	}
 	return
-}
-
-// @secretKey: JWT secret key
-// @iat: time stamp
-// @seconds: expire time(second)
-// @payload: data payload
-func getJwtToken(secretKey string, iat, seconds, payload int64) (string, error) {
-	claims := make(jwt.MapClaims)
-	claims["exp"] = iat + seconds
-	claims["iat"] = iat
-	claims["payload"] = payload
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims = claims
-	return token.SignedString([]byte(secretKey))
 }

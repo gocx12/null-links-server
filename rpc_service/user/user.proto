@@ -28,16 +28,23 @@ message LoginResp {
   int64 user_id = 3; 
 }
 
-message RegisterReq {
-  string username = 1;
-  string email = 2;
-  string password = 3; 
+message CheckUsernameReq {
+  string username = 1; 
 }
 
-message RegisterResp {
-  int32 status_code = 1;
+message CheckUsernameResp {
+  int32 status_code = 1; 
   string status_msg = 2; 
-  int64 user_id = 3; 
+  int32 result = 3; 
+}
+
+message GetValidtaionCodeReq {
+  string email = 1; 
+}
+
+message GetValidtaionCodeResp {
+  int32 status_code = 1; 
+  string status_msg = 2; 
 }
 
 message UserInfoReq {
@@ -77,6 +84,8 @@ message UserInfo {
 service UserService{
   rpc Register (RegisterReq) returns (RegisterResp);
   rpc Login (LoginReq) returns (LoginResp);
+  rpc CheckUsername (CheckUsernameReq) returns (CheckUsernameResp);
+  rpc GetValidtaionCode (GetValidtaionCodeReq) returns (GetValidtaionCodeResp);
   rpc UserInfo (UserInfoReq) returns (UserInfoResp);
   rpc UserInfoList (UserInfoListReq) returns (UserInfoListResp);
 }

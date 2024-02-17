@@ -56,7 +56,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	iat := time.Now().Unix()
 	seconds := l.svcCtx.Config.Auth.AccessExpire
 	payload := respRpc.UserId
-	token, err := getJwtToken(secretKey, iat, seconds, payload)
+	token, err := internal.GetJwtToken(secretKey, iat, seconds, payload)
 	if err != nil {
 		resp = &types.RegisterResp{
 			StatusCode: internal.StatusGatewayErr,

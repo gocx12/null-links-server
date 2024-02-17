@@ -1,4 +1,4 @@
-package social
+package webset
 
 import (
 	"context"
@@ -9,21 +9,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type MessageChatLogic struct {
+type LikeActionLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewMessageChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MessageChatLogic {
-	return &MessageChatLogic{
+func NewLikeActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeActionLogic {
+	return &LikeActionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *MessageChatLogic) MessageChat(req *types.MessageChatReq) (resp *types.MessageChatResp, err error) {
+func (l *LikeActionLogic) LikeAction(req *types.LikeActionReq) (resp *types.LikeActionResp, err error) {
 	// todo: add your logic here and delete this line
 
 	return

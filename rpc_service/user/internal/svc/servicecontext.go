@@ -9,12 +9,12 @@ import (
 
 type ServiceContext struct {
 	Config    config.Config
-	UserModel model.UserModel
+	UserModel model.TUserModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:    c,
-		UserModel: model.NewUserModel(sqlx.NewMysql(c.DB.DataSource)),
+		UserModel: model.NewTUserModel(sqlx.NewMysql(c.DataSource)),
 	}
 }

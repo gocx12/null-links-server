@@ -29,7 +29,6 @@ CREATE TABLE `t_favorite`
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `user_id` bigint(20) unsigned NOT NULL COMMENT '用户id',
   `webset_id` bigint(20) unsigned NOT NULL COMMENT '网页单id',
-  `is_favorite` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否收藏',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -39,14 +38,13 @@ CREATE TABLE `t_favorite`
   DEFAULT CHARSET = utf8mb4
   COMMENT = '收藏表';
 
-DROP TABLE IF EXISTS `t_favorite`;
-CREATE TABLE `t_favorite`
+DROP TABLE IF EXISTS `t_like`;
+CREATE TABLE `t_like`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `user_id` bigint(20) unsigned NOT NULL COMMENT '用户id',
   `webset_id` bigint(20) unsigned NOT NULL COMMENT '网页单id',
-  `is_favorite` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否收藏',
-  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '在库状态',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '点赞状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
@@ -128,10 +126,10 @@ CREATE TABLE `t_webset`
   `author_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '作者id',
   `describe` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
   `cover_url` varchar(255) NOT NULL DEFAULT '' COMMENT '封面地址',
-  `category` varchar(255) NOT NULL DEFAULT '' COMMENT '分区',
-  `view_cnt` int NOT NULL DEFAULT 0 COMMENT '观看数'
-  `like_cnt` int NOT NULL DEFAULT 0 COMMENT '点赞数'
-  `favorite_cnt` int NOT NULL DEFAULT 0 COMMENT '收藏数'
+  `category` tinyint(5) NOT NULL DEFAULT 0 COMMENT '分区',
+  `view_cnt` int NOT NULL DEFAULT 0 COMMENT '观看数',
+  `like_cnt` int NOT NULL DEFAULT 0 COMMENT '点赞数',
+  `favorite_cnt` int NOT NULL DEFAULT 0 COMMENT '收藏数',
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

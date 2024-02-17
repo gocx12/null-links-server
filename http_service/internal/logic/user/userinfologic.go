@@ -34,7 +34,7 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "获取信息失败",
-			UserInfo: types.UserInfo{
+			User: types.User{
 				Id:            respRpc.UserInfo.Id,
 				Name:          respRpc.UserInfo.Name,
 				Email:         respRpc.UserInfo.Email,
@@ -55,7 +55,7 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  respRpc.StatusMsg,
-			UserInfo: types.UserInfo{
+			User: types.User{
 				Id: respRpc.UserInfo.Id, // is -1
 			},
 		}
@@ -67,7 +67,7 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusGatewayErr,
 			StatusMsg:  "获取信息失败",
-			UserInfo: types.UserInfo{
+			User: types.User{
 				Id: respRpc.UserInfo.Id, // is -1
 			},
 		}
@@ -79,7 +79,7 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 	resp = &types.UserInfoResp{
 		StatusCode: internal.StatusSuccess,
 		StatusMsg:  respRpc.StatusMsg,
-		UserInfo: types.UserInfo{
+		User: types.User{
 			Id: respRpc.UserInfo.Id,
 		},
 	}

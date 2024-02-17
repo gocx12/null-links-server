@@ -1,9 +1,9 @@
 syntax = "v1"
 
 type LikeActionReq {
-	ActionType int32 `form:"action_type"` 
-	WebsetID   int64 `form:"webset_id"`    
-	Token      string `form:"token"`       
+	ActionType int32 `json:"action_type"` 
+	WebsetID   int64 `json:"webset_id"`    
+	Token      string `json:"token"`       
 }
 
 type LikeActionResp {

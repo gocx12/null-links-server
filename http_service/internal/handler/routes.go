@@ -37,6 +37,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/check_username",
+				Handler: user.CheckUsernameHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/get_validation_code",
+				Handler: user.GetValidationCodeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/info",
 				Handler: user.UserInfoHandler(serverCtx),
 			},
@@ -57,14 +67,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: webset.WebsetInfoHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/webset"),
 	)
 
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
-				Path:    "/like",
-				Handler: webset.LikeHandler(serverCtx),
+				Method:  http.MethodGet,
+				Path:    "/like/action",
+				Handler: webset.LikeActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -88,6 +99,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/webset"),
 	)
 
 	server.AddRoutes(
@@ -112,17 +124,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/relation/friend/list",
 				Handler: social.RelationFriendListHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/message/action",
-				Handler: social.MessageActionHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/message/chat",
-				Handler: social.MessageChatHandler(serverCtx),
-			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/social"),
 	)
 }

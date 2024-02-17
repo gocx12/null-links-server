@@ -6,6 +6,7 @@ import (
 
 	"null-links/http_service/internal/config"
 	"null-links/http_service/internal/handler"
+	"null-links/http_service/internal/middleware"
 	"null-links/http_service/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -20,9 +21,10 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(c.RestConf,
+		rest.WithNotAllowedHandler(middleware.NewCorsMiddleware().Handler()))
 	defer server.Stop()
-
+	server.Use(middleware.NewCorsMiddleware().Handle)
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 

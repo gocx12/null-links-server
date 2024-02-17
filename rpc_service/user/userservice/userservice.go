@@ -13,19 +13,25 @@ import (
 )
 
 type (
-	LoginReq         = user.LoginReq
-	LoginResp        = user.LoginResp
-	RegisterReq      = user.RegisterReq
-	RegisterResp     = user.RegisterResp
-	UserInfo         = user.UserInfo
-	UserInfoListReq  = user.UserInfoListReq
-	UserInfoListResp = user.UserInfoListResp
-	UserInfoReq      = user.UserInfoReq
-	UserInfoResp     = user.UserInfoResp
+	CheckUsernameReq      = user.CheckUsernameReq
+	CheckUsernameResp     = user.CheckUsernameResp
+	GetValidtaionCodeReq  = user.GetValidtaionCodeReq
+	GetValidtaionCodeResp = user.GetValidtaionCodeResp
+	LoginReq              = user.LoginReq
+	LoginResp             = user.LoginResp
+	RegisterReq           = user.RegisterReq
+	RegisterResp          = user.RegisterResp
+	UserInfo              = user.UserInfo
+	UserInfoListReq       = user.UserInfoListReq
+	UserInfoListResp      = user.UserInfoListResp
+	UserInfoReq           = user.UserInfoReq
+	UserInfoResp          = user.UserInfoResp
 
 	UserService interface {
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+		CheckUsername(ctx context.Context, in *CheckUsernameReq, opts ...grpc.CallOption) (*CheckUsernameResp, error)
+		GetValidtaionCode(ctx context.Context, in *GetValidtaionCodeReq, opts ...grpc.CallOption) (*GetValidtaionCodeResp, error)
 		UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 		UserInfoList(ctx context.Context, in *UserInfoListReq, opts ...grpc.CallOption) (*UserInfoListResp, error)
 	}
@@ -49,6 +55,16 @@ func (m *defaultUserService) Register(ctx context.Context, in *RegisterReq, opts
 func (m *defaultUserService) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	client := user.NewUserServiceClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
+}
+
+func (m *defaultUserService) CheckUsername(ctx context.Context, in *CheckUsernameReq, opts ...grpc.CallOption) (*CheckUsernameResp, error) {
+	client := user.NewUserServiceClient(m.cli.Conn())
+	return client.CheckUsername(ctx, in, opts...)
+}
+
+func (m *defaultUserService) GetValidtaionCode(ctx context.Context, in *GetValidtaionCodeReq, opts ...grpc.CallOption) (*GetValidtaionCodeResp, error) {
+	client := user.NewUserServiceClient(m.cli.Conn())
+	return client.GetValidtaionCode(ctx, in, opts...)
 }
 
 func (m *defaultUserService) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
