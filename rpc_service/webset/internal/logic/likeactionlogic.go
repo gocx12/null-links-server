@@ -26,8 +26,8 @@ func NewLikeActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeAc
 }
 
 var (
-	MapUserWebsetLiked = "MAP_USER_LIKED"
-	MapWebsetLikedCnt  = "MAP_WEBSET_LIKED_CNT"
+	RdsKeyUserWebsetLiked = "HASH_USER_LIKED"
+	RdsKeyWebsetLikedCnt  = "HASH_WEBSET_LIKED_CNT"
 )
 
 func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActionResp, error) {
@@ -41,16 +41,16 @@ func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActi
 	if in.ActionType == 1 {
 		// 点赞
 		key := gocast.ToString(in.WebsetId) + "::" + gocast.ToString(in.UserId)
-		l.svcCtx.RedisClient.Hset(MapUserWebsetLiked, key, "1")
+		l.svcCtx.RedisClient.Hset(RdsKeyUserWebsetLiked, key, "1")
 		// 点赞数+1
-		l.svcCtx.RedisClient.Hincrby(MapWebsetLikedCnt, gocast.ToString(in.WebsetId), 1)
+		l.svcCtx.RedisClient.Hincrby(RdsKeyWebsetLikedCnt, gocast.ToString(in.WebsetId), 1)
 
 	} else if in.ActionType == 2 {
 		// 取消点赞
 		key := gocast.ToString(in.WebsetId) + "::" + gocast.ToString(in.UserId)
-		l.svcCtx.RedisClient.Hset(MapUserWebsetLiked, key, "2")
+		l.svcCtx.RedisClient.Hset(RdsKeyUserWebsetLiked, key, "2")
 		// 点赞数-1
-		l.svcCtx.RedisClient.Hincrby(MapWebsetLikedCnt, gocast.ToString(in.WebsetId), -1)
+		l.svcCtx.RedisClient.Hincrby(RdsKeyWebsetLikedCnt, gocast.ToString(in.WebsetId), -1)
 	} else {
 		// 未知操作类型
 		logx.Error("unknown like action type")

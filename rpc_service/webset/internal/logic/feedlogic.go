@@ -27,7 +27,7 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 
 func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 	// TODO(chancyGao): 推荐系统
-
+	// status: 0 未定义，1 发布，2 待审核，3 审核不通过，4 定时发布，5 删除
 	websetsDb, err := l.svcCtx.WebsetModel.FindRecent(l.ctx, in.Page, in.PageSize)
 	if err != nil {
 		return &webset.FeedResp{

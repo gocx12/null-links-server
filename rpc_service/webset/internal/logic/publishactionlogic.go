@@ -25,9 +25,8 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 }
 
 func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset.PublishActionResp, error) {
-	// todo: add your logic here and delete this line
 	if in.ActionType == 1 {
-		// 发布
+		// 发布, status==2 待审核
 		websetDb := model.TWebset{
 			Title:       in.Webset.Title,
 			Describe:    in.Webset.Describe,
@@ -37,32 +36,70 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 			ViewCnt:     0,
 			LikeCnt:     0,
 			FavoriteCnt: 0,
-			Status:      0,
+			Status:      2,
 		}
 		insRes, err := l.svcCtx.WebsetModel.Insert(l.ctx, &websetDb)
 		if err != nil {
 			logx.Error("insert webset failed, err: ", err)
-			return nil, err
+			return &webset.PublishActionResp{
+				StatusCode: 0,
+				StatusMsg:  "fail",
+			}, err
 		}
 		rowsAffected, err := insRes.RowsAffected()
 		if err != nil {
 			logx.Error("insert webset failed, err: ", err)
-			return nil, err
+			return &webset.PublishActionResp{
+				StatusCode: 0,
+				StatusMsg:  "fail",
+			}, err
 		}
 		if rowsAffected == 0 {
 			logx.Error("insert webset failed, rows affected: ", rowsAffected)
-			return nil, err
+			return &webset.PublishActionResp{
+				StatusCode: 0,
+				StatusMsg:  "fail",
+			}, err
 		}
-	} else if in.ActionType == 2 {
-		// 更新
 
+		return &webset.PublishActionResp{
+			StatusCode: 1,
+			StatusMsg:  "success",
+		}, nil
+	} else if in.ActionType == 2 {
+		// 更新, status==2 待审核
+		l.svcCtx.WebsetModel.Update(l.ctx, &model.TWebset{
+			Id:       in.Webset.Id,
+			Title:    in.Webset.Title,
+			Describe: in.Webset.Describe,
+			AuthorId: in.Webset.AuthorInfo.Id,
+			CoverUrl: in.Webset.CoverUrl,
+			Category: 0,
+			Status:   2,
+		})
 	} else if in.ActionType == 3 {
 		// 删除
-
-	} else {
-		// 未知操作类型
-		logx.Error("unknown publish action type, action type: ", in.ActionType)
+		err := l.svcCtx.WebsetModel.Update(l.ctx, &model.TWebset{
+			Id:     in.Webset.Id,
+			Status: 5,
+		})
+		if err != nil {
+			logx.Error("delete webset failed, err: ", err)
+			return &webset.PublishActionResp{
+				StatusCode: 0,
+				StatusMsg:  "fail",
+			}, err
+		}
+		return &webset.PublishActionResp{
+			StatusCode: 1,
+			StatusMsg:  "success",
+		}, nil
 	}
 
-	return &webset.PublishActionResp{}, nil
+	// 未知操作类型
+	logx.Error("unknown publish action type, action type: ", in.ActionType)
+	return &webset.PublishActionResp{
+		StatusCode: 0,
+		StatusMsg:  "fail, unknown action type",
+	}, nil
 }

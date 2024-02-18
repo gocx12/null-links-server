@@ -29,13 +29,15 @@ message PublishActionResp {
 }
 
 message PublishListReq {
-  string user_id = 1;
+  int64 user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
 }
 
 message PublishListResp {
   int32 status_code = 1;
   string status_msg = 2;
-  repeated Webset webset_list = 3;
+  repeated WebsetShort webset_list = 3;
 }
 
 message LikeActionReq {
@@ -82,7 +84,18 @@ message FavoriteListReq {
 message FavoriteListResp {
   int32 status_code = 1;
   string status_msg = 2;
-  repeated Webset favorite_webset_list = 3;
+  repeated WebsetShort favorite_webset_list = 3;
+}
+
+message WebsetDetailReq {
+  int64 user_id = 1;
+  int64 webset_id = 2;
+}
+
+message WebsetDetailResp {
+  int32 status_code = 1;
+  string status_msg = 2;
+  Webset webset = 3;
 }
 
 message WebsetShort {
@@ -149,4 +162,6 @@ service WebsetService{
   
   rpc FavoriteAction (FavoriteActionReq) returns (FavoriteActionResp);
   rpc FavoriteList (FavoriteListReq) returns (FavoriteListResp);
+
+  rpc WebsetDetail ()
 }

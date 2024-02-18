@@ -2,13 +2,14 @@ package logic
 
 import (
 	"context"
-	"log"
-	"net/smtp"
 
 	"null-links/rpc_service/user/internal/svc"
 	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
+
+	"math/rand"
+	"time"
 )
 
 type GetValidtaionCodeLogic struct {
@@ -25,46 +26,48 @@ func NewGetValidtaionCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
+var (
+	RdsKeyEmailValidationPre = "EMAIL_VALIDATION"
+)
+
 func (l *GetValidtaionCodeLogic) GetValidtaionCode(in *user.GetValidtaionCodeReq) (*user.GetValidtaionCodeResp, error) {
-	email := in.Email
-	logx.Info("GetValidtaionCodeLogic.GetValidtaionCode", "email: ", email)
+	logx.Debug("GetValidtaionCodeLogic.GetValidtaionCode", "email: ", in.Email)
 
-	// 邮件服务器地址和端口
-	smtpDomain := "smtp.163.com"
-
-	// 发件人邮箱和密码
-	sender := "null_links@163.com"
-	password := "1Q2W3E4r5t"
-
-	// 收件人邮箱
 	recipient := in.Email
+	validationCode := l.generateValidationCode()
 
-	// 邮件主题和内容
-	// 随机生成四位字母验证码
-	subject := "NULL Links 验证码"
-	body := "本邮件来自NULL Links, 您的验证码是: ABCD。请在5分钟内完成验证。"
-
-	// 构建邮件内容
-	message := "From: " + sender + "\n" +
-		"To: " + recipient + "\n" +
-		"Subject: " + subject + "\n\n" +
-		body
-
-	// 认证信息
-	auth := smtp.PlainAuth("GWRLOVSZYVLRYQCH", sender, password, smtpDomain)
-
-	// 发送邮件
-	err := smtp.SendMail(smtpDomain, auth, sender, []string{recipient}, []byte(message))
+	// Redis存储验证码, 5分钟过期
+	err := l.svcCtx.RedisClient.Setex(RdsKeyEmailValidationPre+recipient, validationCode, 300)
 	if err != nil {
-		log.Fatal("Failed to send email:", err)
+		logx.Error("failed to set email validation code to redis:", err, " email: ", recipient)
 		return &user.GetValidtaionCodeResp{
 			StatusCode: 0,
-			StatusMsg:  "send validation code email failed, err: " + err.Error(),
-		}, nil
+			StatusMsg:  "set email validation code to redis failed, err: " + err.Error(),
+		}, err
+	}
+
+	data := validationCode + "::" + recipient
+	if err := l.svcCtx.ValidationKqPusherClient.Push(data); err != nil {
+		logx.Errorf("ValidationKqPusherClient Push Error , err :%v", err)
+		return &user.GetValidtaionCodeResp{
+			StatusCode: 0,
+			StatusMsg:  "push email validation code to kq failed, err: " + err.Error(),
+		}, err
 	}
 
 	return &user.GetValidtaionCodeResp{
 		StatusCode: 1,
 		StatusMsg:  "success",
 	}, nil
+}
+
+func (l *GetValidtaionCodeLogic) generateValidationCode() string {
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	length := 4
+	buf := make([]rune, length)
+	for i := range buf {
+		buf[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(buf)
 }

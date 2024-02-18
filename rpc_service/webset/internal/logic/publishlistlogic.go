@@ -24,7 +24,32 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 }
 
 func (l *PublishListLogic) PublishList(in *webset.PublishListReq) (*webset.PublishListResp, error) {
-	// todo: add your logic here and delete this line
+	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, in.UserId, in.Page, in.PageSize)
+	if err != nil {
+		logx.Error("find publish list failed, err: ", err, " userId: ", in.UserId)
+		return &webset.PublishListResp{
+			StatusCode: 0,
+			StatusMsg:  "failed",
+		}, err
+	}
 
-	return &webset.PublishListResp{}, nil
+	WebsetListRpcResp := make([]*webset.Webset, 0, len(publishListDb))
+	for _, item := range publishListDb {
+		WebsetListRpcResp = append(WebsetListRpcResp, &webset.Webset{
+			Id:       item.Id,
+			Title:    item.Title,
+			Describe: item.Describe,
+			AuthorId: item.AuthorId,
+			CoverUrl: item.CoverUrl,
+			Category: item.Category,
+			ViewCnt:  item.ViewCnt,
+			LikeCnt:  item.LikeCnt,
+			Status:   item.Status,
+		})
+	}
+	return &webset.PublishListResp{
+		StatusCode: 1,
+		StatusMsg:  "success",
+		WebsetList: WebsetListRpcResp,
+	}, nil
 }

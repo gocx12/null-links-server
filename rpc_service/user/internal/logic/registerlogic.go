@@ -28,6 +28,9 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
+	// 检查验证码是否正确
+	validationCode, err := l.svcCtx.RedisClient.Get(RdsKeyEmailValidationPre + in.Email)
+
 	hash, err := scrypt.Key([]byte(in.Password), SALT, 1<<15, 8, 1, PW_HASH_BYTES)
 	if err != nil {
 		return nil, err
