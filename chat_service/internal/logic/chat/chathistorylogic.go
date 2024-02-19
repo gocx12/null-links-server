@@ -25,6 +25,6 @@ func NewChatHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatH
 
 func (l *ChatHistoryLogic) ChatHistory(req *types.ChatHistoryReq) (resp *types.ChatHistoryResp, err error) {
 	// todo: add your logic here and delete this line
-
+	l.svcCtx.
 	return
 }

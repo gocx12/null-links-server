@@ -6,10 +6,14 @@ package chat
 
 import (
 	"bytes"
-	"github.com/zeromicro/go-zero/core/logx"
+	"context"
 	"time"
 
+	"github.com/demdxx/gocast"
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"github.com/gorilla/websocket"
+	"null-links/chat_service/internal/svc"
 )
 
 const (
@@ -45,6 +49,9 @@ type Client struct {
 
 	// Buffered channel of outbound messages.
 	Send chan []byte
+
+	Ctx    context.Context
+	SvcCtx *svc.ServiceContext
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -68,12 +75,17 @@ func (c *Client) ReadPump() {
 			}
 			break
 		}
+		logx.Debug("recv message: %v", string(message))
+
+		// generate chat msg id
+		chatMsgId := c.genChatMsgId(1, 1)
+
+		// save to db
+		c.SvcCtx.ChatModel.Insert(c.Ctx, &chat.Chat{})
+
+		// broadcast to all clients
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		c.Hub.broadcast <- message
-
-		// consistence
-		// kfaka
-
 	}
 }
 
@@ -121,4 +133,13 @@ func (c *Client) WritePump() {
 			}
 		}
 	}
+}
+
+func (c *Client) genChatMsgId(userId, websetId int64) string {
+	// current time
+	curTimeStr := time.Now().Format("20060102150405")
+	userIdStr := gocast.ToString(userId)
+	websetIdStr := gocast.ToString(websetId)
+	chatMsgId := curTimeStr + userIdStr + websetIdStr
+	return chatMsgId
 }

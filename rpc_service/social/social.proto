@@ -4,6 +4,16 @@ package social;
 
 option go_package = "./social";
 
-service WebsetService{
-  
+message FollowReq {
+    int64 user_id = 1;
+    int64 follower_id = 2;
+}
+
+message FollowResp {
+    int32 status_code = 1;
+    string status_msg = 2;
+}
+
+service SocialService{
+    
 }

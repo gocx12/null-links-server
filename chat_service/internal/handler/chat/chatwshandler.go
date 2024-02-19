@@ -39,7 +39,7 @@ func ChatWsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		hub := chat.NewHub(req.WebsetID)
 
-		client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256)}
+		client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256), Ctx: r.Context(), SvcCtx: svcCtx}
 		client.Hub.Register <- client
 
 		// Allow collection of memory referenced by the caller by doing all work in

@@ -35,6 +35,18 @@ type ChatHistoryResp {
     ChatList   []Chat `json:"chat_list"`
 }
 
+type ChatReportReq {
+    Token    string `json:"token"`
+    WebsetID int64 `json:"webset_id"`
+    ChatID   int64 `json:"chat_id"`
+    Reason   string `json:"reason"`
+}
+
+type ChatReportResp {
+    StatusCode int32  `json:"status_code"`         
+    StatusMsg  string `json:"status_msg,optional"`
+}
+
 @server (
 	prefix: /chat
 	group:  chat
@@ -45,4 +57,7 @@ service service {
 
 	@handler History
 	get /history (ChatHistoryReq) returns (ChatHistoryResp)
+
+    @handler Report
+    post /report (ChatReportReq) returns (ChatReportResp)
 }

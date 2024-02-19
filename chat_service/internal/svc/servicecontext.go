@@ -6,6 +6,7 @@ import (
 
 type ServiceContext struct {
 	Config config.Config
+	ChatModel:                model.NewTChatModel(sqlx.NewMysql(c.DataSource)),
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

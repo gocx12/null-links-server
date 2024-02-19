@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package search;
+
+option go_package = "./search";
+
+message SearchReq {
+    string keyword = 1
+    int64 user_id = 2;
+    int32 field_key = 3;
+    int32 sort_type = 4;
+}
+
+message SearchResp {
+    int32 status_code = 1;
+    string status_msg = 2;
+    repeated WebsetShort webset = 3;
+    repeated UserInfoShort user = 4;
+}
+
+message WebsetShort {
+    int64  id = 1;
+    string title = 2;
+    UserInfoShort author_info = 3;
+    string cover_url = 4;
+    int64 like_count = 5;
+    bool is_like = 6;
+    int64 favorite_count = 7;
+    bool is_favorite = 8;
+}
+
+message UserInfoShort {
+    int64 id = 1; 
+    string name = 2; 
+    string avatar_url = 3;
+    int64 follow_count = 4; 
+    int64 follower_count = 5; 
+    bool is_follow = 6;
+}
+
+service SearchService{
+    rpc Search (SearchReq) returns (SearchResp);
+}
