@@ -5,6 +5,7 @@ import (
 
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
+	"null-links/internal"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,6 +26,6 @@ func NewLikeActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeAc
 
 func (l *LikeActionLogic) LikeAction(req *types.LikeActionReq) (resp *types.LikeActionResp, err error) {
 	// todo: add your logic here and delete this line
-
+	internal.ParseJwtToken(l.svcCtx.Config.Auth.AccessSecret, req.Token)
 	return
 }

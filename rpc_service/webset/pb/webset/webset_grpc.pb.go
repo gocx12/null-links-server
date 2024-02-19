@@ -26,6 +26,7 @@ const (
 	WebsetService_LikeInfoList_FullMethodName   = "/webset.WebsetService/LikeInfoList"
 	WebsetService_FavoriteAction_FullMethodName = "/webset.WebsetService/FavoriteAction"
 	WebsetService_FavoriteList_FullMethodName   = "/webset.WebsetService/FavoriteList"
+	WebsetService_WebsetInfo_FullMethodName     = "/webset.WebsetService/WebsetInfo"
 )
 
 // WebsetServiceClient is the client API for WebsetService service.
@@ -39,6 +40,7 @@ type WebsetServiceClient interface {
 	LikeInfoList(ctx context.Context, in *LikeInfoListReq, opts ...grpc.CallOption) (*LikeInfoListResp, error)
 	FavoriteAction(ctx context.Context, in *FavoriteActionReq, opts ...grpc.CallOption) (*FavoriteActionResp, error)
 	FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
+	WebsetInfo(ctx context.Context, in *WebsetInfoReq, opts ...grpc.CallOption) (*WebsetInfoResp, error)
 }
 
 type websetServiceClient struct {
@@ -112,6 +114,15 @@ func (c *websetServiceClient) FavoriteList(ctx context.Context, in *FavoriteList
 	return out, nil
 }
 
+func (c *websetServiceClient) WebsetInfo(ctx context.Context, in *WebsetInfoReq, opts ...grpc.CallOption) (*WebsetInfoResp, error) {
+	out := new(WebsetInfoResp)
+	err := c.cc.Invoke(ctx, WebsetService_WebsetInfo_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WebsetServiceServer is the server API for WebsetService service.
 // All implementations must embed UnimplementedWebsetServiceServer
 // for forward compatibility
@@ -123,6 +134,7 @@ type WebsetServiceServer interface {
 	LikeInfoList(context.Context, *LikeInfoListReq) (*LikeInfoListResp, error)
 	FavoriteAction(context.Context, *FavoriteActionReq) (*FavoriteActionResp, error)
 	FavoriteList(context.Context, *FavoriteListReq) (*FavoriteListResp, error)
+	WebsetInfo(context.Context, *WebsetInfoReq) (*WebsetInfoResp, error)
 	mustEmbedUnimplementedWebsetServiceServer()
 }
 
@@ -150,6 +162,9 @@ func (UnimplementedWebsetServiceServer) FavoriteAction(context.Context, *Favorit
 }
 func (UnimplementedWebsetServiceServer) FavoriteList(context.Context, *FavoriteListReq) (*FavoriteListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FavoriteList not implemented")
+}
+func (UnimplementedWebsetServiceServer) WebsetInfo(context.Context, *WebsetInfoReq) (*WebsetInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WebsetInfo not implemented")
 }
 func (UnimplementedWebsetServiceServer) mustEmbedUnimplementedWebsetServiceServer() {}
 
@@ -290,6 +305,24 @@ func _WebsetService_FavoriteList_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WebsetService_WebsetInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WebsetInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WebsetServiceServer).WebsetInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WebsetService_WebsetInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WebsetServiceServer).WebsetInfo(ctx, req.(*WebsetInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WebsetService_ServiceDesc is the grpc.ServiceDesc for WebsetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -324,6 +357,10 @@ var WebsetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FavoriteList",
 			Handler:    _WebsetService_FavoriteList_Handler,
+		},
+		{
+			MethodName: "WebsetInfo",
+			Handler:    _WebsetService_WebsetInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

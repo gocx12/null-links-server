@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"null-links/rpc_service/user/pb/user"
 	"null-links/rpc_service/webset/internal/svc"
 	"null-links/rpc_service/webset/pb/webset"
 
@@ -33,18 +34,46 @@ func (l *PublishListLogic) PublishList(in *webset.PublishListReq) (*webset.Publi
 		}, err
 	}
 
-	WebsetListRpcResp := make([]*webset.Webset, 0, len(publishListDb))
+	UserIdList := make([]int64, 0, len(publishListDb))
 	for _, item := range publishListDb {
-		WebsetListRpcResp = append(WebsetListRpcResp, &webset.Webset{
-			Id:       item.Id,
-			Title:    item.Title,
-			Describe: item.Describe,
-			AuthorId: item.AuthorId,
-			CoverUrl: item.CoverUrl,
-			Category: item.Category,
-			ViewCnt:  item.ViewCnt,
-			LikeCnt:  item.LikeCnt,
-			Status:   item.Status,
+		UserIdList = append(UserIdList, item.AuthorId)
+	}
+
+	// 获取用户信息
+	userInfoListResp, err := l.svcCtx.UserRpc.UserInfoList(l.ctx, &user.UserInfoListReq{
+		UserIdList: UserIdList,
+	})
+	if err != nil {
+		logx.Error("get user info failed, err: ", err)
+		return &webset.PublishListResp{
+			StatusCode: 0,
+			StatusMsg:  "failed",
+		}, err
+	}
+	mapUserIdUserInfo := make(map[int64]*user.UserInfo)
+	for _, item := range userInfoListResp.UserList {
+		mapUserIdUserInfo[item.Id] = item
+	}
+
+	WebsetListRpcResp := make([]*webset.WebsetShort, 0, len(publishListDb))
+	for _, item := range publishListDb {
+		WebsetListRpcResp = append(WebsetListRpcResp, &webset.WebsetShort{
+			Id:            item.Id,
+			Title:         item.Title,
+			CoverUrl:      item.CoverUrl,
+			ViewCount:     item.ViewCnt,
+			LikeCount:     item.LikeCnt,
+			IsLike:        false,
+			FavoriteCount: item.FavoriteCnt,
+			IsFavorite:    false,
+			AuthorInfo: &webset.UserInfoShort{
+				Id:            item.AuthorId,
+				Name:          mapUserIdUserInfo[item.AuthorId].Name,
+				AvatarUrl:     mapUserIdUserInfo[item.AuthorId].AvatarUrl,
+				FollowCount:   mapUserIdUserInfo[item.AuthorId].FollowCount,
+				FollowerCount: mapUserIdUserInfo[item.AuthorId].FollowerCount,
+				IsFollow:      false, // TODO(chancyGao):从relation系统获取
+			},
 		})
 	}
 	return &webset.PublishListResp{

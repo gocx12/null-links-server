@@ -7,8 +7,9 @@ import (
 
 	"null-links/rpc_service/webset/internal/config"
 
-	"github.com/zeromicro/go-zero/core/conf"
 	"null-links/rpc_service/webset/pb/webset"
+
+	"github.com/zeromicro/go-zero/core/conf"
 
 	"null-links/rpc_service/webset/internal/svc"
 )
@@ -31,7 +32,6 @@ func TestMain(m *testing.M) {
 }
 
 func TestLikeAction(t *testing.T) {
-
 	l := NewLikeActionLogic(ctx, svcCtx)
 
 	case1 := webset.LikeActionReq{
@@ -41,4 +41,5 @@ func TestLikeAction(t *testing.T) {
 	}
 
 	likeActionResp, err := l.LikeAction(&case1)
+
 }

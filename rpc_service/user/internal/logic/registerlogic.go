@@ -30,6 +30,17 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
 	// 检查验证码是否正确
 	validationCode, err := l.svcCtx.RedisClient.Get(RdsKeyEmailValidationPre + in.Email)
+	if err != nil {
+		logx.Error("get validation code failed, err: ", err)
+		return nil, err
+	}
+
+	if validationCode != in.ValidationCode {
+		return &user.RegisterResp{
+			StatusMsg: "error validation code",
+			UserId:    -1,
+		}, nil
+	}
 
 	hash, err := scrypt.Key([]byte(in.Password), SALT, 1<<15, 8, 1, PW_HASH_BYTES)
 	if err != nil {
@@ -49,13 +60,13 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 			return nil, err
 		}
 		return &user.RegisterResp{
-			StatusMsg: "注册成功",
+			StatusMsg: "success",
 			UserId:    id,
 		}, nil
 	default:
 		if match, _ := regexp.MatchString(".*(23000).*", err.Error()); match {
 			return &user.RegisterResp{
-				StatusMsg: "用户名已经存在",
+				StatusMsg: "this username has already existed",
 				UserId:    -1,
 			}, nil
 		}

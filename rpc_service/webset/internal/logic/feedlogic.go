@@ -60,7 +60,7 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 			isFound := false
 			for _, likeInfo := range likeInfosDb {
 
-				likeCnt, err := l.svcCtx.RedisClient.Hget(MapWebsetLikedCnt, gocast.ToString(item.Id))
+				likeCnt, err := l.svcCtx.RedisClient.Hget(RdsKeyWebsetLikedCnt, gocast.ToString(item.Id))
 				if err != nil {
 					logx.Error("get like count from redis failed, err: ", err)
 				}

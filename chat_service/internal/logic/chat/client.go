@@ -12,8 +12,10 @@ import (
 	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 
-	"github.com/gorilla/websocket"
+	"null-links/chat_service/internal/model"
 	"null-links/chat_service/internal/svc"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -34,11 +36,6 @@ var (
 	newline = []byte{'\n'}
 	space   = []byte{' '}
 )
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
 
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
@@ -71,17 +68,23 @@ func (c *Client) ReadPump() {
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				logx.Error("error: %v", err)
+				logx.Error("error: ", err)
 			}
 			break
 		}
-		logx.Debug("recv message: %v", string(message))
+		logx.Debug("recv message: ", string(message))
 
 		// generate chat msg id
 		chatMsgId := c.genChatMsgId(1, 1)
 
 		// save to db
-		c.SvcCtx.ChatModel.Insert(c.Ctx, &chat.Chat{})
+		c.SvcCtx.ChatModel.Insert(c.Ctx, &model.TChat{
+			ChatId:   chatMsgId,
+			UserId:   1,
+			WebsetId: 1,
+			Content:  string(message),
+			Status:   1,
+		})
 
 		// broadcast to all clients
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))

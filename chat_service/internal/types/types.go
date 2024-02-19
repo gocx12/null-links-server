@@ -2,30 +2,48 @@
 package types
 
 type Chat struct {
-	ChatID    int64  `json:"chat_id"`
-	WebsetId int64  `json:"webset_id"`
-	UserId   int64  `json:"user_id"`
-	Username  string `json:"username"`
-	Content  string `json:"content"`
-	CreateTime string `json:"create_time"`
+	ChatID     int64  `json:"chat_id"`
+	WebsetID   int64  `json:"webset_id"`
+	UserID     int64  `json:"user_id"`
+	UserName   string `json:"user_name"`
+	Content    string `json:"content"`
+	CreateTime int64  `json:"create_time"`
 }
 
 type ChatWsReq struct {
-	Token      string `form:"token,optional"`
-	WebsetID   int64 `form:"webset_id"`
+	Token      string `form:"token"`
+	ActionType int32  `form:"action_type"`
+	WebsetID   int64  `form:"webset_id"`
+	ChatID     int64  `form:"chat_id"`
+	Content    string `form:"content"`
+}
+
+type ChatWsResp struct {
 }
 
 type ChatHistoryReq struct {
-	Token    string `form:"token"`
-    WebsetID int64 `form:"webset_id"`
-    Type    int32 `form:"type"`
-    StartTime int64 `form:"start_time"`
-    EndTime int64 `form:"end_time"`
-    Keyword string `form:"keyword"`
+	Token     string `form:"token"`
+	WebsetID  int64  `form:"webset_id"`
+	Type      int32  `form:"type"`
+	StartTime int64  `form:"start_time"`
+	EndTime   int64  `form:"end_time"`
+	Keyword   string `form:"keyword"`
 }
 
 type ChatHistoryResp struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,optional"`
 	ChatList   []Chat `json:"chat_list"`
+}
+
+type ChatReportReq struct {
+	Token    string `json:"token"`
+	WebsetID int64  `json:"webset_id"`
+	ChatID   int64  `json:"chat_id"`
+	Reason   string `json:"reason"`
+}
+
+type ChatReportResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
 }

@@ -87,12 +87,12 @@ message FavoriteListResp {
   repeated WebsetShort favorite_webset_list = 3;
 }
 
-message WebsetDetailReq {
+message WebsetInfoReq {
   int64 user_id = 1;
   int64 webset_id = 2;
 }
 
-message WebsetDetailResp {
+message WebsetInfoResp {
   int32 status_code = 1;
   string status_msg = 2;
   Webset webset = 3;
@@ -103,10 +103,11 @@ message WebsetShort {
   string title = 2;
   UserInfoShort author_info = 3;
   string cover_url = 4;
-  int64 like_count = 5;
-  bool is_like = 6;
-  int64 favorite_count = 7;
-  bool is_favorite = 8;
+  int64 view_count = 5;
+  int64 like_count = 6;
+  bool is_like = 7;
+  int64 favorite_count = 8;
+  bool is_favorite = 9;
 }
 
 message Webset {
@@ -115,18 +116,20 @@ message Webset {
   string describe = 3;
   UserInfo author_info = 4;
   string cover_url = 5;
-  int64 like_count = 6;
-  bool is_like = 7;
-  int64 favorite_count = 8;
-  bool is_favorite = 9;
-  repeated WebLink web_link_list = 10;
+  int64 view_count = 6;
+  int64 like_count = 7;
+  bool is_like = 8;
+  int64 favorite_count = 9;
+  bool is_favorite = 10;
+  repeated WebLink web_link_list = 11;
 }
 
 message WebLink {
   int64 id = 1;
-  string title = 2;
+  string describe = 2;
   string url = 3;
-  UserInfo author_info = 4;
+  string cover_url = 4;
+  UserInfo author_info = 5;
 }
 
 message UserInfoShort {
@@ -151,7 +154,7 @@ message UserInfo {
   int64 work_count = 10; 
 }
 
-service WebsetService{
+service WebsetService {
   rpc Feed (FeedReq) returns (FeedResp);
 
   rpc PublishAction (PublishActionReq) returns (PublishActionResp);
@@ -163,5 +166,5 @@ service WebsetService{
   rpc FavoriteAction (FavoriteActionReq) returns (FavoriteActionResp);
   rpc FavoriteList (FavoriteListReq) returns (FavoriteListResp);
 
-  rpc WebsetDetail ()
+  rpc WebsetInfo (WebsetInfoReq) returns (WebsetInfoResp);
 }

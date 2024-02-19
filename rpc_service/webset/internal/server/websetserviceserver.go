@@ -56,3 +56,8 @@ func (s *WebsetServiceServer) FavoriteList(ctx context.Context, in *webset.Favor
 	l := logic.NewFavoriteListLogic(ctx, s.svcCtx)
 	return l.FavoriteList(in)
 }
+
+func (s *WebsetServiceServer) WebsetInfo(ctx context.Context, in *webset.WebsetInfoReq) (*webset.WebsetInfoResp, error) {
+	l := logic.NewWebsetInfoLogic(ctx, s.svcCtx)
+	return l.WebsetInfo(in)
+}

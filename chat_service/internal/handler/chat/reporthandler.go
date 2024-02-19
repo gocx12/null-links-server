@@ -9,16 +9,16 @@ import (
 	"null-links/chat_service/internal/types"
 )
 
-func ChatHistoryHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ReportHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ChatHistoryReq
+		var req types.ChatReportReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := chat.NewChatHistoryLogic(r.Context(), svcCtx)
-		resp, err := l.ChatHistory(&req)
+		l := chat.NewReportLogic(r.Context(), svcCtx)
+		resp, err := l.Report(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

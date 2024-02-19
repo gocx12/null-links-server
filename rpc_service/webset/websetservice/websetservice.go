@@ -32,6 +32,8 @@ type (
 	UserInfoShort      = webset.UserInfoShort
 	WebLink            = webset.WebLink
 	Webset             = webset.Webset
+	WebsetInfoReq      = webset.WebsetInfoReq
+	WebsetInfoResp     = webset.WebsetInfoResp
 	WebsetShort        = webset.WebsetShort
 
 	WebsetService interface {
@@ -42,6 +44,7 @@ type (
 		LikeInfoList(ctx context.Context, in *LikeInfoListReq, opts ...grpc.CallOption) (*LikeInfoListResp, error)
 		FavoriteAction(ctx context.Context, in *FavoriteActionReq, opts ...grpc.CallOption) (*FavoriteActionResp, error)
 		FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
+		WebsetInfo(ctx context.Context, in *WebsetInfoReq, opts ...grpc.CallOption) (*WebsetInfoResp, error)
 	}
 
 	defaultWebsetService struct {
@@ -88,4 +91,9 @@ func (m *defaultWebsetService) FavoriteAction(ctx context.Context, in *FavoriteA
 func (m *defaultWebsetService) FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error) {
 	client := webset.NewWebsetServiceClient(m.cli.Conn())
 	return client.FavoriteList(ctx, in, opts...)
+}
+
+func (m *defaultWebsetService) WebsetInfo(ctx context.Context, in *WebsetInfoReq, opts ...grpc.CallOption) (*WebsetInfoResp, error) {
+	client := webset.NewWebsetServiceClient(m.cli.Conn())
+	return client.WebsetInfo(ctx, in, opts...)
 }

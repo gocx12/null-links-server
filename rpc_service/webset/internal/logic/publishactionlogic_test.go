@@ -7,7 +7,6 @@ import (
 )
 
 func TestPublishAction(t *testing.T) {
-
 	l := NewPublishActionLogic(ctx, svcCtx)
 
 	case1 := webset.PublishActionReq{
