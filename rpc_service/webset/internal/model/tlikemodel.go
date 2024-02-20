@@ -15,6 +15,7 @@ type (
 	TLikeModel interface {
 		tLikeModel
 		GetLikeWebsetUserInfos(ctx context.Context, websetIds []int64, userId int64) ([]*TLike, error)
+		GetLikeWebsetUserInfo(ctx context.Context, websetId int64, userId int64) (*TLike, error)
 	}
 
 	customTLikeModel struct {
@@ -26,6 +27,20 @@ type (
 func NewTLikeModel(conn sqlx.SqlConn) TLikeModel {
 	return &customTLikeModel{
 		defaultTLikeModel: newTLikeModel(conn),
+	}
+}
+
+func (c *customTLikeModel) GetLikeWebsetUserInfo(ctx context.Context, websetId int64, userId int64) (*TLike, error) {
+	query := fmt.Sprintf("select %s from %s where `webset_id`=? and `user_id`=?", tLikeRows, c.table)
+	var resp *TLike
+	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, userId)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
 	}
 }
 

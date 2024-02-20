@@ -32,11 +32,11 @@ func TestFeed(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.testName, func(t *testing.T) {
-			resp, err := l.Feed(&test.args)
-			if (err != nil) != test.wantErr {
-				t.Errorf("Register() error: %v, wantErr %v", err, test.wantErr)
+	for i := range tests {
+		t.Run(tests[i].testName, func(t *testing.T) {
+			resp, err := l.Feed(&tests[i].args)
+			if (err != nil) != tests[i].wantErr {
+				t.Errorf("Register() error: %v, wantErr %v", err, tests[i].wantErr)
 				return
 			}
 			fmt.Printf("resp: %v\n", resp)

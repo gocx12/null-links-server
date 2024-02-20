@@ -16,4 +16,5 @@ func TestPublishAction(t *testing.T) {
 	}
 
 	publishActionResp, err := l.PublishAction(&case1)
+
 }

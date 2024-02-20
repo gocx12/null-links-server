@@ -8,6 +8,7 @@ import (
 
 	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type WebsetInfoLogic struct {
@@ -38,22 +39,28 @@ func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetIn
 	}
 
 	// 点赞信息, redis优先
-	websetIdList := []int64{in.WebsetId}
-	likeInfoRds, err := l.svcCtx.RedisClient.Hget(RdsKeyUserWebsetLiked, gocast.ToString(in.WebsetId)+"::"+gocast.ToString(in.UserId))
+	isLikeResp := false
+	isLikeRds, err := l.svcCtx.RedisClient.Hget(RdsKeyUserWebsetLiked, gocast.ToString(in.WebsetId)+"::"+gocast.ToString(in.UserId))
 	if err != nil {
 		l.Logger.Error("get like info from redis failed, err: ", err)
 	}
+	if isLikeRds == "1" {
+		isLikeResp = true
+	}
 
-	likeInfoDb, err = l.svcCtx.LikeModel.GetLikeWebsetUserInfos(l.ctx, websetIdList, in.UserId)
-	if err != nil {
+	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
+	if err != nil && err != sqlx.ErrNotFound {
 		l.Logger.Error("get like info failed, err: ", err)
+	} else if err == nil && likeInfoDb.IsLike == 1 {
+		isLikeResp = true
 	}
 
 	// 收藏信息， redis优先
-	favoriteInfoDb, err = l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, in.UserId)
-	if err != nil {
-		l.Logger.Error("get favorite info failed, user, err: ", err)
-	}
+	isFavoriteResp := false
+	// favoriteInfoDb, err = l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, in.UserId)
+	// if err != nil {
+	// 	l.Logger.Error("get favorite info failed, user, err: ", err)
+	// }
 
 	websetInfoResp.Webset = &webset.Webset{
 		Id:       WebsetDb.Id,
@@ -66,8 +73,8 @@ func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetIn
 		ViewCount:     WebsetDb.ViewCnt,
 		LikeCount:     WebsetDb.LikeCnt,
 		FavoriteCount: WebsetDb.FavoriteCnt,
-		IsLike:        false,
-		IsFavorite:    false,
+		IsLike:        isLikeResp,
+		IsFavorite:    isFavoriteResp,
 	}
 
 	return &websetInfoResp, nil
