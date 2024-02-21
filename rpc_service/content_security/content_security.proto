@@ -4,6 +4,29 @@ package content_security;
 
 option go_package = "./content_security";
 
-service ContentSecurityService{
-  
+message WebsetCheckQueryReq {
+    string token = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+}
+
+message WebsetCheckQueryResp {
+    int32 status_code = 1;
+    string status_msg = 2;
+}
+
+message WebsetCheckConfirmReq {
+    string token = 1;
+    int64 webset_id = 2;
+    int32 action = 3;
+}
+
+message WebsetCheckConfirmResp {
+    int32 status_code = 1;
+    string status_msg = 2;
+}
+
+service ContentSecurityService {
+    rpc WebsetCheckQuery(WebsetCheckQueryReq) returns (WebsetCheckQueryResp);
+    rpc WebsetCheckConfirm(WebsetCheckConfirmReq) returns (WebsetCheckConfirmResp);
 }

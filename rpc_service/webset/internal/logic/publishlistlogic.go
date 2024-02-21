@@ -56,6 +56,7 @@ func (l *PublishListLogic) PublishList(in *webset.PublishListReq) (*webset.Publi
 	}
 
 	WebsetListRpcResp := make([]*webset.WebsetShort, 0, len(publishListDb))
+	// TODO(chancy): 增加在线状态
 	for _, item := range publishListDb {
 		WebsetListRpcResp = append(WebsetListRpcResp, &webset.WebsetShort{
 			Id:            item.Id,

@@ -18,6 +18,17 @@ message SearchResp {
     repeated UserInfoShort user = 4;
 }
 
+message AddToSearchReq {
+    int32 data_type = 1;
+    WebsetSearch webset = 2;
+    UserInfoSearch user_info = 3;
+}
+
+message AddToSearchResp {
+    int32 status_code = 1;
+    string status_msg = 2;
+}
+
 message WebsetShort {
     int64  id = 1;
     string title = 2;
@@ -38,6 +49,19 @@ message UserInfoShort {
     bool is_follow = 6;
 }
 
+message WebsetSearch {
+    int64  id = 1;
+    string title = 2;
+    UserInfoShort author_info = 3;
+    string cover_url = 4;
+}
+
+message UserInfoSearch {
+    int64 id = 1; 
+    string name = 2; 
+}
+
 service SearchService{
+    rpc AddToSearch (AddToSearchReq) returns (AddToSearchResp);
     rpc Search (SearchReq) returns (SearchResp);
 }
