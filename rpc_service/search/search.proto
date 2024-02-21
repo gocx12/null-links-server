@@ -5,7 +5,7 @@ package search;
 option go_package = "./search";
 
 message SearchReq {
-    string keyword = 1
+    string keyword = 1;
     int64 user_id = 2;
     int32 field_key = 3;
     int32 sort_type = 4;
