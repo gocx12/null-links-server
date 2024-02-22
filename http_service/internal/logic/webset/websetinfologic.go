@@ -25,16 +25,43 @@ func NewWebsetInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Webset
 }
 
 func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.WebsetInfoResp, err error) {
+	resp = &types.WebsetInfoResp{}
+
 	websetInfoRpcReq, err := l.svcCtx.WebsetRpc.WebsetInfo(l.ctx, &webset.WebsetInfoReq{
 		UserId:   req.UserID,
 		WebsetId: req.WebsetID,
 	})
 
 	if err != nil {
-		websetInfoRpcReq.StatusCode = internal.StatusRpcErr
+		logx.Error("call WebsetRpc failed, err: ", err)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "获取网页单失败"
+		err = nil
+		return
+	} else if websetInfoRpcReq.StatusCode != internal.StatusSuccess {
+		logx.Error("call WebsetRpc failed, err: ", websetInfoRpcReq.StatusMsg)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "获取网页单失败"
+		return
 	}
 
-	websetInfoRpcReq.StatusCode = internal.StatusSuccess
-	websetInfoRpcReq.StatusMsg = "获取网页单成功"
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = "获取网页单成功"
+
+	weblinkListResp := make([]*types.WebLink, 0, len(websetInfoRpcReq.WebsetInfo.WebLinkList))
+	for _, weblink := range websetInfoRpcReq.WebsetInfo.WebLinkList {
+		weblinkResp := &types.WebLink{
+			Id:    weblink.Id,
+			Title: weblink.Title,
+			Url:   weblink.Url,
+		}
+		weblinkListResp = append(weblinkListResp, weblinkResp)
+	}
+	resp.WebsetInfo = types.Webset{
+		Id:          websetInfoRpcReq.WebsetInfo.Id,
+		Title:       websetInfoRpcReq.WebsetInfo.Title,
+		WebLinkList: weblinkListResp,
+	}
+
 	return
 }

@@ -11,5 +11,5 @@ type WebsetInfoReq {
 type WebsetInfoResp {
 	StatusCode int32   `json:"status_code"`         
 	StatusMsg  string  `json:"status_msg,optional"` 
-	WebsetInfo WebsetShort `json:"webset_info"`
+	WebsetInfo Webset `json:"webset_info"`
 }

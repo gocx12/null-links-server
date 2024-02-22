@@ -8,6 +8,7 @@ type PublishActionReq {
 	AuthorId	int64		`json:"author_id"`
 	Describe 	string 		`json:"describe"`
 	WebLinkList []WebLinkPublish	`json:"weblink_list"`
+	WebsetId	int64 `json:"webest_id"`
 }
 
 type WebLinkPublish {

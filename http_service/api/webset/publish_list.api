@@ -12,6 +12,6 @@ type PublishListReq {
 type PublishListResp {
 	StatusCode int32   	`json:"status_code"`         
 	StatusMsg  string  	`json:"status_msg,optional"` 
-	WebsetList []Webset `json:"webset_list"`          
+	WebsetList []WebsetShort `json:"webset_list"`          
 	Total 	   int32 	`json:"total"`
 }

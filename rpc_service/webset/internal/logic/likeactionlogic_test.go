@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"flag"
+	"fmt"
 	"testing"
 
 	"null-links/rpc_service/webset/internal/config"
@@ -39,7 +40,21 @@ func TestLikeAction(t *testing.T) {
 		ActionType: 1,
 		WebsetId:   1,
 	}
+	case2 := webset.LikeActionReq{
+		UserId:     1,
+		ActionType: 2,
+		WebsetId:   1,
+	}
 
 	likeActionResp, err := l.LikeAction(&case1)
+	if err != nil {
+		fmt.Printf("error:", err)
+	}
+	fmt.Printf("likeActionResp: ", likeActionResp)
 
+	likeActionResp, err = l.LikeAction(&case2)
+	if err != nil {
+		fmt.Printf("error:", err)
+	}
+	fmt.Printf("likeActionResp: ", likeActionResp)
 }
