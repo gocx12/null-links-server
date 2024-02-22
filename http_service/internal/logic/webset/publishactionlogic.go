@@ -5,6 +5,7 @@ import (
 
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
+	"null-links/rpc_service/webset/pb/webset"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,7 +25,11 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 }
 
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.PublishActionResp, err error) {
-	// todo: add your logic here and delete this line
+
+	l.svcCtx.WebsetRpc.PublishAction(l.ctx, &webset.PublishActionReq{
+		ActionType: req.ActionType,
+		UserId:     req.AuthorId,
+	})
 
 	return
 }

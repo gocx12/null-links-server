@@ -15,5 +15,5 @@ message FollowResp {
 }
 
 service SocialService{
-    
+    rpc Follow(FollowReq) returns (FollowResp)
 }

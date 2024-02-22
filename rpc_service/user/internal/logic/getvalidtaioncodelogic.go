@@ -7,9 +7,9 @@ import (
 	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"null-links/internal"
 
 	"math/rand"
-	"time"
 )
 
 type GetValidtaionCodeLogic struct {
@@ -31,6 +31,7 @@ var (
 )
 
 func (l *GetValidtaionCodeLogic) GetValidtaionCode(in *user.GetValidtaionCodeReq) (*user.GetValidtaionCodeResp, error) {
+	resp := &user.GetValidtaionCodeResp{}
 	logx.Debug("GetValidtaionCodeLogic.GetValidtaionCode", "email: ", in.Email)
 
 	recipient := in.Email
@@ -39,30 +40,27 @@ func (l *GetValidtaionCodeLogic) GetValidtaionCode(in *user.GetValidtaionCodeReq
 	// Redis存储验证码, 5分钟过期
 	err := l.svcCtx.RedisClient.Setex(RdsKeyEmailValidationPre+recipient, validationCode, 300)
 	if err != nil {
-		logx.Error("failed to set email validation code to redis:", err, " email: ", recipient)
-		return &user.GetValidtaionCodeResp{
-			StatusCode: 0,
-			StatusMsg:  "set email validation code to redis failed, err: " + err.Error(),
-		}, err
+		logx.Error("failed to set email validation code to redis, error:", err, " email: ", recipient)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "set email validation code to redis failed"
+		return resp, nil
 	}
 
 	data := validationCode + "::" + recipient
 	if err := l.svcCtx.ValidationKqPusherClient.Push(data); err != nil {
-		logx.Errorf("ValidationKqPusherClient Push Error , err :%v", err)
-		return &user.GetValidtaionCodeResp{
-			StatusCode: 0,
-			StatusMsg:  "push email validation code to kq failed, err: " + err.Error(),
-		}, err
+		logx.Error("ValidationKqPusherClient Push error:", err)
+		resp.StatusCode = 0
+		resp.StatusMsg = "push email validation code to kq failed, err: " + err.Error()
+		return resp, nil
 	}
 
-	return &user.GetValidtaionCodeResp{
-		StatusCode: 1,
-		StatusMsg:  "success",
-	}, nil
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = "success"
+	return resp, nil
 }
 
 func (l *GetValidtaionCodeLogic) generateValidationCode() string {
-	rand.Seed(time.Now().UnixNano())
+	// go 1.20 起弃用rand.Seed, 即使不用seed也可以产生不同的数字
 	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 	length := 4
 	buf := make([]rune, length)

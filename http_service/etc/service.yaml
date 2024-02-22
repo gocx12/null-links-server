@@ -20,3 +20,10 @@ UserRpcConf:
       - 127.0.0.1:2379
     Key: user.rpc
   NonBlock: true
+
+WebsetRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: webset.rpc
+  NonBlock: true

@@ -9,7 +9,6 @@ import (
 	"null-links/internal"
 	"null-links/rpc_service/user/pb/user"
 
-	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -39,28 +38,33 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		return
 	}
 
+	resp = &types.LoginResp{}
+
 	respRpc, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
 		Username: req.Username,
 		Email:    req.UserEmail,
 		Password: req.Password,
 	})
 	if err != nil {
-		resp = &types.LoginResp{
-			StatusCode: internal.StatusRpcErr,
-			StatusMsg:  "登录失败",
-			UserID:     respRpc.UserId, // is -1
-		}
-		logc.Error(l.ctx, "call UserRpc failed, err: "+err.Error())
+		logx.Error("call UserRpc failed, err: " + err.Error())
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "登录失败"
 		err = nil
 		return
-	} else if respRpc.UserId == -1 {
+	} else if respRpc.StatusCode != internal.StatusSuccess {
 		// the username does not exsit or the password is incorrect
-		resp = &types.LoginResp{
-			StatusCode: respRpc.StatusCode,
-			StatusMsg:  respRpc.StatusMsg,
-			UserID:     respRpc.UserId, // is -1
+		logx.Error("call UserRpc failed, err: " + respRpc.StatusMsg)
+		if resp.StatusCode == internal.StatusUserNotExist {
+			resp.StatusCode = internal.StatusUserNotExist
+			resp.StatusMsg = "用户名或邮箱不存在"
+		} else if resp.StatusCode == internal.StatusPasswordErr {
+			resp.StatusCode = internal.StatusPasswordErr
+			resp.StatusMsg = "密码错误"
+		} else {
+			resp.StatusCode = internal.StatusRpcErr
+			resp.StatusMsg = "登录失败"
 		}
-		logc.Error(l.ctx, "call UserRpc failed, err: "+respRpc.StatusMsg)
+		resp.UserID = respRpc.UserId // is -1
 		err = nil
 		return
 	}
@@ -70,23 +74,19 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	seconds := l.svcCtx.Config.Auth.AccessExpire
 	payload := respRpc.UserId // save user id in payload
 
-	token, err := internal.GetJwtToken(secretKey, iat, seconds, payload)
+	token, err := internal.GenJwtToken(secretKey, iat, seconds, payload)
 	if err != nil {
-		resp = &types.LoginResp{
-			StatusCode: internal.StatusGatewayErr,
-			StatusMsg:  "登录失败",
-			UserID:     respRpc.UserId, // is -1
-		}
-		logc.Error(l.ctx, "getJwtToken() "+err.Error())
+		logx.Error("generate token err:", err, " ,token:", token)
+		resp.StatusCode = internal.StatusGatewayErr
+		resp.StatusMsg = "登录失败"
+		resp.UserID = respRpc.UserId // is -1
 		err = nil
 		return
 	}
 
-	resp = &types.LoginResp{
-		StatusCode: internal.StatusSuccess,
-		StatusMsg:  "登录成功",
-		UserID:     respRpc.UserId,
-		Token:      token,
-	}
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = "登录成功"
+	resp.UserID = respRpc.UserId
+	resp.Token = token
 	return
 }

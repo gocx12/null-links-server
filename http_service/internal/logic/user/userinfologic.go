@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"log"
 
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
@@ -31,56 +30,39 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		UserId: req.UserID,
 	})
 	if err != nil {
+		logx.Error("call UserRpc failed, err: ", err)
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "获取信息失败",
-			User: types.User{
-				Id:            respRpc.UserInfo.Id,
-				Name:          respRpc.UserInfo.Name,
-				Email:         respRpc.UserInfo.Email,
-				AvatarUrl:     respRpc.UserInfo.AvatarUrl,
-				BackgroundUrl: respRpc.UserInfo.BackgroundUrl,
-				FollowCount:   respRpc.UserInfo.FollowCount,
-				FollowerCount: respRpc.UserInfo.FollowerCount,
-				IsFollow:      respRpc.UserInfo.IsFollow,
-				Signature:     respRpc.UserInfo.Signature,
-				WorkCount:     respRpc.UserInfo.WorkCount,
-			},
+			User:       types.User{},
 		}
-		log.Fatal(err)
 		err = nil
 		return
-	} else if respRpc.UserInfo.Id == -1 {
-		// the username does not exsit or the password is incorrect
+	} else if respRpc.StatusCode != internal.StatusSuccess {
+		logx.Error("call UserRpc failed, err msg: ", respRpc.StatusMsg)
 		resp = &types.UserInfoResp{
 			StatusCode: internal.StatusRpcErr,
-			StatusMsg:  respRpc.StatusMsg,
-			User: types.User{
-				Id: respRpc.UserInfo.Id, // is -1
-			},
-		}
-		err = nil
-		return
-	}
-
-	if err != nil {
-		resp = &types.UserInfoResp{
-			StatusCode: internal.StatusGatewayErr,
 			StatusMsg:  "获取信息失败",
-			User: types.User{
-				Id: respRpc.UserInfo.Id, // is -1
-			},
+			User:       types.User{},
 		}
-		log.Fatal(err)
 		err = nil
 		return
 	}
 
 	resp = &types.UserInfoResp{
 		StatusCode: internal.StatusSuccess,
-		StatusMsg:  respRpc.StatusMsg,
+		StatusMsg:  "获取信息成功",
 		User: types.User{
-			Id: respRpc.UserInfo.Id,
+			Id:            respRpc.UserInfo.Id,
+			Name:          respRpc.UserInfo.Name,
+			Email:         respRpc.UserInfo.Email,
+			AvatarUrl:     respRpc.UserInfo.AvatarUrl,
+			BackgroundUrl: respRpc.UserInfo.BackgroundUrl,
+			FollowCount:   respRpc.UserInfo.FollowCount,
+			FollowerCount: respRpc.UserInfo.FollowerCount,
+			IsFollow:      respRpc.UserInfo.IsFollow,
+			Signature:     respRpc.UserInfo.Signature,
+			WorkCount:     respRpc.UserInfo.WorkCount,
 		},
 	}
 

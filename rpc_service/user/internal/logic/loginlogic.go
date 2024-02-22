@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 
+	"null-links/internal"
 	"null-links/rpc_service/user/internal/model"
 	"null-links/rpc_service/user/internal/svc"
 	"null-links/rpc_service/user/pb/user"
@@ -30,31 +31,41 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
-	resp, err := l.svcCtx.UserModel.FindOneByName(l.ctx, in.Username)
+	resp := &user.LoginResp{}
+
+	UserInfoDb, err := l.svcCtx.UserModel.FindOneByName(l.ctx, in.Username)
 
 	switch err {
 	case nil:
 		hash, err := scrypt.Key([]byte(in.Password), SALT, 1<<15, 8, 1, PW_HASH_BYTES)
 		encodedHash := base64.StdEncoding.EncodeToString(hash)
 		if err != nil {
+			logx.Error()
+			resp.StatusCode = internal.StatusRpcErr
+			resp.StatusMsg = "scrypt encode password error: " + err.Error()
+			resp.UserId = -1
 			return nil, err
 		}
-		if resp.Password != encodedHash {
-			return &user.LoginResp{
-				StatusMsg: "密码错误",
-				UserId:    -1,
-			}, nil
+		if UserInfoDb.Password != encodedHash {
+			resp.StatusCode = internal.StatusPasswordErr
+			resp.StatusMsg = "password is incorrect"
+			resp.UserId = -1
+			return resp, nil
 		}
-		return &user.LoginResp{
-			StatusMsg: "登录成功",
-			UserId:    resp.Id,
-		}, nil
+
+		resp.StatusCode = internal.StatusSuccess
+		resp.StatusMsg = "success"
+		resp.UserId = UserInfoDb.Id
+		return resp, nil
 	case model.ErrNotFound:
-		return &user.LoginResp{
-			StatusMsg: "用户名不存在",
-			UserId:    -1,
-		}, nil
+		resp.StatusCode = internal.StatusUserNotExist
+		resp.StatusMsg = "the username does not exist"
+		resp.UserId = -1
+		return resp, nil
 	default:
-		return nil, err
+		logx.Error("get user info from db error: ", err)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "get user info from db error"
+		return resp, nil
 	}
 }

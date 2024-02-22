@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"sync"
 
 	"null-links/rpc_service/user/pb/user"
 	"null-links/rpc_service/webset/internal/svc"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
+	"null-links/internal"
 )
 
 type FeedLogic struct {
@@ -30,10 +32,11 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 	// status: 0 未定义，1 发布，2 待审核，3 审核不通过，4 定时发布，5 删除
 	websetsDb, err := l.svcCtx.WebsetModel.FindRecent(l.ctx, in.Page, in.PageSize)
 	if err != nil {
+		logx.Error("get webset list from db error: ", err)
 		return &webset.FeedResp{
-			StatusCode: 0,
-			StatusMsg:  "failed",
-		}, err
+			StatusCode: internal.StatusRpcErr,
+			StatusMsg:  "get webset list from db error",
+		}, nil
 	}
 
 	websetIdList := make([]int64, 0, len(websetsDb))
@@ -43,99 +46,113 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 		authorIdList = append(authorIdList, webset.AuthorId)
 	}
 
-	// 获取点赞信息
+	var wg sync.WaitGroup
+	wg.Add(3) // 点赞，收藏，作者信息
+
 	websetLikeMap := make(map[int64]bool)
+	websetFavoriteMap := make(map[int64]bool)
+	websetAuthorMap := make(map[int64]*webset.UserInfoShort)
 
-	if in.UserId == -1 {
-		// 没有id信息则全部未点赞
-		for _, item := range websetsDb {
-			websetLikeMap[item.Id] = false
-		}
-	} else {
-		likeInfosDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfos(l.ctx, websetIdList, in.UserId)
-		if err != nil {
-			logx.Error("get like info failed, user, err: ", err)
-		}
-		for index, item := range websetsDb {
-			isFound := false
-			for _, likeInfo := range likeInfosDb {
-
-				likeCnt, err := l.svcCtx.RedisClient.Hget(RdsKeyWebsetLikedCnt, gocast.ToString(item.Id))
-				if err != nil {
-					logx.Error("get like count from redis failed, err: ", err)
-				}
-				// mysql + redis = 总点赞数
-				websetsDb[index].LikeCnt = item.LikeCnt + gocast.ToInt64(likeCnt)
-
-				if item.Id == likeInfo.WebsetId {
-					websetLikeMap[item.Id] = (likeInfo.Status == 1)
-					isFound = true
-					break
-				}
-			}
-			if !isFound {
+	go func() {
+		// 获取点赞信息
+		if in.UserId == -1 {
+			// 没有id信息则全部未点赞
+			for _, item := range websetsDb {
 				websetLikeMap[item.Id] = false
 			}
-		}
-	}
+		} else {
+			likeInfosDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfos(l.ctx, websetIdList, in.UserId)
+			if err != nil {
+				logx.Error("get like info failed, user, err: ", err)
+			}
+			for index, item := range websetsDb {
+				isFound := false
+				for _, likeInfo := range likeInfosDb {
 
-	// 获取收藏信息
-	websetFavoriteMap := make(map[int64]bool)
-	if in.UserId == -1 {
-		// 没有id信息则全部未点赞
-		for _, item := range websetsDb {
-			websetFavoriteMap[item.Id] = false
-		}
-	} else {
-		favoriteInfosDb, err := l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, in.UserId)
-		if err != nil {
-			logx.Error("get like info failed, user, err: ", err)
-		}
-		for _, item := range websetsDb {
-			isFound := false
-			for _, favoriteInfo := range favoriteInfosDb {
-				if item.Id == favoriteInfo.WebsetId {
-					websetFavoriteMap[item.Id] = (favoriteInfo.Status == 1)
-					isFound = true
-					break
+					likeCnt, err := l.svcCtx.RedisClient.Hget(RdsKeyWebsetLikedCnt, gocast.ToString(item.Id))
+					if err != nil {
+						logx.Error("get like count from redis failed, err: ", err)
+					}
+					// mysql + redis = 总点赞数
+					websetsDb[index].LikeCnt = item.LikeCnt + gocast.ToInt64(likeCnt)
+
+					if item.Id == likeInfo.WebsetId {
+						websetLikeMap[item.Id] = (likeInfo.Status == 1)
+						isFound = true
+						break
+					}
+				}
+				if !isFound {
+					websetLikeMap[item.Id] = false
 				}
 			}
-			if !isFound {
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// 获取收藏信息
+		if in.UserId == -1 {
+			// 没有id信息则全部未点赞
+			for _, item := range websetsDb {
 				websetFavoriteMap[item.Id] = false
 			}
-		}
-	}
-
-	// 获取作者信息
-	userInfoListRpcResp, err := l.svcCtx.UserRpc.UserInfoList(l.ctx, &user.UserInfoListReq{
-		UserIdList: authorIdList,
-	})
-	if err != nil {
-		logx.Error("get user info failed, err: ", err)
-	}
-	websetAuthorMap := make(map[int64]*webset.UserInfoShort)
-	if userInfoListRpcResp.StatusCode == 1 {
-		for _, item := range websetsDb {
-			isFound := false
-			for _, userInfo := range userInfoListRpcResp.UserList {
-				if item.AuthorId == userInfo.Id {
-					websetAuthorMap[item.AuthorId] = &webset.UserInfoShort{
-						Id:            userInfo.Id,
-						Name:          userInfo.Name,
-						AvatarUrl:     userInfo.AvatarUrl,
-						FollowCount:   userInfo.FollowCount,
-						FollowerCount: userInfo.FollowerCount,
-						IsFollow:      false, // TODO(chancyGao):从relation系统获取
+		} else {
+			favoriteInfosDb, err := l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, in.UserId)
+			if err != nil {
+				logx.Error("get like info failed, user, err: ", err)
+			}
+			for _, item := range websetsDb {
+				isFound := false
+				for _, favoriteInfo := range favoriteInfosDb {
+					if item.Id == favoriteInfo.WebsetId {
+						websetFavoriteMap[item.Id] = (favoriteInfo.Status == 1)
+						isFound = true
+						break
 					}
-					isFound = true
-					break
+				}
+				if !isFound {
+					websetFavoriteMap[item.Id] = false
 				}
 			}
-			if !isFound {
-				websetAuthorMap[item.AuthorId] = nil
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// 获取作者信息
+		userInfoListRpcResp, err := l.svcCtx.UserRpc.UserInfoList(l.ctx, &user.UserInfoListReq{
+			UserIdList: authorIdList,
+		})
+		if err != nil {
+			logx.Error("get user info failed, err: ", err)
+		}
+		if userInfoListRpcResp.StatusCode == 1 {
+			for _, item := range websetsDb {
+				isFound := false
+				for _, userInfo := range userInfoListRpcResp.UserList {
+					if item.AuthorId == userInfo.Id {
+						websetAuthorMap[item.AuthorId] = &webset.UserInfoShort{
+							Id:            userInfo.Id,
+							Name:          userInfo.Name,
+							AvatarUrl:     userInfo.AvatarUrl,
+							FollowCount:   userInfo.FollowCount,
+							FollowerCount: userInfo.FollowerCount,
+							IsFollow:      false, // TODO(chancyGao):从relation系统获取
+						}
+						isFound = true
+						break
+					}
+				}
+				if !isFound {
+					websetAuthorMap[item.AuthorId] = nil
+				}
 			}
 		}
-	}
+		wg.Done()
+	}()
+
+	wg.Wait()
 
 	// 打包返回结果
 	websetListResp := make([]*webset.WebsetShort, 0, len(websetsDb))
@@ -153,7 +170,7 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 	}
 
 	return &webset.FeedResp{
-		StatusCode: 1,
+		StatusCode: internal.StatusSuccess,
 		StatusMsg:  "success",
 		WebsetList: websetListResp,
 	}, nil

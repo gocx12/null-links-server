@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"null-links/internal"
 	"null-links/rpc_service/user/internal/svc"
 	"null-links/rpc_service/user/pb/user"
 
@@ -24,18 +25,19 @@ func NewUserInfoListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 }
 
 func (l *UserInfoListLogic) UserInfoList(in *user.UserInfoListReq) (*user.UserInfoListResp, error) {
+	resp := &user.UserInfoListResp{}
+
 	userListDb, err := l.svcCtx.UserModel.FindMulti(l.ctx, in.UserIdList)
 	if err != nil {
 		logx.Error("get user list from mysql error: ", err)
-		return &user.UserInfoListResp{
-			StatusCode: 1004,
-			StatusMsg:  "获取用户信息失败",
-			UserList:   nil,
-		}, err
+
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "fail to get user's info"
+		return resp, nil
 	}
 
 	userList := make([]*user.UserInfo, len(userListDb))
-	for i, userDb := range userListDb {
+	for _, userDb := range userListDb {
 		userInfo := &user.UserInfo{
 			Id: userDb.Id,
 			// IsFollow:      userDb.IsFollow != 0,
@@ -46,14 +48,13 @@ func (l *UserInfoListLogic) UserInfoList(in *user.UserInfoListReq) (*user.UserIn
 			FollowCount:   userDb.FollowCount,
 			FollowerCount: userDb.FollowerCount,
 		}
-		userList[i] = userInfo
+		userList = append(userList, userInfo)
 	}
-	return &user.UserInfoListResp{
-		StatusCode: 0,
-		StatusMsg:  "成功",
-		UserList:   userList,
-	}, nil
 
+	resp.StatusCode = 0
+	resp.StatusMsg = "success"
+	resp.UserList = userList
+	return resp, nil
 }
 
 func (l *UserInfoListLogic) getUserInfo(userId int64) (*user.UserInfo, error) {

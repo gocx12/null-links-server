@@ -24,7 +24,9 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 }
 
 func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
-	// todo: add your logic here and delete this line
+	l.svcCtx.WebsetRpc.PublishList(l.ctx, &types.PublishListReq{
+		WebsetId: req.WebsetId,
+	})
 
 	return
 }

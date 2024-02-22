@@ -2,8 +2,6 @@ package user
 
 import (
 	"context"
-	"log"
-	"time"
 
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
@@ -28,52 +26,51 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterResp, err error) {
+	resp = &types.RegisterResp{}
 	respRpc, err := l.svcCtx.UserRpc.Register(l.ctx, &user.RegisterReq{
 		Username: req.Username,
+		Email:    req.UserEmail,
 		Password: req.Password,
 	})
 	if err != nil {
-		resp = &types.RegisterResp{
-			StatusCode: internal.StatusRpcErr,
-			StatusMsg:  "注册失败",
-			UserID:     respRpc.UserId, // is -1
-		}
-		log.Fatal(err)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "注册失败"
+		resp.UserID = respRpc.UserId // is -1
+		logx.Error(err)
 		err = nil
 		return
-	} else if respRpc.UserId == -1 {
-		// the username does not exsit or the password is incorrect
-		resp = &types.RegisterResp{
-			StatusCode: internal.StatusRpcErr,
-			StatusMsg:  respRpc.StatusMsg,
-			UserID:     respRpc.UserId, // is -1
+	} else if respRpc.StatusCode == internal.StatusSuccess {
+		if resp.StatusCode == internal.StatusEmailExist {
+
+		} else {
+			resp.StatusCode = internal.StatusRpcErr
+			resp.StatusMsg = "注册失败"
+			resp.UserID = respRpc.UserId // is -1
 		}
 		err = nil
 		return
 	}
 
-	secretKey := l.svcCtx.Config.Auth.AccessSecret
-	iat := time.Now().Unix()
-	seconds := l.svcCtx.Config.Auth.AccessExpire
-	payload := respRpc.UserId
-	token, err := internal.GetJwtToken(secretKey, iat, seconds, payload)
-	if err != nil {
-		resp = &types.RegisterResp{
-			StatusCode: internal.StatusGatewayErr,
-			StatusMsg:  "注册失败",
-			UserID:     respRpc.UserId, // is -1
-		}
-		log.Fatal(err)
-		err = nil
-		return
-	}
+	// secretKey := l.svcCtx.Config.Auth.AccessSecret
+	// iat := time.Now().Unix()
+	// seconds := l.svcCtx.Config.Auth.AccessExpire
+	// payload := respRpc.UserId
+	// token, err := internal.GenJwtToken(secretKey, iat, seconds, payload)
+	// if err != nil {
+	// 	resp = &types.RegisterResp{
+	// 		StatusCode: internal.StatusGatewayErr,
+	// 		StatusMsg:  "注册失败",
+	// 		UserID:     respRpc.UserId, // is -1
+	// 	}
+	// 	log.Fatal(err)
+	// 	err = nil
+	// 	return
+	// }
 
-	resp = &types.RegisterResp{
-		StatusCode: internal.StatusSuccess,
-		StatusMsg:  respRpc.StatusMsg,
-		UserID:     respRpc.UserId,
-		Token:      token,
-	}
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = respRpc.StatusMsg
+	resp.UserID = respRpc.UserId
+	// resp.Token=      token
 
 	return
 }

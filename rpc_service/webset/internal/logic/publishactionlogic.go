@@ -8,6 +8,7 @@ import (
 	"null-links/rpc_service/webset/pb/webset"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"null-links/internal"
 )
 
 type PublishActionLogic struct {
@@ -42,28 +43,28 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 		if err != nil {
 			logx.Error("insert webset failed, err: ", err)
 			return &webset.PublishActionResp{
-				StatusCode: 0,
+				StatusCode: internal.StatusRpcErr,
 				StatusMsg:  "fail",
-			}, err
+			}, nil
 		}
 		rowsAffected, err := insRes.RowsAffected()
 		if err != nil {
 			logx.Error("insert webset failed, err: ", err)
 			return &webset.PublishActionResp{
-				StatusCode: 0,
+				StatusCode: internal.StatusRpcErr,
 				StatusMsg:  "fail",
-			}, err
+			}, nil
 		}
 		if rowsAffected == 0 {
 			logx.Error("insert webset failed, rows affected: ", rowsAffected)
 			return &webset.PublishActionResp{
-				StatusCode: 0,
+				StatusCode: internal.StatusRpcErr,
 				StatusMsg:  "fail",
-			}, err
+			}, nil
 		}
 
 		return &webset.PublishActionResp{
-			StatusCode: 1,
+			StatusCode: internal.StatusSuccess,
 			StatusMsg:  "success",
 		}, nil
 	} else if in.ActionType == 2 {
@@ -86,7 +87,7 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 		if err != nil {
 			logx.Error("delete webset failed, err: ", err)
 			return &webset.PublishActionResp{
-				StatusCode: 0,
+				StatusCode: internal.StatusRpcErr,
 				StatusMsg:  "fail",
 			}, err
 		}
@@ -99,7 +100,7 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 	// 未知操作类型
 	logx.Error("unknown publish action type, action type: ", in.ActionType)
 	return &webset.PublishActionResp{
-		StatusCode: 0,
+		StatusCode: internal.StatusRpcErr,
 		StatusMsg:  "fail, unknown action type",
 	}, nil
 }

@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 
 	"null-links/rpc_service/webset/internal/svc"
 	"null-links/rpc_service/webset/pb/webset"
@@ -32,7 +31,6 @@ var (
 
 func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActionResp, error) {
 	// hash key: webset_id::user_id value:status
-	var err error = nil
 	likeActionResp := webset.LikeActionResp{
 		StatusCode: 1,
 		StatusMsg:  "success",
@@ -56,8 +54,7 @@ func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActi
 		logx.Error("unknown like action type")
 		likeActionResp.StatusCode = 0
 		likeActionResp.StatusMsg = "unknown like action type"
-		err = fmt.Errorf("unknown like action type, action type: %d", in.ActionType)
 	}
 
-	return &likeActionResp, err
+	return &likeActionResp, nil
 }

@@ -5,6 +5,8 @@ import (
 
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
+	"null-links/internal"
+	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,10 +27,30 @@ func NewGetValidationCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *GetValidationCodeLogic) GetValidationCode(req *types.GetValidationCodeReq) (resp *types.GetValidationCodeResp, err error) {
 	logx.Debug("email: ", req.Email)
+
+	respRpc, err := l.svcCtx.UserRpc.GetValidtaionCode(l.ctx, &user.GetValidtaionCodeReq{
+		Email: req.Email,
+	})
+	if err != nil {
+		logx.Error("call UserRpc failed, err: ", err)
+		resp = &types.GetValidationCodeResp{
+			StatusCode: internal.StatusRpcErr,
+			StatusMsg:  "获取验证码失败",
+		}
+		err = nil
+		return
+	} else if respRpc.StatusCode != internal.StatusSuccess {
+		logx.Error("call UserRpc failed, err: ", resp.StatusMsg)
+		resp = &types.GetValidationCodeResp{
+			StatusCode: internal.StatusRpcErr,
+			StatusMsg:  "获取验证码失败",
+		}
+		return
+	}
+
 	resp = &types.GetValidationCodeResp{
-		StatusCode: 1,
+		StatusCode: internal.StatusSuccess,
 		StatusMsg:  "success",
 	}
-	err = nil
 	return
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
+	"null-links/internal"
+	"null-links/rpc_service/webset/pb/webset"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,7 +25,16 @@ func NewWebsetInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Webset
 }
 
 func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.WebsetInfoResp, err error) {
-	// todo: add your logic here and delete this line
+	websetInfoRpcReq, err := l.svcCtx.WebsetRpc.WebsetInfo(l.ctx, &webset.WebsetInfoReq{
+		UserId:   req.UserID,
+		WebsetId: req.WebsetID,
+	})
 
+	if err != nil {
+		websetInfoRpcReq.StatusCode = internal.StatusRpcErr
+	}
+
+	websetInfoRpcReq.StatusCode = internal.StatusSuccess
+	websetInfoRpcReq.StatusMsg = "获取网页单成功"
 	return
 }

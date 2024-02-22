@@ -8,6 +8,7 @@ import (
 	"null-links/rpc_service/webset/pb/webset"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"null-links/internal"
 )
 
 type PublishListLogic struct {
@@ -27,11 +28,11 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 func (l *PublishListLogic) PublishList(in *webset.PublishListReq) (*webset.PublishListResp, error) {
 	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, in.UserId, in.Page, in.PageSize)
 	if err != nil {
-		logx.Error("find publish list failed, err: ", err, " userId: ", in.UserId)
+		logx.Error("get publish list from db error: ", err, " ,userId: ", in.UserId)
 		return &webset.PublishListResp{
-			StatusCode: 0,
-			StatusMsg:  "failed",
-		}, err
+			StatusCode: internal.StatusRpcErr,
+			StatusMsg:  "get publish list failed from db error",
+		}, nil
 	}
 
 	UserIdList := make([]int64, 0, len(publishListDb))
@@ -46,9 +47,9 @@ func (l *PublishListLogic) PublishList(in *webset.PublishListReq) (*webset.Publi
 	if err != nil {
 		logx.Error("get user info failed, err: ", err)
 		return &webset.PublishListResp{
-			StatusCode: 0,
+			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "failed",
-		}, err
+		}, nil
 	}
 	mapUserIdUserInfo := make(map[int64]*user.UserInfo)
 	for _, item := range userInfoListResp.UserList {
@@ -78,7 +79,7 @@ func (l *PublishListLogic) PublishList(in *webset.PublishListReq) (*webset.Publi
 		})
 	}
 	return &webset.PublishListResp{
-		StatusCode: 1,
+		StatusCode: internal.StatusSuccess,
 		StatusMsg:  "success",
 		WebsetList: WebsetListRpcResp,
 	}, nil
