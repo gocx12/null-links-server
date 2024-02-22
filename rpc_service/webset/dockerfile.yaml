@@ -1,0 +1,9 @@
+FROM docker.registry.kgidc.cn/base_mirror/kg_centos_7.5:go1.20_v1 as build
+RUN mkdir -p /build
+COPY ./ /build
+WORKDIR /build
+RUN /bin/sh -c make.sh ...(编译参数)
+FROM docker.registry.kgidc.cn/base_mirror/kg_centos_7.5:openresty1.13_py2.7_v3
+RUN mkdir -p /data1/go_service/asrservice
+COPY --from=build /build/outer /data1/go_service/asrservice
+WORKDIR /data1/go_service/asrservice

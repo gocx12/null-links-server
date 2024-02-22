@@ -1,0 +1,44 @@
+version: "3.0"
+
+networks:
+  etcd-net:           # 网络
+    driver: bridge    # 桥接模式
+
+services:
+  http_service:
+    build: ./http_service
+    ports:
+      - "8080:8080"
+
+  rpc_user:
+    build: ./rpc_service/user
+    ports:
+      - "8001:8080"
+    volumes:
+      - ./rpc_service/user:/go/src/rpc_service/user
+    
+  rpc_webset:
+    build: ./rpc_service/webset
+    ports:
+      - "8002:8080"
+    volumes:
+      - ./rpc_service/webset:/go/src/rpc_service/webset
+
+  etcd:
+    image: bitnami/etcd:latest  # 镜像
+    container_name: etcd       # 容器名 --name
+    restart: always             # 总是重启
+    networks:
+      - etcd-net                # 使用的网络 --network
+    ports:                      # 端口映射 -p
+      - "2379:2379"
+      - "2380:2380"
+    environment:                # 环境变量 --env
+      - ALLOW_NONE_AUTHENTICATION=yes                       # 允许不用密码登录
+      - ETCD_NAME=etcd                                     # etcd 的名字
+      # - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
+      # - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380           # 用于监听伙伴通讯的URL列表
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
+    volumes:
+      - etcd1_data:/bitnami/etcd                            # 挂载的数据卷
