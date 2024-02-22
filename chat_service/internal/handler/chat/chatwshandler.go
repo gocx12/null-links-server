@@ -29,7 +29,6 @@ func ChatWsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
 		// start a websocket connection
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -39,12 +38,20 @@ func ChatWsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		hub := chat.NewHub(req.WebsetID)
 
-		client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256), Ctx: r.Context(), SvcCtx: svcCtx}
+		client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256), WebsetId: req.WebsetID, Ctx: r.Context(), SvcCtx: svcCtx}
 		client.Hub.Register <- client
 
 		// Allow collection of memory referenced by the caller by doing all work in
 		// new goroutines.
 		go client.WritePump()
 		go client.ReadPump()
+
+		// l := chat.NewChatWsLogic(r.Context(), svcCtx)
+		// resp, err := l.ChatWs(&req)
+		// if err != nil {
+		// 	httpx.ErrorCtx(r.Context(), w, err)
+		// } else {
+		// 	httpx.OkJsonCtx(r.Context(), w, resp)
+		// }
 	}
 }

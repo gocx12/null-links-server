@@ -8,6 +8,7 @@ type Webset {
 	Describe		string 		`json:"describe"`
 	AuthorInfo		User		`json:"author_info"`
 	CoverURL		string 		`json:"cover_url"`
+	ViewCount   int64   `json:"view_count"`
 	LikeCount		int64		`json:"like_count"`
 	IsLike			bool		`json:"is_like"`
 	FavoriteCount 	int64  		`json:"favorite_count"`
@@ -18,15 +19,20 @@ type Webset {
 type WebsetShort {
 	ID            	int64  		`json:"id"`
 	Title         	string 		`json:"title"`
-	Describe		string 		`json:"describe"`
-	CreatedAt		string 		`jsoon:"created_at"`
+	Describe			string 		`json:"describe"`
+	CoverUrl 			string 		`json:"cover_url"`
+	CreatedAt			string 		`json:"created_at"`
 	AuthorInfo		UserShort	`json:"author_info"`
+	ViewCount   int64   `json:"view_count"`
+	LikeCount		int64		`json:"like_count"`
+	FavoriteCount 	int64  		`json:"favorite_count"`
+	IsLike			bool		`json:"is_like"`
 }
 
 type WebLink {
 	ID          int64  		`json:"id"`
-	Describe	string 		`json:"describe"`
-	Url 		string 		`json:"url"`
-	AuthorInfo	User		`json:"author_info"`
-	CoverURL	string 		`json:"cover_url"`
+	Describe		string 		`json:"describe"`
+	Url 				string 		`json:"url"`
+	AuthorInfo	User			`json:"author_info"`
+	CoverURL		string 		`json:"cover_url"`
 }

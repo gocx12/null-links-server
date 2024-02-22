@@ -105,6 +105,7 @@ type Webset struct {
 	Describe      string    `json:"describe"`
 	AuthorInfo    User      `json:"author_info"`
 	CoverURL      string    `json:"cover_url"`
+	ViewCount     int64     `json:"view_count"`
 	LikeCount     int64     `json:"like_count"`
 	IsLike        bool      `json:"is_like"`
 	FavoriteCount int64     `json:"favorite_count"`
@@ -113,10 +114,16 @@ type Webset struct {
 }
 
 type WebsetShort struct {
-	ID         int64     `json:"id"`
-	Title      string    `json:"title"`
-	Describe   string    `json:"describe"`
-	AuthorInfo UserShort `json:"author_info"`
+	ID            int64     `json:"id"`
+	Title         string    `json:"title"`
+	Describe      string    `json:"describe"`
+	CoverUrl      string    `json:"cover_url"`
+	CreatedAt     string    `json:"created_at"`
+	AuthorInfo    UserShort `json:"author_info"`
+	ViewCount     int64     `json:"view_count"`
+	LikeCount     int64     `json:"like_count"`
+	FavoriteCount int64     `json:"favorite_count"`
+	IsLike        bool      `json:"is_like"`
 }
 
 type WebLink struct {
@@ -128,12 +135,14 @@ type WebLink struct {
 }
 
 type PublishActionReq struct {
-	Token       string           `json:"token,omitempty"`
+	Token       string           `json:"token"`
+	ActionType  int32            `json:"action_type"`
 	Title       string           `json:"title"`
 	Category    string           `json:"category"`
 	AuthorId    int64            `json:"author_id"`
 	Describe    string           `json:"describe"`
 	WebLinkList []WebLinkPublish `json:"weblink_list"`
+	WebsetId    int64            `json:"webest_id"`
 }
 
 type WebLinkPublish struct {
@@ -148,14 +157,17 @@ type PublishActionResp struct {
 }
 
 type PublishListReq struct {
-	Token  string `form:"token"`
-	UserID int64  `form:"user_id"`
+	Token    string `form:"token"`
+	UserID   int64  `form:"user_id"`
+	Page     int32  `form:"page"`
+	PageSize int32  `form:"page_size"`
 }
 
 type PublishListResp struct {
-	StatusCode int32    `json:"status_code"`
-	StatusMsg  string   `json:"status_msg,optional"`
-	WebsetList []Webset `json:"webset_list"`
+	StatusCode int32         `json:"status_code"`
+	StatusMsg  string        `json:"status_msg,optional"`
+	WebsetList []WebsetShort `json:"webset_list"`
+	Total      int32         `json:"total"`
 }
 
 type FavoriteActionReq struct {
@@ -198,9 +210,9 @@ type WebsetInfoReq struct {
 }
 
 type WebsetInfoResp struct {
-	StatusCode int32       `json:"status_code"`
-	StatusMsg  string      `json:"status_msg,optional"`
-	WebsetInfo WebsetShort `json:"webset_info"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+	WebsetInfo Webset `json:"webset_info"`
 }
 
 type RelationActionReq struct {

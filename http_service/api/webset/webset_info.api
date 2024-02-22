@@ -5,7 +5,7 @@ import "../webset.api"
 type WebsetInfoReq {
 	Token  		string 	`form:"token"`   
 	UserID 		int64 	`form:"user_id"`
-  	WebsetID 	int64 	`form:"webset_id"` 
+	WebsetID 	int64 	`form:"webset_id"` 
 }
 
 type WebsetInfoResp {

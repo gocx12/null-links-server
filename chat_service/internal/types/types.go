@@ -2,32 +2,29 @@
 package types
 
 type Chat struct {
-	ChatID     int64  `json:"chat_id"`
-	WebsetID   int64  `json:"webset_id"`
-	UserID     int64  `json:"user_id"`
-	UserName   string `json:"user_name"`
-	Content    string `json:"content"`
-	CreateTime int64  `json:"create_time"`
+	ChatID    int64  `json:"chat_id"`
+	WebsetID  int64  `json:"webset_id"`
+	UserID    int64  `json:"user_id"`
+	UserName  string `json:"user_name"`
+	Content   string `json:"content"`
+	CreatedAt int64  `json:"created_at"`
 }
 
 type ChatWsReq struct {
-	Token      string `form:"token"`
-	ActionType int32  `form:"action_type"`
-	WebsetID   int64  `form:"webset_id"`
-	ChatID     int64  `form:"chat_id"`
-	Content    string `form:"content"`
+	Token    string `form:"token,optional"`
+	WebsetID int64  `form:"webset_id"`
 }
 
 type ChatWsResp struct {
 }
 
 type ChatHistoryReq struct {
-	Token     string `form:"token"`
+	Token     string `form:"token,optional"`
 	WebsetID  int64  `form:"webset_id"`
 	Type      int32  `form:"type"`
-	StartTime int64  `form:"start_time"`
-	EndTime   int64  `form:"end_time"`
-	Keyword   string `form:"keyword"`
+	StartTime string `form:"start_time,optional"`
+	EndTime   string `form:"end_time,optional"`
+	Keyword   string `form:"keyword,optional"`
 }
 
 type ChatHistoryResp struct {

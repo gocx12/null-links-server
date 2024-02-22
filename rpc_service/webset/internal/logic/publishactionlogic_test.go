@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"fmt"
 	"testing"
 
 	"null-links/rpc_service/webset/pb/webset"
@@ -16,5 +17,9 @@ func TestPublishAction(t *testing.T) {
 	}
 
 	publishActionResp, err := l.PublishAction(&case1)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+	}
+	fmt.Printf("publishActionResp: %v\n", publishActionResp)
 
 }

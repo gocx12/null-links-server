@@ -5,9 +5,11 @@ import (
 
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
+	"null-links/rpc_service/webset/pb/webset"
+
+	"null-links/internal"
 
 	"github.com/zeromicro/go-zero/core/logx"
-	"null-links/internal"
 )
 
 type PublishListLogic struct {
@@ -26,8 +28,8 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 
 func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
 	resp = &types.PublishListResp{}
-	publishListRpcResp, err := l.svcCtx.WebsetRpc.PublishList(l.ctx, &types.PublishListReq{
-		UserID:   req.UserID,
+	publishListRpcResp, err := l.svcCtx.WebsetRpc.PublishList(l.ctx, &webset.PublishListReq{
+		UserId:   req.UserID,
 		Page:     req.Page,
 		PageSize: req.PageSize,
 	})
@@ -40,18 +42,22 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "获取发布列表成功"
-	resp.WebsetList = make([]types.Webset, 0, len(publishListRpcResp.WebsetList))
+	resp.WebsetList = make([]types.WebsetShort, 0, len(publishListRpcResp.WebsetList))
 	for _, webset := range publishListRpcResp.WebsetList {
-		resp.WebsetList = append(resp.WebsetList, types.Webset{
+		resp.WebsetList = append(resp.WebsetList, types.WebsetShort{
 			ID:       webset.Id,
 			Title:    webset.Title,
-			CoverURL: webset.CoverUrl,
-			AuthorInfo: types.User{
+			CoverUrl: webset.CoverUrl,
+			AuthorInfo: types.UserShort{
 				Id:        webset.AuthorInfo.Id,
 				Name:      webset.AuthorInfo.Name,
 				AvatarUrl: webset.AuthorInfo.AvatarUrl,
 			},
-			CreatedAt: webset.CreatedAt,
+			CreatedAt:     webset.CreatedAt,
+			ViewCount:     webset.ViewCount,
+			LikeCount:     webset.LikeCount,
+			FavoriteCount: webset.FavoriteCount,
+			IsLike:        webset.IsLike,
 		})
 	}
 

@@ -110,6 +110,7 @@ message WebsetShort {
   int64 favorite_count = 8;
   bool is_favorite = 9;
   int32 status = 10;
+  string created_at = 11;
 }
 
 message Webset {

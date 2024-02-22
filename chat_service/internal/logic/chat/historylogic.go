@@ -35,8 +35,8 @@ func (l *HistoryLogic) History(req *types.ChatHistoryReq) (resp *types.ChatHisto
 	// 	return
 	// }
 	// userIdInt := gocast.ToInt64(userId)
-
 	// get chat history
+	logx.Info("get chat history")
 
 	return
 }

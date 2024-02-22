@@ -7,6 +7,7 @@ package chat
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/demdxx/gocast"
@@ -37,6 +38,17 @@ var (
 	space   = []byte{' '}
 )
 
+type ChatWriteMsg struct {
+	UserId  int64  `json:"user_id"`
+	Token   string `json:"token"`
+	Content string `json:"content"`
+}
+
+type ChatSendMsg struct {
+	UserId  int64  `json:"user_id"`
+	Content string `json:"content"`
+}
+
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
 	Hub *Hub
@@ -47,8 +59,9 @@ type Client struct {
 	// Buffered channel of outbound messages.
 	Send chan []byte
 
-	Ctx    context.Context
-	SvcCtx *svc.ServiceContext
+	WebsetId int64
+	Ctx      context.Context
+	SvcCtx   *svc.ServiceContext
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -73,21 +86,33 @@ func (c *Client) ReadPump() {
 			break
 		}
 		logx.Debug("recv message: ", string(message))
+		chatWriteMsg := ChatWriteMsg{}
+		json.Unmarshal(message, &chatWriteMsg)
+		logx.Debug("chat msg: ", chatWriteMsg)
 
 		// generate chat msg id
-		chatMsgId := c.genChatMsgId(1, 1)
+		chatMsgId := c.genChatMsgId(chatWriteMsg.UserId, c.WebsetId)
 
 		// save to db
 		c.SvcCtx.ChatModel.Insert(c.Ctx, &model.TChat{
 			ChatId:   chatMsgId,
-			UserId:   1,
-			WebsetId: 1,
-			Content:  string(message),
-			Status:   1,
+			UserId:   chatWriteMsg.UserId,
+			WebsetId: c.WebsetId,
+			Content:  chatWriteMsg.Content,
+			Status:   1, // 1 for online
 		})
 
 		// broadcast to all clients
-		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		ChatSendMsg := ChatSendMsg{
+			UserId:  chatWriteMsg.UserId,
+			Content: chatWriteMsg.Content,
+		}
+		chatSendMsgByte, err := json.Marshal(ChatSendMsg)
+		if err != nil {
+			logx.Error("json marshal the chatSendMsg failed, err: ", err)
+			continue
+		}
+		message = bytes.TrimSpace(bytes.Replace(chatSendMsgByte, newline, space, -1))
 		c.Hub.broadcast <- message
 	}
 }
@@ -118,6 +143,7 @@ func (c *Client) WritePump() {
 				return
 			}
 			w.Write(message)
+			logx.Debug("send message: ", string(message))
 
 			// Add queued chat messages to the current websocket message.
 			n := len(c.Send)
