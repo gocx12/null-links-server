@@ -45,8 +45,9 @@ type ChatWriteMsg struct {
 }
 
 type ChatSendMsg struct {
-	UserId  int64  `json:"user_id"`
-	Content string `json:"content"`
+	ViewingCnt uint32 `json:"viewing_cnt"`
+	UserId     int64  `json:"user_id"`
+	Content    string `json:"content"`
 }
 
 // Client is a middleman between the websocket connection and the hub.
@@ -94,22 +95,33 @@ func (c *Client) ReadPump() {
 		chatMsgId := c.genChatMsgId(chatWriteMsg.UserId, c.WebsetId)
 
 		// save to db
-		c.SvcCtx.ChatModel.Insert(c.Ctx, &model.TChat{
+		resDb, err := c.SvcCtx.ChatModel.Insert(c.Ctx, &model.TChat{
 			ChatId:   chatMsgId,
 			UserId:   chatWriteMsg.UserId,
 			WebsetId: c.WebsetId,
 			Content:  chatWriteMsg.Content,
 			Status:   1, // 1 for online
 		})
+		if err != nil {
+			logx.Error("insert chat msg to db failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
+		}
+		rowsAffected, err := resDb.RowsAffected()
+		if err != nil {
+			logx.Error("insert chat msg to db and get RowsAffected failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
+		}
+		if rowsAffected == 0 {
+			logx.Error("insert chat msg to db failed, rows affected=0", " chatWriteMsg: ", chatWriteMsg)
+		}
 
 		// broadcast to all clients
 		ChatSendMsg := ChatSendMsg{
-			UserId:  chatWriteMsg.UserId,
-			Content: chatWriteMsg.Content,
+			UserId:     chatWriteMsg.UserId,
+			Content:    chatWriteMsg.Content,
+			ViewingCnt: c.Hub.ViewingCnt,
 		}
 		chatSendMsgByte, err := json.Marshal(ChatSendMsg)
 		if err != nil {
-			logx.Error("json marshal the chatSendMsg failed, err: ", err)
+			logx.Error("json marshal the chatSendMsg failed, err: ", err, " ChatSendMsg: ", ChatSendMsg)
 			continue
 		}
 		message = bytes.TrimSpace(bytes.Replace(chatSendMsgByte, newline, space, -1))

@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
-	"strings"
-
+	"github.com/jordan-wright/email"
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/conf"
+	"net/http"
 	"net/smtp"
+	"strings"
+	"text/template"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -21,12 +24,11 @@ func main() {
 }
 
 func sendEmail(k, v string) error {
-	// 邮件服务器地址和端口
+	// 邮件服务器地址和端口 发件人邮箱和密码
 	smtpDomain := "smtp.163.com"
-
-	// 发件人邮箱和密码
 	sender := "null_links@163.com"
 	password := "1Q2W3E4r5t"
+	auth := smtp.PlainAuth("GWRLOVSZYVLRYQCH", sender, password, smtpDomain)
 
 	// 收件人邮箱
 	kqValue := v
@@ -35,22 +37,91 @@ func sendEmail(k, v string) error {
 	recipient := kqVaules[1]
 
 	// 邮件主题和内容
-	subject := "NULL Links 验证码"
-	body := fmt.Sprint("本邮件来自NULL Links, 您的验证码是: %s。请在5分钟内完成验证。", validationCode)
+	subject := "Null-Links 注册验证码"
+	// body := fmt.Sprintf("本邮件来自NULL Links, 您的验证码是: %s。请在5分钟内完成验证。", validationCode)
+	// message := "From: " + sender + "\n\r" +
+	// 	"To: " + recipient + "\n\r" +
+	// 	"Subject: " + subject + "\n\r\n\r" +
+	// 	body
 
-	message := "From: " + sender + "\n\r" +
-		"To: " + recipient + "\n\r" +
-		"Subject: " + subject + "\n\r\n\r" +
-		body
-
-	// 认证信息
-	auth := smtp.PlainAuth("GWRLOVSZYVLRYQCH", sender, password, smtpDomain)
-
-	// 发送邮件
-	err := smtp.SendMail(smtpDomain, auth, sender, []string{recipient}, []byte(message))
+	ticketInfo := TicketInfo{
+		Picture:        "http://localhost:3000/static/logo.png",
+		Title:          "Null-Links 注册验证码",
+		Desc:           "对于您的工单12121，如果您对回复有任何疑问，可以直接回复此邮件。",
+		Warning:        "请不要回复本邮件",
+		ValidationCode: validationCode,
+	}
+	tmpl, err := genHtml(ticketInfo)
 	if err != nil {
-		logx.Error("Failed to send email:", err)
+		logx.Error("failed to render html:", err)
 		return err
 	}
+	body := new(bytes.Buffer)
+	tmpl.Execute(body, ticketInfo)
+
+	// 发送邮件
+	// err := smtp.SendMail(smtpDomain, auth, sender, []string{recipient}, []byte(message))
+	// if err != nil {
+	// 	logx.Error("Failed to send email:", err)
+	// 	return err
+	// }
+
+	e := email.NewEmail()
+	e.From = sender
+	e.To = []string{recipient}
+	e.Subject = subject
+	e.HTML = body.Bytes()
+	err = e.Send(smtpDomain+":25", auth)
+	if err != nil {
+		// TODO(chancyGao): 增加告警
+		logx.Error("Failed to send email:", err, " recipient: ", recipient)
+		return err
+	}
+
 	return nil
+}
+
+type TicketInfo struct {
+	Picture        string
+	Title          string
+	Desc           string
+	Warning        string
+	ValidationCode string
+}
+
+func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
+	// 解析指定文件生成模板对象
+	tmpl, err := template.ParseFiles("./kq_consumer/validation_email/validation_code_page.html")
+
+	return tmpl, err
+}
+
+func renderHtml(responseWriter http.ResponseWriter, request *http.Request) {
+	// 解析指定文件生成模板对象
+	ticketInfo := TicketInfo{
+		Picture:        "http://localhost:3000/static/logo.png",
+		Title:          "Null-Links 注册验证码",
+		Desc:           "对于您的工单12121，如果您对回复有任何疑问，可以直接回复此邮件。",
+		Warning:        "请不要回复本邮件",
+		ValidationCode: "abca",
+	}
+	tmpl, err := genHtml(ticketInfo)
+	if err != nil {
+		logx.Error("failed to render html:", err)
+		return
+	}
+	tmpl.Execute(responseWriter, ticketInfo)
+}
+
+func RunValidationPageServer() {
+	fs := http.FileServer(http.Dir("assets/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	http.HandleFunc("/", renderHtml)
+	err := http.ListenAndServe("127.0.0.1:3000", nil)
+	if err != nil {
+		fmt.Println("HTTP server failed,err:", err)
+		return
+	}
+	fmt.Print("starting http://localhost:3000")
 }

@@ -18,19 +18,22 @@ type Hub struct {
 
 	// Unregister requests from clients.
 	unregister chan *Client
+
+	ViewingCnt uint32
 }
 
 var onceHubMap sync.Once
 var hubMap map[int64]*Hub
-var mutex sync.Mutex
+var hubMapMutex sync.Mutex
 
 func NewHub(websetId int64) *Hub {
+	hubMapMutex.Lock()
+	defer hubMapMutex.Unlock()
+
 	onceHubMap.Do(func() {
 		hubMap = make(map[int64]*Hub)
 	})
 
-	mutex.Lock()
-	defer mutex.Unlock()
 	hub, ok := hubMap[websetId]
 	if !ok {
 		hub = &Hub{
@@ -38,6 +41,7 @@ func NewHub(websetId int64) *Hub {
 			Register:   make(chan *Client),
 			unregister: make(chan *Client),
 			clients:    make(map[*Client]bool),
+			ViewingCnt: 0,
 		}
 		hubMap[websetId] = hub
 		go hub.run()
@@ -50,10 +54,12 @@ func (h *Hub) run() {
 		select {
 		case client := <-h.Register:
 			h.clients[client] = true
+			h.ViewingCnt++
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.Send)
+				h.ViewingCnt--
 			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
@@ -62,6 +68,7 @@ func (h *Hub) run() {
 				default:
 					close(client.Send)
 					delete(h.clients, client)
+					h.ViewingCnt--
 				}
 			}
 		}

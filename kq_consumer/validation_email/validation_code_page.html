@@ -1,0 +1,149 @@
+<!DOCTYPE HTML
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Null-Links 验证码</title>
+</head>
+
+<body
+  style="margin: 0;padding: 0;line-height: inherit;margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #f6f6f6;color: #333333">
+  <table
+    style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #f6f6f6;width:100%"
+    cellpadding="0" cellspacing="0">
+    <tbody style="line-height: inherit;">
+      <tr style="vertical-align: top;border-collapse: collapse;line-height: inherit;vertical-align: top">
+        <td
+          style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+          <!-- 邮件主体内容 -->
+          <div style="line-height: inherit;padding-top: 24px;background-color: transparent">
+            <div
+              style="line-height: inherit;Margin: 0 auto;min-width: 320px;max-width: 620px;min-height: 512px; overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+              <div
+                style="line-height: inherit;border-collapse: collapse;display: table;width: 100%;background-color: transparent;">
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 16px 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:620px;"><tr style="background-color: transparent;"><![endif]-->
+
+                <!--[if (mso)|(IE)]><td align="center" width="620" style="background-color: #ffffff;width: 620px;padding: 32px 0px 24px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->
+                <div
+                  style="line-height: inherit;max-width: 620px;min-width: 320px;display: table-cell;vertical-align: top;">
+                  <div
+                    style="line-height: inherit;background-color: #ffffff;width: 100% !important;border-radius: 8px;">
+                    <!--[if (!mso)&(!IE)]><!-->
+                    <div
+                      style="line-height: inherit;padding: 48px 36px 96px 36px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">
+                      <!--<![endif]-->
+
+                      <!-- LOGO 位 -->
+                      {{if .Picture}}
+                      <table style="line-height: inherit;color: #000000;font-family:arial,helvetica,sans-serif;"
+                        role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                        <tbody style="line-height: inherit;">
+                          <tr style="line-height: inherit;">
+                            <td
+                              style="line-height: inherit;color: #000000;overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;"
+                              align="left">
+
+                              <img align="center" border="0" src="{{.Picture}}" alt="乐闻世界"
+                                title="乐闻世界"
+                                style="line-height: inherit;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 60%;max-width: 300px;margin-bottom: 48px;"
+                                width="173.6" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {{end}}
+
+                      <!-- 邮件内容 -->
+                      <table
+                        style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;font-family:arial,helvetica,sans-serif;"
+                        role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                        <tbody>
+                          <tr style="vertical-align: top;border-collapse: collapse;">
+                            <td
+                              style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;"
+                              align="left">
+
+                              <div
+                                style="line-height: 26px; text-align: left; word-wrap: break-word;font-size: 16px;font-weight: 500;">
+                                <p style="margin: 0;font-size: 16px; line-height: 26px;">{{.Title}}</p>
+                                <p style="margin: 0;font-size: 16px; line-height: 26px;"> <br />{{.Desc}}</p>
+
+                                {{if .Logs}}
+                                <!-- 警示语 -->
+                                <p
+                                  style="font-size: 14px;font-weight: 600; line-height: 22px;color: #999999;margin: 24px 0;">
+                                  ⚠️
+                                  {{.Warning}}
+                                </p>
+                                {{end}}
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <!-- 日志内容 -->
+                      {{range .Logs}}
+                      <div style="line-height: inherit;border-top:1px dashed #BDBDBD;padding-top: 24px;">
+                        <div
+                          style="line-height: 26px; text-align: left; word-wrap: break-word;font-size: 16px;font-weight: 500;">
+                          {{if .IsRespondent}}
+                          <p style="margin: 0;font-size: 14px;font-weight: 700; line-height: 22px;color:  #338AFF;">
+                            {{.Title}}</p>
+                          {{else}}
+                          <p style="margin: 0;font-size: 14px;font-weight: 700; line-height: 22px;color:  #6ABF40;">
+                            {{.Title}}</p>
+                          {{end}}
+
+                          <p style="margin: 0;font-size: 14px;font-weight: 400; line-height: 22px;color: #999999">
+                            {{.Time}}
+                          </p>
+                          <p
+                            style="margin: 0;font-size: 14px;font-weight: 400; line-height: 22px;color: #333333;margin-top: 8px;">
+                            {{.Content}}
+                          </p>
+                        </div>
+                      </div>
+                      {{if .AttachFiles}}
+                      <table
+                        style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;margin-bottom:24px;"
+                        role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                        <tbody style="line-height: inherit;">
+                          {{range .AttachFiles}}
+                          <tr
+                            style="vertical-align: top;border-collapse: collapse;line-height: inherit;overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;"
+                            align="left">
+                            {{range .}}
+                            <td
+                              style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;"
+                              align="left">
+
+                              <img align="center" border="0" src="{{.}}" alt="乐闻世界"
+                                title="乐闻世界"
+                                style="line-height: inherit;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 80%;max-width: 300px;margin-top: 8px;" />
+                            </td>
+                            {{end}}
+                          </tr>
+                          {{end}}
+                        </tbody>
+                      </table>
+                      {{end}}
+                      {{end}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+</html>
