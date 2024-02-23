@@ -1,7 +1,7 @@
-<!DOCTYPE HTML
+<!-- <!DOCTYPE HTML
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
-  xmlns:o="urn:schemas-microsoft-com:office:office">
+  xmlns:o="urn:schemas-microsoft-com:office:office"> -->
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -48,8 +48,8 @@
                               style="line-height: inherit;color: #000000;overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;"
                               align="left">
 
-                              <img align="center" border="0" src="{{.Picture}}" alt="乐闻世界"
-                                title="乐闻世界"
+                              <img align="center" border="0" src="{{.Picture}}" alt="Null-Links 闹连"
+                                title="Null-Links 闹连"
                                 style="line-height: inherit;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 60%;max-width: 300px;margin-bottom: 48px;"
                                 width="173.6" />
                             </td>
@@ -72,8 +72,14 @@
                                 style="line-height: 26px; text-align: left; word-wrap: break-word;font-size: 16px;font-weight: 500;">
                                 <p style="margin: 0;font-size: 16px; line-height: 26px;">{{.Title}}</p>
                                 <p style="margin: 0;font-size: 16px; line-height: 26px;"> <br />{{.Desc}}</p>
+                                {{if .ValidationCode}}
+                                <!-- 验证码 -->
+                                <p>
+                                    验证码：{{.ValidationCode}}
+                                </p>
+                                {{end}}
 
-                                {{if .Logs}}
+                                {{if .Warning}}
                                 <!-- 警示语 -->
                                 <p
                                   style="font-size: 14px;font-weight: 600; line-height: 22px;color: #999999;margin: 24px 0;">
@@ -89,7 +95,7 @@
 
                       <!-- 日志内容 -->
                       {{range .Logs}}
-                      <div style="line-height: inherit;border-top:1px dashed #BDBDBD;padding-top: 24px;">
+                      <!-- <div style="line-height: inherit;border-top:1px dashed #BDBDBD;padding-top: 24px;">
                         <div
                           style="line-height: 26px; text-align: left; word-wrap: break-word;font-size: 16px;font-weight: 500;">
                           {{if .IsRespondent}}
@@ -108,9 +114,9 @@
                             {{.Content}}
                           </p>
                         </div>
-                      </div>
+                      </div> -->
                       {{if .AttachFiles}}
-                      <table
+                      <!-- <table
                         style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;margin-bottom:24px;"
                         role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                         <tbody style="line-height: inherit;">
@@ -131,9 +137,10 @@
                           </tr>
                           {{end}}
                         </tbody>
-                      </table>
+                      </table> -->
                       {{end}}
                       {{end}}
+
                     </div>
                   </div>
                 </div>

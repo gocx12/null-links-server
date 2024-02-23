@@ -48,13 +48,13 @@ func TestLikeAction(t *testing.T) {
 
 	likeActionResp, err := l.LikeAction(&case1)
 	if err != nil {
-		fmt.Printf("error:", err)
+		fmt.Print("error:", err)
 	}
-	fmt.Printf("likeActionResp: ", likeActionResp)
+	fmt.Print("likeActionResp: ", likeActionResp)
 
 	likeActionResp, err = l.LikeAction(&case2)
 	if err != nil {
-		fmt.Printf("error:", err)
+		fmt.Print("error:", err)
 	}
-	fmt.Printf("likeActionResp: ", likeActionResp)
+	fmt.Print("likeActionResp: ", likeActionResp)
 }

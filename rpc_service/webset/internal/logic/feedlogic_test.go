@@ -10,10 +10,6 @@ import (
 func TestFeed(t *testing.T) {
 	l := NewFeedLogic(ctx, svcCtx)
 
-	type args struct {
-		username string
-		password string
-	}
 	tests := []struct {
 		testName string
 		args     webset.FeedReq

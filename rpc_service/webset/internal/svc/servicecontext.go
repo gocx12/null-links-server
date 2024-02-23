@@ -7,7 +7,7 @@ import (
 	"null-links/rpc_service/webset/internal/model"
 	"null-links/rpc_service/webset/internal/nl_redis"
 
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -18,7 +18,7 @@ type ServiceContext struct {
 	LikeModel     model.TLikeModel
 	WeblinkModel  model.TWeblinkModel
 	WebsetModel   model.TWebsetModel
-	RedisClient   *redis.Redis
+	RedisClient   *redis.Client
 
 	UserRpc userservice.UserService
 }
@@ -30,7 +30,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LikeModel:     model.NewTLikeModel(sqlx.NewMysql(c.DataSource)),
 		WeblinkModel:  model.NewTWeblinkModel(sqlx.NewMysql(c.DataSource)),
 		WebsetModel:   model.NewTWebsetModel(sqlx.NewMysql(c.DataSource)),
-		RedisClient:   nl_redis.NewRedisClient(c.Redis.RedisConf),
+		RedisClient:   nl_redis.NewRedisClient(c.RedisConf),
 
 		UserRpc: user.NewUserServiceClient(zrpc.MustNewClient(c.UserRpcConf).Conn()),
 	}

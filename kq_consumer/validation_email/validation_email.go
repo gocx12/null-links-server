@@ -16,7 +16,9 @@ import (
 
 func main() {
 	var c kq.KqConf
-	conf.MustLoad("config.yaml", &c)
+	conf.MustLoad("./kq_consumer/validation_email/config.yaml", &c)
+
+	RunValidationPageServer()
 
 	q := kq.MustNewQueue(c, kq.WithHandle(sendEmail))
 	defer q.Stop()
@@ -47,7 +49,7 @@ func sendEmail(k, v string) error {
 	ticketInfo := TicketInfo{
 		Picture:        "http://localhost:3000/static/logo.png",
 		Title:          "Null-Links 注册验证码",
-		Desc:           "对于您的工单12121，如果您对回复有任何疑问，可以直接回复此邮件。",
+		Desc:           "",
 		Warning:        "请不要回复本邮件",
 		ValidationCode: validationCode,
 	}
@@ -99,9 +101,9 @@ func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
 func renderHtml(responseWriter http.ResponseWriter, request *http.Request) {
 	// 解析指定文件生成模板对象
 	ticketInfo := TicketInfo{
-		Picture:        "http://localhost:3000/static/logo.png",
+		Picture:        "http://localhost:3000/static/null_link_logo.ico",
 		Title:          "Null-Links 注册验证码",
-		Desc:           "对于您的工单12121，如果您对回复有任何疑问，可以直接回复此邮件。",
+		Desc:           "欢迎注册Null-Links。",
 		Warning:        "请不要回复本邮件",
 		ValidationCode: "abca",
 	}
@@ -114,7 +116,7 @@ func renderHtml(responseWriter http.ResponseWriter, request *http.Request) {
 }
 
 func RunValidationPageServer() {
-	fs := http.FileServer(http.Dir("assets/"))
+	fs := http.FileServer(http.Dir("./kq_consumer/validation_email/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", renderHtml)

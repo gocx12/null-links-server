@@ -1,18 +1,10 @@
 package nl_redis
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/redis/go-redis/v9"
 )
 
-type (
-	NLRedis interface {
-		Incr(key string) (int64, error)
-	}
-	NLRedisModel struct {
-	}
-)
-
-func NewRedisClient(redisConfig redis.RedisConf) *redis.Redis {
-	rds := redis.MustNewRedis(redisConfig)
-	return rds
+func NewRedisClient(redisConfig redis.Options) *redis.Client {
+	rdb := redis.NewClient(&redisConfig)
+	return rdb
 }
