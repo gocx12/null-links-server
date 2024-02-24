@@ -13,6 +13,7 @@ type Chat struct {
 type ChatWsReq struct {
 	Token    string `form:"token,optional"`
 	WebsetID int64  `form:"webset_id"`
+	UserID   int64  `form:"user_id"`
 }
 
 type ChatWsResp struct {

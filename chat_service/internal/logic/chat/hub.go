@@ -1,7 +1,10 @@
 package chat
 
 import (
+	"encoding/json"
 	"sync"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // Hub maintains the set of active clients and broadcasts messages to the
@@ -53,24 +56,48 @@ func (h *Hub) run() {
 	for {
 		select {
 		case client := <-h.Register:
+			logx.Debug("register client, webset_id=", client.WebsetId, ", user_id=", client.UserId)
 			h.clients[client] = true
 			h.ViewingCnt++
+			message := genViewCntChangeMsg(h.ViewingCnt)
+			h.broadcastMsg(message)
 		case client := <-h.unregister:
+			logx.Debug("unregister client, webset_id=", client.WebsetId, ", user_id=", client.UserId)
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.Send)
 				h.ViewingCnt--
+				message := genViewCntChangeMsg(h.ViewingCnt)
+				h.broadcastMsg(message)
 			}
 		case message := <-h.broadcast:
-			for client := range h.clients {
-				select {
-				case client.Send <- message:
-				default:
-					close(client.Send)
-					delete(h.clients, client)
-					h.ViewingCnt--
-				}
-			}
+			h.broadcastMsg(message)
 		}
 	}
+}
+
+func (h *Hub) broadcastMsg(message []byte) {
+	for client := range h.clients {
+		select {
+		case client.Send <- message:
+		default:
+			close(client.Send)
+			delete(h.clients, client)
+			h.ViewingCnt--
+		}
+	}
+}
+
+func genViewCntChangeMsg(viewingCnt uint32) []byte {
+	viewCntChangeMsg := ChatSendMsg{
+		UserId:     -1,
+		Content:    "",
+		ViewingCnt: viewingCnt,
+	}
+	viewCntChangeMsgByte, err := json.Marshal(viewCntChangeMsg)
+	if err != nil {
+		logx.Error("json marshal the chatSendMsg failed, err: ", err, " viewCntChangeMsg: ", viewCntChangeMsg)
+		return nil
+	}
+	return viewCntChangeMsgByte
 }

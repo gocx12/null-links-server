@@ -12,6 +12,7 @@ type Chat {
 type ChatWsReq {
 	Token    string `form:"token,optional"`
 	WebsetID int64  `form:"webset_id"`
+	UserID   int64  `form:"user_id"`
 }
 
 type ChatWsResp {

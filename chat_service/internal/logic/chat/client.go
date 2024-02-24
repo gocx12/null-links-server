@@ -39,7 +39,7 @@ var (
 )
 
 type ChatWriteMsg struct {
-	UserId  int64  `json:"user_id"`
+	UserId  string `json:"user_id"`
 	Token   string `json:"token"`
 	Content string `json:"content"`
 }
@@ -48,6 +48,7 @@ type ChatSendMsg struct {
 	ViewingCnt uint32 `json:"viewing_cnt"`
 	UserId     int64  `json:"user_id"`
 	Content    string `json:"content"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // Client is a middleman between the websocket connection and the hub.
@@ -61,6 +62,7 @@ type Client struct {
 	Send chan []byte
 
 	WebsetId int64
+	UserId   int64
 	Ctx      context.Context
 	SvcCtx   *svc.ServiceContext
 }
@@ -92,36 +94,37 @@ func (c *Client) ReadPump() {
 		logx.Debug("chat msg: ", chatWriteMsg)
 
 		// generate chat msg id
-		chatMsgId := c.genChatMsgId(chatWriteMsg.UserId, c.WebsetId)
+		chatMsgId := c.genChatMsgId(c.UserId, c.WebsetId)
 
 		// save to db
 		resDb, err := c.SvcCtx.ChatModel.Insert(c.Ctx, &model.TChat{
 			ChatId:   chatMsgId,
-			UserId:   chatWriteMsg.UserId,
+			UserId:   c.UserId,
 			WebsetId: c.WebsetId,
 			Content:  chatWriteMsg.Content,
 			Status:   1, // 1 for online
 		})
 		if err != nil {
 			logx.Error("insert chat msg to db failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
-		}
-		rowsAffected, err := resDb.RowsAffected()
-		if err != nil {
-			logx.Error("insert chat msg to db and get RowsAffected failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
-		}
-		if rowsAffected == 0 {
-			logx.Error("insert chat msg to db failed, rows affected=0", " chatWriteMsg: ", chatWriteMsg)
+		} else {
+			rowsAffected, err := resDb.RowsAffected()
+			if err != nil {
+				logx.Error("insert chat msg to db and get RowsAffected failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
+			} else if rowsAffected == 0 {
+				logx.Error("insert chat msg to db failed, rows affected=0", " chatWriteMsg: ", chatWriteMsg)
+			}
 		}
 
 		// broadcast to all clients
-		ChatSendMsg := ChatSendMsg{
-			UserId:     chatWriteMsg.UserId,
+		chatSendMsg := ChatSendMsg{
+			UserId:     c.UserId,
 			Content:    chatWriteMsg.Content,
 			ViewingCnt: c.Hub.ViewingCnt,
+			CreatedAt:  time.Now().Format("2006-01-02 15:04:05"),
 		}
-		chatSendMsgByte, err := json.Marshal(ChatSendMsg)
+		chatSendMsgByte, err := json.Marshal(chatSendMsg)
 		if err != nil {
-			logx.Error("json marshal the chatSendMsg failed, err: ", err, " ChatSendMsg: ", ChatSendMsg)
+			logx.Error("json marshal the chatSendMsg failed, err: ", err, " chatSendMsg: ", chatSendMsg)
 			continue
 		}
 		message = bytes.TrimSpace(bytes.Replace(chatSendMsgByte, newline, space, -1))
