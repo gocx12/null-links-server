@@ -33,7 +33,8 @@ CREATE TABLE `t_favorite`
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX idx_user_id_webset_id (`user_id`, `webset_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '收藏表';
@@ -49,7 +50,7 @@ CREATE TABLE `t_like`
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
-  INDEX idx_webset_id (`webset_id`)
+  INDEX idx_user_id_webset_id (`user_id`, `webset_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '点赞表';
@@ -105,9 +106,9 @@ DROP TABLE IF EXISTS `t_chat`;
 CREATE TABLE `t_chat`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `chat_id` varchar(255) NOT NULL COMMENT '聊天消息id',
-  `user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
-  `webset_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '网页单id',
+  `chat_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '聊天消息id',
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '用户id',
+  `webset_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '网页单id',
   `content` text NOT NULL COMMENT '消息内容',
   `type` varchar(3) NOT NULL DEFAULT '0' COMMENT '消息类型',
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
@@ -115,7 +116,7 @@ CREATE TABLE `t_chat`
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
-  INDEX idx_webset_id_created_at (`webset_id`, `created_at`)
+  INDEX idx_webset_id_created_at_status (`webset_id`, `created_at`, `status`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '聊天表';
@@ -138,6 +139,8 @@ CREATE TABLE `t_webset`
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   INDEX idx_created_at (`created_at`),
+  INDEX idx_view_cnt (`view_cnt`),
+  INDEX idx_like_cnt (`like_cnt`),
   INDEX idx_author_id_created_at (`author_id`, `created_at`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -159,7 +162,7 @@ CREATE TABLE `t_weblink`
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
-  INDEX idx_webset_id_status (`webset_id`, `status`)
+  INDEX idx_webset_id_link_id_status (`webset_id`, `link_id`, `status`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '网页单链接表';

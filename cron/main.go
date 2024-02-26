@@ -27,14 +27,18 @@ func main() {
 
 	// create jobs
 	cronTrigger, _ := quartz.NewCronTrigger("1/5 * * * * *")
-
 	likeFuncJob := job.NewFunctionJob(LikeJob)
+	favoriteFuncJob := job.NewFunctionJob(FavoriteJob)
+
 
 	// register jobs to scheduler
 	sched.ScheduleJob(quartz.NewJobDetail(likeFuncJob, quartz.NewJobKey("likeFuncJob")),
 		cronTrigger)
+	sched.ScheduleJob(quartz.NewJobDetail(favoriteFuncJob, quartz.NewJobKey("favoriteFuncJob")),
+		cronTrigger)
 
-	// // stop scheduler
+
+	// stop scheduler
 	// sched.Stop()
 
 	// wait for all workers to exit

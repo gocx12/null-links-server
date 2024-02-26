@@ -1,4 +1,4 @@
-Name: service
+Name: chat_service
 Host: 0.0.0.0
 Port: 8081
 

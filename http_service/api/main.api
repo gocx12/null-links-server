@@ -20,6 +20,8 @@ import "./social/relation_follower_list.api"
 import "./social/relation_friend_list.api"
 import "./social/message_action.api"
 
+import "./common/upload_pic.api"
+
 type PingReq {
 }
 
@@ -105,4 +107,17 @@ service service {
 
 	@handler RelationFriendList
 	get /relation/friend/list (RelationFriendListReq) returns (RelationFriendListResp)
+}
+
+@server (
+	jwt:	Auth
+	prefix: /common
+	group:  common
+)
+service service {
+	@handler UploadPic
+	post /upload/pic (UploadPicReq) returns (UploadPicResp)
+
+	@handler UploadFile
+	post /upload/file (UploadFileReq) returns (UploadFileResp)
 }

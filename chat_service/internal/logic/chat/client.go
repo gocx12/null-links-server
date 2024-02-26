@@ -115,6 +115,8 @@ func (c *Client) ReadPump() {
 			}
 		}
 
+		// TODO(chancyGao): 审核
+
 		// broadcast to all clients
 		chatSendMsg := ChatSendMsg{
 			UserId:     c.UserId,

@@ -1,4 +1,4 @@
-Name: service
+Name: http_service
 Host: 0.0.0.0
 Port: 8888
 

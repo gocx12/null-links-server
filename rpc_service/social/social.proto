@@ -5,8 +5,9 @@ package social;
 option go_package = "./social";
 
 message FollowReq {
-    int64 user_id = 1;
-    int64 follower_id = 2;
+    int32 action_type = 1;
+    int64 user_id = 2;
+    int64 follower_id = 3;
 }
 
 message FollowResp {
@@ -14,6 +15,17 @@ message FollowResp {
     string status_msg = 2;
 }
 
+message FollowInfoListReq {
+    int64 user_id = 1;
+    repeated int64 follower_id_list = 2;
+}
+
+message FollowInfoListResp {
+    int32 status_code = 1;
+    string status_msg = 2;
+}
+
 service SocialService{
     rpc Follow(FollowReq) returns (FollowResp)
+    rpc FollowInfoList(FollowInfoListReq) returns (FollowInfoListResp)
 }

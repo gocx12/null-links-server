@@ -1,0 +1,32 @@
+syntax = "v1"
+
+type CheckQueryReq {
+	Token    string `form:"token,optional"`
+	WebsetID int64  `form:"webset_id"`
+	UserID   int64  `form:"user_id"`
+}
+
+type CheckQueryResp {
+
+}
+
+@server (
+	prefix: /back
+	group:  chat
+)
+service service {
+	@handler CheckQuery
+	get /check/query (CheckQueryReq) returns (CheckQueryResp)
+
+	@handler CheckConfirm
+	get /check/confirm (CheckConfirmReq) returns (CheckConfirmResp)
+
+    @handler BackSearchUpdateStatus
+    get /backsearch/update_status (BackSearchUpdateStatusReq) returns (BackSearchUpdateStatusResp)
+
+    @handler ReportQuery
+    get /report/query (ReportQueryReq) returns (ReportQueryResp)
+
+    @handler ReportConfirm
+    get /report/confirm (ReportConfirmReq) returns (ReportConfirmResp)
+}
