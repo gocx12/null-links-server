@@ -33,7 +33,8 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	resp := &user.LoginResp{}
 
-	UserInfoDb, err := l.svcCtx.UserModel.FindOneByName(l.ctx, in.Username)
+	// UserInfoDb, err := l.svcCtx.UserModel.FindOneByName(l.ctx, in.Username)
+	UserInfoDb, err := l.svcCtx.UserModel.FindPasswordByEmail(l.ctx, in.Email)
 
 	switch err {
 	case nil:
@@ -59,7 +60,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 		return resp, nil
 	case model.ErrNotFound:
 		resp.StatusCode = internal.StatusUserNotExist
-		resp.StatusMsg = "the username does not exist"
+		resp.StatusMsg = "the email does not exist"
 		resp.UserId = -1
 		return resp, nil
 	default:

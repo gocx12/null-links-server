@@ -23,11 +23,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/history",
 				Handler: chat.HistoryHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/report",
-				Handler: chat.ReportHandler(serverCtx),
-			},
 		},
 		rest.WithPrefix("/chat"),
 	)

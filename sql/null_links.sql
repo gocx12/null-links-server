@@ -5,9 +5,9 @@ DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `username` varchar(64) NOT NULL COMMENT '用户名',
+  `username` varchar(64) NOT NULL describe COMMENT '用户名',
   `email` varchar(64) NOT NULL COMMENT '邮箱地址',
-  `password` varchar(36) NOT NULL COMMENT '密码', 
+  `password` varchar(64) NOT NULL COMMENT '密码', 
   `avatar_url` varchar(255) NOT NULL COMMENT '头像地址',
   `background_url` varchar(255) NOT NULL COMMENT '背景地址',
   `signature` varchar(255) NOT NULL COMMENT '个性签名',
@@ -18,7 +18,7 @@ CREATE TABLE `t_user`
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `uidx_username` (`username`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '用户信息表';
@@ -50,7 +50,7 @@ CREATE TABLE `t_like`
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
-  INDEX idx_user_id_webset_id (`user_id`, `webset_id`)
+  UNIQUE KEY uidx_user_id_webset_id (`user_id`, `webset_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '点赞表';
@@ -106,7 +106,7 @@ DROP TABLE IF EXISTS `t_chat`;
 CREATE TABLE `t_chat`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `chat_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '聊天消息id',
+  `chat_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '聊天消息id',
   `user_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '用户id',
   `webset_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '网页单id',
   `content` text NOT NULL COMMENT '消息内容',
@@ -157,7 +157,7 @@ CREATE TABLE `t_weblink`
   `url`       text NOT NULL COMMENT '网址',
   `cover_url` varchar(255) NOT NULL COMMENT '封面地址',
   `click_cnt` int NOT NULL DEFAULT 0 COMMENT '点击数',
-  `status`    tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
+  `status`    tinyint(3) NOT NULL DEFAULT 0 COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',

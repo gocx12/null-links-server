@@ -7,10 +7,10 @@ Log:
   Mode: "console"
   Encoding: "plain"
   Level: "debug"
-  Path: "http_service/logs"
+  Path: "/data/logs"
 
 Auth:
-  AccessSecret: "AccessSecret"
+  AccessSecret: "AccessSecret12"
   AccessExpire: 604800
 
 # RPC

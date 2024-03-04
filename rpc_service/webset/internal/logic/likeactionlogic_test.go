@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	configFile = flag.String("f", "etc/webset.yaml", "the config file")
+	configFile = flag.String("f", "../../etc/webset.yaml", "the config file")
 	svcCtx     *svc.ServiceContext
 	ctx        context.Context
 )
@@ -42,6 +42,11 @@ func TestLikeAction(t *testing.T) {
 	}
 	case2 := webset.LikeActionReq{
 		UserId:     1,
+		ActionType: 1,
+		WebsetId:   1,
+	}
+	case3 := webset.LikeActionReq{
+		UserId:     1,
 		ActionType: 2,
 		WebsetId:   1,
 	}
@@ -50,11 +55,17 @@ func TestLikeAction(t *testing.T) {
 	if err != nil {
 		fmt.Print("error:", err)
 	}
-	fmt.Print("likeActionResp: ", likeActionResp)
+	fmt.Printf("likeActionResp: %v\n", likeActionResp)
 
 	likeActionResp, err = l.LikeAction(&case2)
 	if err != nil {
 		fmt.Print("error:", err)
 	}
-	fmt.Print("likeActionResp: ", likeActionResp)
+	fmt.Printf("likeActionResp: %v\n", likeActionResp)
+
+	likeActionResp, err = l.LikeAction(&case3)
+	if err != nil {
+		fmt.Print("error:", err)
+	}
+	fmt.Printf("likeActionResp: %v\n", likeActionResp)
 }

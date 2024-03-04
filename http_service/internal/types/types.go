@@ -21,12 +21,14 @@ type LoginResp struct {
 	StatusMsg  string `json:"status_msg,optional"`
 	Token      string `json:"token"`
 	UserID     int64  `json:"user_id"`
+	Username   string `json:"username"`
 }
 
 type RegisterReq struct {
-	Username  string `json:"username"`
-	UserEmail string `json:"user_email"`
-	Password  string `json:"password"`
+	Username       string `json:"username"`
+	UserEmail      string `json:"user_email"`
+	ValidationCode string `json:"validation_code"`
+	Password       string `json:"password"`
 }
 
 type RegisterResp struct {
@@ -56,8 +58,7 @@ type GetValidationCodeResp struct {
 }
 
 type UserInfoReq struct {
-	Token  string `form:"token"`
-	UserID int64  `form:"user_id"`
+	UserID int64 `form:"user_id"`
 }
 
 type UserInfoResp struct {
@@ -87,7 +88,7 @@ type UserShort struct {
 
 type FeedReq struct {
 	LatestTime string `form:"latest_time,optional"`
-	Token      string `form:"token,optional"`
+	UserId     int64  `form:"user_id,optional"`
 	Page       string `form:"page,optional"`
 	PageSize   string `form:"page_size,optional"`
 }
@@ -135,20 +136,20 @@ type WebLink struct {
 }
 
 type PublishActionReq struct {
-	Token       string           `json:"token"`
 	ActionType  int32            `json:"action_type"`
-	Title       string           `json:"title"`
-	Category    string           `json:"category"`
+	Category    int32            `json:"category"`
 	AuthorId    int64            `json:"author_id"`
-	Describe    string           `json:"describe"`
+	Title       string           `json:"title"`
+	Describe    string           `json:"description"`
+	CoverURL    string           `json:"cover_url"`
 	WebLinkList []WebLinkPublish `json:"weblink_list"`
-	WebsetId    int64            `json:"webest_id"`
+	WebsetId    int64            `json:"webest_id,optional"`
 }
 
 type WebLinkPublish struct {
 	Url      string `json:"url"`
-	Describe string `json:"describe"`
-	CoverURL string `json:"cover_url"`
+	Describe string `json:"description"`
+	CoverURL string `json:"cover_url,optional"`
 }
 
 type PublishActionResp struct {
@@ -157,10 +158,9 @@ type PublishActionResp struct {
 }
 
 type PublishListReq struct {
-	Token    string `form:"token"`
-	UserID   int64  `form:"user_id"`
-	Page     int32  `form:"page"`
-	PageSize int32  `form:"page_size"`
+	UserID   int64 `form:"user_id"`
+	Page     int32 `form:"page"`
+	PageSize int32 `form:"page_size"`
 }
 
 type PublishListResp struct {
@@ -171,9 +171,8 @@ type PublishListResp struct {
 }
 
 type FavoriteActionReq struct {
-	ActionType int32  `form:"action_type"`
-	Token      string `form:"token"`
-	WebsetID   int64  `form:"webset_id"`
+	ActionType int32 `form:"action_type"`
+	WebsetID   int64 `form:"webset_id"`
 }
 
 type FavoriteActionResp struct {
@@ -182,8 +181,7 @@ type FavoriteActionResp struct {
 }
 
 type FavoriteListReq struct {
-	Token  string `form:"token"`
-	UserID int64  `form:"user_id"`
+	UserID int64 `form:"user_id"`
 }
 
 type FavoriteListResp struct {
@@ -193,9 +191,9 @@ type FavoriteListResp struct {
 }
 
 type LikeActionReq struct {
-	ActionType int32  `json:"action_type"`
-	WebsetID   int64  `json:"webset_id"`
-	Token      string `json:"token"`
+	ActionType int32 `json:"action_type"`
+	UserId     int64 `json:"user_id"`
+	WebsetId   int64 `json:"webset_id"`
 }
 
 type LikeActionResp struct {
@@ -204,9 +202,8 @@ type LikeActionResp struct {
 }
 
 type WebsetInfoReq struct {
-	Token    string `form:"token"`
-	UserID   int64  `form:"user_id"`
-	WebsetID int64  `form:"webset_id"`
+	UserID   int64 `form:"user_id"`
+	WebsetID int64 `form:"webset_id"`
 }
 
 type WebsetInfoResp struct {
@@ -218,7 +215,6 @@ type WebsetInfoResp struct {
 type RelationActionReq struct {
 	ActionType string `form:"action_type"`
 	ToUserID   int64  `form:"to_user_id"`
-	Token      string `form:"token"`
 }
 
 type RelationActionResp struct {
@@ -233,7 +229,6 @@ type FriendUser struct {
 }
 
 type RelationFollowListReq struct {
-	Token  int64  `form:"token"`
 	UserID string `form:"user_id"`
 }
 
@@ -244,7 +239,6 @@ type RelationFollowListResp struct {
 }
 
 type RelationFollowerListReq struct {
-	Token  string `form:"token"`
 	UserID string `form:"user_id"`
 }
 
@@ -255,7 +249,6 @@ type RelationFollowerListResp struct {
 }
 
 type RelationFriendListReq struct {
-	Token  string `form:"token"`
 	UserID string `form:"user_id"`
 }
 
@@ -273,6 +266,36 @@ type MessageActionReq struct {
 }
 
 type MessageActionResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
+type UploadPicReq struct {
+}
+
+type UploadPicResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+	Success    bool   `json:"success"`
+}
+
+type UploadFileReq struct {
+	UserId int64 `json:"user_id"`
+}
+
+type UploadFileResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
+type ReportReq struct {
+	UserId     int64  `json:"user_id"`
+	BusinessId int32  `json:"business_id"`
+	Id         int64  `json:"id"`
+	Reason     string `json:"reason"`
+}
+
+type ReportResp struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,optional"`
 }

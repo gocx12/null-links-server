@@ -8,9 +8,10 @@ import (
 	"null-links/rpc_service/webset/internal/svc"
 	"null-links/rpc_service/webset/pb/webset"
 
+	"null-links/internal"
+
 	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
-	"null-links/internal"
 )
 
 type FeedLogic struct {
@@ -36,6 +37,13 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 		return &webset.FeedResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "get webset list from db error",
+		}, nil
+	}
+	if len(websetsDb) == 0 {
+		return &webset.FeedResp{
+			StatusCode: internal.StatusSuccess,
+			StatusMsg:  "success",
+			WebsetList: []*webset.WebsetShort{},
 		}, nil
 	}
 

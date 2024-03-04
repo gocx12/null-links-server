@@ -9,7 +9,6 @@ type FriendUser {
 }
 
 type RelationFollowListReq {
-	Token  int64 `form:"token"`   
 	UserID string `form:"user_id"`
 }
 

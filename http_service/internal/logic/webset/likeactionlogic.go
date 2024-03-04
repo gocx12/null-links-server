@@ -8,7 +8,6 @@ import (
 	"null-links/internal"
 	"null-links/rpc_service/webset/pb/webset"
 
-	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,16 +27,11 @@ func NewLikeActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeAc
 
 func (l *LikeActionLogic) LikeAction(req *types.LikeActionReq) (resp *types.LikeActionResp, err error) {
 	resp = &types.LikeActionResp{}
-	claims, err := internal.ParseJwtToken(l.svcCtx.Config.Auth.AccessSecret, req.Token)
-	if err != nil {
-		logx.Error("parse jwt token err:", err)
-		return
-	}
 
 	LikeActionRpcReq := &webset.LikeActionReq{
-		UserId:     gocast.ToInt64(claims["user_id"]),
+		UserId:     req.UserId,
 		ActionType: req.ActionType,
-		WebsetId:   req.WebsetID,
+		WebsetId:   req.WebsetId,
 	}
 	likeActionRpcResp, err := l.svcCtx.WebsetRpc.LikeAction(l.ctx, LikeActionRpcReq)
 

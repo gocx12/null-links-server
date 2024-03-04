@@ -7,8 +7,9 @@ import (
 	"null-links/http_service/internal/types"
 	"null-links/rpc_service/webset/pb/webset"
 
-	"github.com/zeromicro/go-zero/core/logx"
 	"null-links/internal"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PublishActionLogic struct {
@@ -28,10 +29,32 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.PublishActionResp, err error) {
 	resp = &types.PublishActionResp{}
 
-	publishActionRpcResp, err := l.svcCtx.WebsetRpc.PublishAction(l.ctx, &webset.PublishActionReq{
-		ActionType: req.ActionType,
-		UserId:     req.AuthorId,
-	})
+	var publishActionRpcReq webset.PublishActionReq
+	if req.ActionType == 1 || req.ActionType == 2 {
+		// 发布 或 修改
+		weblinkListRpcReq := make([]*webset.WebLink, 0, len(req.WebLinkList))
+		for _, weblink := range req.WebLinkList {
+			weblinkListRpcReq = append(weblinkListRpcReq, &webset.WebLink{
+				Url:      weblink.Url,
+				Describe: weblink.Describe,
+			})
+		}
+		publishActionRpcReq = webset.PublishActionReq{
+			ActionType: req.ActionType,
+			UserId:     req.AuthorId,
+			Webset: &webset.Webset{
+				Title:       req.Title,
+				Describe:    req.Describe,
+				CoverUrl:    req.CoverURL,
+				WebLinkList: weblinkListRpcReq,
+			},
+		}
+	} else {
+		resp.StatusCode = internal.StatusParamErr
+		resp.StatusMsg = "未知操作类型"
+		return
+	}
+	publishActionRpcResp, err := l.svcCtx.WebsetRpc.PublishAction(l.ctx, &publishActionRpcReq)
 
 	if err != nil || publishActionRpcResp.StatusCode != internal.StatusSuccess {
 		if err != nil {

@@ -7,7 +7,7 @@ type Chat struct {
 	UserID    int64  `json:"user_id"`
 	UserName  string `json:"user_name"`
 	Content   string `json:"content"`
-	CreatedAt int64  `json:"created_at"`
+	CreatedAt string `json:"created_at"`
 }
 
 type ChatWsReq struct {
@@ -20,28 +20,19 @@ type ChatWsResp struct {
 }
 
 type ChatHistoryReq struct {
-	Token     string `form:"token,optional"`
-	WebsetID  int64  `form:"webset_id"`
-	Type      int32  `form:"type"`
-	StartTime string `form:"start_time,optional"`
-	EndTime   string `form:"end_time,optional"`
-	Keyword   string `form:"keyword,optional"`
+	Token      string `form:"token,optional"`
+	WebsetID   int64  `form:"webset_id"`
+	Type       int32  `form:"type"`
+	Page       int32  `form:"page,optional"`
+	PageSize   int32  `form:"page_size,optional"`
+	LastChatId int64  `form:"chat_id,optional"`
+	StartTime  string `form:"start_time,optional"`
+	EndTime    string `form:"end_time,optional"`
+	Keyword    string `form:"keyword,optional"`
 }
 
 type ChatHistoryResp struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,optional"`
 	ChatList   []Chat `json:"chat_list"`
-}
-
-type ChatReportReq struct {
-	Token    string `json:"token"`
-	WebsetID int64  `json:"webset_id"`
-	ChatID   int64  `json:"chat_id"`
-	Reason   string `json:"reason"`
-}
-
-type ChatReportResp struct {
-	StatusCode int32  `json:"status_code"`
-	StatusMsg  string `json:"status_msg,optional"`
 }

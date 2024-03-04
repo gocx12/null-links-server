@@ -26,20 +26,14 @@
               style="line-height: inherit;Margin: 0 auto;min-width: 320px;max-width: 620px;min-height: 512px; overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
               <div
                 style="line-height: inherit;border-collapse: collapse;display: table;width: 100%;background-color: transparent;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 16px 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:620px;"><tr style="background-color: transparent;"><![endif]-->
-
-                <!--[if (mso)|(IE)]><td align="center" width="620" style="background-color: #ffffff;width: 620px;padding: 32px 0px 24px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->
                 <div
                   style="line-height: inherit;max-width: 620px;min-width: 320px;display: table-cell;vertical-align: top;">
                   <div
                     style="line-height: inherit;background-color: #ffffff;width: 100% !important;border-radius: 8px;">
-                    <!--[if (!mso)&(!IE)]><!-->
                     <div
                       style="line-height: inherit;padding: 48px 36px 96px 36px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">
-                      <!--<![endif]-->
 
                       <!-- LOGO 位 -->
-                      {{if .Picture}}
                       <table style="line-height: inherit;color: #000000;font-family:arial,helvetica,sans-serif;"
                         role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                         <tbody style="line-height: inherit;">
@@ -48,15 +42,14 @@
                               style="line-height: inherit;color: #000000;overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;"
                               align="left">
 
-                              <img align="center" border="0" src="{{.Picture}}" alt="Null-Links 闹连"
-                                title="Null-Links 闹连"
-                                style="line-height: inherit;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 60%;max-width: 300px;margin-bottom: 48px;"
-                                width="173.6" />
+                              <img align="center" border="0" src="https://picdl.sunbangyan.cn/2024/03/01/d13240065fc078f569ad846e940cd3fc.jpeg" alt="Null-Links 闹连"
+                              title="Null-Links"
+                              width="100" />
+                              <p style="margin: 0;font-size: 16px; line-height: 26px;">Null-Links</p>
                             </td>
                           </tr>
                         </tbody>
                       </table>
-                      {{end}}
 
                       <!-- 邮件内容 -->
                       <table
@@ -70,76 +63,27 @@
 
                               <div
                                 style="line-height: 26px; text-align: left; word-wrap: break-word;font-size: 16px;font-weight: 500;">
-                                <p style="margin: 0;font-size: 16px; line-height: 26px;">{{.Title}}</p>
-                                <p style="margin: 0;font-size: 16px; line-height: 26px;"> <br />{{.Desc}}</p>
+                                <p style="margin: 0;font-size: 16px; line-height: 26px;"> <br />欢迎注册 Null-Links，若您没有注册本网站，请忽略本邮件。验证码将在10分钟后过期。</p>
                                 {{if .ValidationCode}}
                                 <!-- 验证码 -->
-                                <p>
-                                    验证码：{{.ValidationCode}}
+                                <p >
+                                  请输入本验证码以完成注册:
+                                </p>
+                                <p style="font-size:x-large; font-weight: bolder;">
+                                  {{.ValidationCode}}
                                 </p>
                                 {{end}}
 
-                                {{if .Warning}}
                                 <!-- 警示语 -->
                                 <p
                                   style="font-size: 14px;font-weight: 600; line-height: 22px;color: #999999;margin: 24px 0;">
-                                  ⚠️
-                                  {{.Warning}}
+                                  本邮件由系统自动生成，请勿回复本邮件
                                 </p>
-                                {{end}}
                               </div>
                             </td>
                           </tr>
                         </tbody>
                       </table>
-
-                      <!-- 日志内容 -->
-                      {{range .Logs}}
-                      <!-- <div style="line-height: inherit;border-top:1px dashed #BDBDBD;padding-top: 24px;">
-                        <div
-                          style="line-height: 26px; text-align: left; word-wrap: break-word;font-size: 16px;font-weight: 500;">
-                          {{if .IsRespondent}}
-                          <p style="margin: 0;font-size: 14px;font-weight: 700; line-height: 22px;color:  #338AFF;">
-                            {{.Title}}</p>
-                          {{else}}
-                          <p style="margin: 0;font-size: 14px;font-weight: 700; line-height: 22px;color:  #6ABF40;">
-                            {{.Title}}</p>
-                          {{end}}
-
-                          <p style="margin: 0;font-size: 14px;font-weight: 400; line-height: 22px;color: #999999">
-                            {{.Time}}
-                          </p>
-                          <p
-                            style="margin: 0;font-size: 14px;font-weight: 400; line-height: 22px;color: #333333;margin-top: 8px;">
-                            {{.Content}}
-                          </p>
-                        </div>
-                      </div> -->
-                      {{if .AttachFiles}}
-                      <!-- <table
-                        style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;margin-bottom:24px;"
-                        role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                        <tbody style="line-height: inherit;">
-                          {{range .AttachFiles}}
-                          <tr
-                            style="vertical-align: top;border-collapse: collapse;line-height: inherit;overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;"
-                            align="left">
-                            {{range .}}
-                            <td
-                              style="vertical-align: top;border-collapse: collapse;line-height: inherit;color: #000000;overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;"
-                              align="left">
-
-                              <img align="center" border="0" src="{{.}}" alt="乐闻世界"
-                                title="乐闻世界"
-                                style="line-height: inherit;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 80%;max-width: 300px;margin-top: 8px;" />
-                            </td>
-                            {{end}}
-                          </tr>
-                          {{end}}
-                        </tbody>
-                      </table> -->
-                      {{end}}
-                      {{end}}
 
                     </div>
                   </div>

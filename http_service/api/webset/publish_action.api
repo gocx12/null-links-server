@@ -1,20 +1,20 @@
 syntax = "v1"
 
 type PublishActionReq {
-	Token 		string 		`json:"token"` 
 	ActionType  int32 		`json:"action_type"`
-	Title 		string 		`json:"title"`
-	Category	string		`json:"category"`
+	Category	int32		`json:"category"`
 	AuthorId	int64		`json:"author_id"`
-	Describe 	string 		`json:"describe"`
+	Title 		string 		`json:"title"`
+	Describe 	string 		`json:"description"`
+	CoverURL  string     `json:"cover_url"`
 	WebLinkList []WebLinkPublish	`json:"weblink_list"`
-	WebsetId	int64 `json:"webest_id"`
+	WebsetId	int64 `json:"webest_id,optional"`
 }
 
 type WebLinkPublish {
 	Url 		string 	`json:"url"`
-	Describe 	string 	`json:"describe"`
-	CoverURL	string 		`json:"cover_url"`
+	Describe 	string 	`json:"description"`
+	CoverURL	string 		`json:"cover_url,optional"`
 }
 
 type PublishActionResp {

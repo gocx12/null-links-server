@@ -1,12 +1,12 @@
 syntax = "v1"
 
 type UploadPicReq {
-	UserId	int64 `json:"user_id"`
 }
 
 type UploadPicResp {
 	StatusCode int32  `json:"status_code"`         
 	StatusMsg  string `json:"status_msg,optional"`
+	Success    bool   `json:"success"`
 }
 
 

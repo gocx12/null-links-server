@@ -3,7 +3,6 @@ syntax = "v1"
 import "../webset.api"
 
 type FavoriteListReq {
-	Token  string `form:"token"`   
 	UserID int64 	`form:"user_id"` 
 }
 

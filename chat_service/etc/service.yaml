@@ -7,10 +7,23 @@ Log:
   Mode: "console"
   Encoding: "plain"
   Level: "debug"
-  Path: "chat_service/logs"
+  Path: "/data/logs"
+
+RedisConf:
+  Host: "127.0.0.1:6379"
+  Password: ""
+  DB:   0
 
 Auth:
   AccessSecret: "AccessSecret"
   AccessExpire: 604800
 
 DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+
+# RPC
+UserRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+  NonBlock: true

@@ -3,8 +3,8 @@ syntax = "v1"
 import "../webset.api"
 
 type FeedReq {
-	LatestTime 	string `form:"latest_time,optional"` 
-	Token      	string `form:"token,optional"`       
+	LatestTime 	string `form:"latest_time,optional"`
+	UserId	int64   `form:"user_id,optional"`
 	Page		string	`form:"page,optional"`
 	PageSize	string 	`form:"page_size,optional"`
 }

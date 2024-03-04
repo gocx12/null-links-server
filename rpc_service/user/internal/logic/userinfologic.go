@@ -35,7 +35,7 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 
 		return &user.UserInfoResp{
 			StatusCode: 1004,
-			StatusMsg:  "用户不存在",
+			StatusMsg:  "the user does not exist",
 			UserInfo:   nil,
 		}, nil
 	}

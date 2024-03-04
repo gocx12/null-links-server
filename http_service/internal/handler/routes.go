@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	common "null-links/http_service/internal/handler/common"
 	social "null-links/http_service/internal/handler/social"
 	user "null-links/http_service/internal/handler/user"
 	webset "null-links/http_service/internal/handler/webset"
@@ -127,5 +128,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/social"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/upload/pic",
+				Handler: common.UploadPicHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/upload/file",
+				Handler: common.UploadFileHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/report",
+				Handler: common.ReportHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/common"),
 	)
 }

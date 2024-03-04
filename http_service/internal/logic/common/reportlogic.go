@@ -1,10 +1,10 @@
-package chat
+package common
 
 import (
 	"context"
 
-	"null-links/chat_service/internal/svc"
-	"null-links/chat_service/internal/types"
+	"null-links/http_service/internal/svc"
+	"null-links/http_service/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,19 +23,8 @@ func NewReportLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ReportLogi
 	}
 }
 
-func (l *ReportLogic) Report(req *types.ChatReportReq) (resp *types.ChatReportResp, err error) {
+func (l *ReportLogic) Report(req *types.ReportReq) (resp *types.ReportResp, err error) {
 	// todo: add your logic here and delete this line
-	
-	switch req.type:
-	case 1:
-	// 举报用户
-	case 2:
-	// 举报聊天
-	case 3:
-	// 举报webset
-	default:
-		logx.Error("unknow report type:", req.type)
-
 
 	return
 }

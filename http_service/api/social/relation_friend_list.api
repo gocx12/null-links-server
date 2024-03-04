@@ -3,7 +3,6 @@ syntax = "v1"
 import "../user.api"
 
 type RelationFriendListReq {
-	Token  string `form:"token"`   
 	UserID string `form:"user_id"` 
 }
 

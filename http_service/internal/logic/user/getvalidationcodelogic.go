@@ -26,8 +26,6 @@ func NewGetValidationCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *GetValidationCodeLogic) GetValidationCode(req *types.GetValidationCodeReq) (resp *types.GetValidationCodeResp, err error) {
-	logx.Debug("email: ", req.Email)
-
 	respRpc, err := l.svcCtx.UserRpc.GetValidtaionCode(l.ctx, &user.GetValidtaionCodeReq{
 		Email: req.Email,
 	})
@@ -50,7 +48,7 @@ func (l *GetValidationCodeLogic) GetValidationCode(req *types.GetValidationCodeR
 
 	resp = &types.GetValidationCodeResp{
 		StatusCode: internal.StatusSuccess,
-		StatusMsg:  "success",
+		StatusMsg:  "成功",
 	}
 	return
 }

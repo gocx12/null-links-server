@@ -3,7 +3,6 @@ syntax = "v1"
 import "../user.api"
 
 type UserInfoReq {
-	Token  string	`form:"token"`   	
 	UserID int64	`form:"user_id"` 	
 }
 

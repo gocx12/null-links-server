@@ -38,6 +38,7 @@ type (
 	TWeblink struct {
 		Id        int64        `db:"id"`         // 主键id
 		LinkId    int64        `db:"link_id"`    // 网页id
+		WebsetId  int64        `db:"webset_id"`  // 网页单id
 		AuthorId  int64        `db:"author_id"`  // 添加者id
 		Describe  string       `db:"describe"`   // 描述
 		Url       string       `db:"url"`        // 网址
@@ -85,14 +86,14 @@ func (m *defaultTWeblinkModel) FindOne(ctx context.Context, id int64) (*TWeblink
 }
 
 func (m *defaultTWeblinkModel) Insert(ctx context.Context, data *TWeblink) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWeblinkRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.AuthorId, data.Describe, data.Url, data.CoverUrl, data.ClickCnt, data.Status, data.DeletedAt)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWeblinkRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.WebsetId, data.AuthorId, data.Describe, data.Url, data.CoverUrl, data.ClickCnt, data.Status, data.DeletedAt)
 	return ret, err
 }
 
 func (m *defaultTWeblinkModel) Update(ctx context.Context, data *TWeblink) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, tWeblinkRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.AuthorId, data.Describe, data.Url, data.CoverUrl, data.ClickCnt, data.Status, data.DeletedAt, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.WebsetId, data.AuthorId, data.Describe, data.Url, data.CoverUrl, data.ClickCnt, data.Status, data.DeletedAt, data.Id)
 	return err
 }
 

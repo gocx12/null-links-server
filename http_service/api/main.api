@@ -20,7 +20,8 @@ import "./social/relation_follower_list.api"
 import "./social/relation_friend_list.api"
 import "./social/message_action.api"
 
-import "./common/upload_pic.api"
+import "./common/upload.api"
+import "./common/report.api"
 
 type PingReq {
 }
@@ -120,4 +121,7 @@ service service {
 
 	@handler UploadFile
 	post /upload/file (UploadFileReq) returns (UploadFileResp)
+
+	@handler Report
+	post /report (ReportReq) returns (ReportResp)
 }

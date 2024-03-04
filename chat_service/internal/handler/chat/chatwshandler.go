@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -8,6 +9,9 @@ import (
 	"null-links/chat_service/internal/logic/chat"
 	"null-links/chat_service/internal/svc"
 	"null-links/chat_service/internal/types"
+	"null-links/rpc_service/user/pb/user"
+
+	"null-links/internal"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -38,7 +42,24 @@ func ChatWsHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		hub := chat.NewHub(req.WebsetID)
 
-		client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256), WebsetId: req.WebsetID, UserId: req.UserID, Ctx: r.Context(), SvcCtx: svcCtx}
+		userInfoRespRpc, err := svcCtx.UserRpc.UserInfo(context.Background(), &user.UserInfoReq{
+			UserId: req.UserID,
+		})
+		if err != nil {
+			logx.Error("get user name and avatar url from user rpc error: ", err)
+			return
+		}
+		if userInfoRespRpc.StatusCode != internal.StatusSuccess {
+			logx.Error("get user name and avatar url from user rpc error: ", userInfoRespRpc.StatusMsg)
+			return
+		}
+
+		client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256),
+			WebsetId: req.WebsetID, UserId: req.UserID,
+			UserName:  userInfoRespRpc.UserInfo.Name,
+			AvatarUrl: userInfoRespRpc.UserInfo.AvatarUrl,
+			Ctx:       r.Context(), SvcCtx: svcCtx,
+		}
 		client.Hub.Register <- client
 
 		// Allow collection of memory referenced by the caller by doing all work in

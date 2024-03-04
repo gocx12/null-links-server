@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -17,6 +18,7 @@ type (
 		tUserModel
 		FindOneByName(ctx context.Context, username string) (*TUser, error)
 		FindMulti(ctx context.Context, userIds []int64) ([]*TUser, error)
+		FindPasswordByEmail(ctx context.Context, email string) (*TUser, error)
 	}
 
 	customTUserModel struct {
@@ -45,8 +47,26 @@ func (c *customTUserModel) FindOneByName(ctx context.Context, username string) (
 	}
 }
 
+func (c *customTUserModel) FindPasswordByEmail(ctx context.Context, email string) (*TUser, error) {
+	query := fmt.Sprintf("select %s from %s where `email` = ? limit 1", tUserRows, c.table)
+	var resp TUser
+	err := c.conn.QueryRowCtx(ctx, &resp, query, email)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (c *customTUserModel) FindMulti(ctx context.Context, userIds []int64) ([]*TUser, error) {
-	query := fmt.Sprintf("select %s from %s where `id` in (?)", tUserRows, c.table)
+	placeHodlers := make([]string, 0, len(userIds))
+	for range userIds {
+		placeHodlers = append(placeHodlers, "?")
+	}
+	query := fmt.Sprintf("select %s from %s where `id` in (%s)", tUserRows, c.table, strings.Join(placeHodlers, ","))
 	var resp []*TUser
 	err := c.conn.QueryRowsCtx(ctx, &resp, query, userIds)
 	switch err {

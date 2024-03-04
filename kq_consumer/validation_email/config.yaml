@@ -1,9 +1,15 @@
-Name: kq
-Brokers:
-- 127.0.0.1:19092
-- 127.0.0.1:19092
-- 127.0.0.1:19092
-Group: adhoc
-Topic: validation-email
-Offset: first
-Consumers: 1
+Mode: "debug"
+
+VdEmailKqConsumser:
+  Name: kq
+  Brokers:
+  - 10.63.180.57:9092
+  Group: nl_consumer
+  Topic: validation-email
+  Offset: first
+  Consumers: 1
+
+email:
+ SmtpDomain: "smtp.163.com"
+ Sender: "null_links@163.com"
+ Password: "UKASRFRWQZFNUIAN"

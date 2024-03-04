@@ -6,6 +6,7 @@ import (
 
 	"null-links/chat_service/internal/config"
 	"null-links/chat_service/internal/handler"
+	"null-links/chat_service/internal/middleware"
 	"null-links/chat_service/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -13,6 +14,8 @@ import (
 )
 
 var configFile = flag.String("f", "./chat_service/etc/service.yaml", "the config file")
+
+// var configFile = flag.String("f", "./etc/service.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -22,7 +25,7 @@ func main() {
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
-
+	server.Use(middleware.NewCorsMiddleware().Handle)
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 

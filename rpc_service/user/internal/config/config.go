@@ -1,11 +1,18 @@
 package config
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"github.com/zeromicro/go-zero/zrpc"
+)
 
 type Config struct {
 	zrpc.RpcServerConf
-	DataSource             string
-	ValidationKqPusherConf struct {
+	DataSource string
+	RedisConf  struct {
+		Host     string
+		Password string
+		DB       int
+	}
+	VdEmailMqPusherConf struct {
 		Brokers []string
 		Topic   string
 	}

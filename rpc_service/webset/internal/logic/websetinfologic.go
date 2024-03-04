@@ -6,10 +6,11 @@ import (
 	"null-links/rpc_service/webset/internal/svc"
 	"null-links/rpc_service/webset/pb/webset"
 
+	"null-links/internal"
+
 	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"null-links/internal"
 )
 
 type WebsetInfoLogic struct {
@@ -51,7 +52,7 @@ func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetIn
 		likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
 		if err != nil && err != sqlx.ErrNotFound {
 			logx.Error("get like info failed, err: ", err)
-		} else if err == nil && likeInfoDb.IsLike == 1 {
+		} else if err == nil && likeInfoDb.Status == 1 {
 			isLikeResp = true
 		}
 	} else if isLikeRds == "1" {

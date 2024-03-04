@@ -37,7 +37,7 @@ type (
 
 	TChat struct {
 		Id        int64        `db:"id"`         // 主键id
-		ChatId    string       `db:"chat_id"`    // 聊天消息id
+		ChatId    int64        `db:"chat_id"`    // 聊天消息id
 		UserId    int64        `db:"user_id"`    // 用户id
 		WebsetId  int64        `db:"webset_id"`  // 网页单id
 		Content   string       `db:"content"`    // 消息内容

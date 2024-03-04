@@ -35,7 +35,7 @@ func (l *CheckUsernameLogic) CheckUsername(req *types.CheckUsernameReq) (resp *t
 		resp = &types.CheckUsernameResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "检查用户错误",
-			Result:     respRpc.Result,
+			Result:     0,
 		}
 		err = nil
 		return

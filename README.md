@@ -7,3 +7,6 @@ Link us with links
 
 # API Document
 https://app.apifox.com/project/3613606
+
+# docker
+docker compose -f compose.yaml up --remove-orphans -d

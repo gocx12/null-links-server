@@ -37,9 +37,17 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		err = nil
 		return
 	}
+	if req.Password == "" {
+		resp = &types.LoginResp{
+			StatusCode: internal.StatusParamErr,
+			StatusMsg:  "请输入密码",
+			UserID:     -1,
+		}
+		err = nil
+		return
+	}
 
 	resp = &types.LoginResp{}
-
 	respRpc, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
 		Username: req.Username,
 		Email:    req.UserEmail,
@@ -54,9 +62,9 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	} else if respRpc.StatusCode != internal.StatusSuccess {
 		// the username does not exsit or the password is incorrect
 		logx.Error("call UserRpc failed, err: " + respRpc.StatusMsg)
-		if resp.StatusCode == internal.StatusUserNotExist {
+		if respRpc.StatusCode == internal.StatusUserNotExist {
 			resp.StatusCode = internal.StatusUserNotExist
-			resp.StatusMsg = "用户名或邮箱不存在"
+			resp.StatusMsg = "该邮箱不存在"
 		} else if resp.StatusCode == internal.StatusPasswordErr {
 			resp.StatusCode = internal.StatusPasswordErr
 			resp.StatusMsg = "密码错误"

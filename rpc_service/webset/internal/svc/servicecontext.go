@@ -30,7 +30,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LikeModel:     model.NewTLikeModel(sqlx.NewMysql(c.DataSource)),
 		WeblinkModel:  model.NewTWeblinkModel(sqlx.NewMysql(c.DataSource)),
 		WebsetModel:   model.NewTWebsetModel(sqlx.NewMysql(c.DataSource)),
-		RedisClient:   nl_redis.NewRedisClient(c.RedisConf),
+		RedisClient: nl_redis.NewClient(&redis.Options{
+			Addr:     c.RedisConf.Host,
+			Password: c.RedisConf.Password,
+			DB:       c.RedisConf.DB,
+		}),
 
 		UserRpc: user.NewUserServiceClient(zrpc.MustNewClient(c.UserRpcConf).Conn()),
 	}

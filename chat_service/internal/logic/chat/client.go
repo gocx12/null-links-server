@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/demdxx/gocast"
@@ -45,10 +46,16 @@ type ChatWriteMsg struct {
 }
 
 type ChatSendMsg struct {
+	UserId    int64  `json:"user_id"`
+	UserName  string `json:"user_name"`
+	AvatarUrl string `json:"avatar_url"`
+	Content   string `json:"content"`
+	ChatId    string `json:"chat_id"`
+	CreatedAt string `json:"created_at"`
+}
+
+type InitSendMsg struct {
 	ViewingCnt uint32 `json:"viewing_cnt"`
-	UserId     int64  `json:"user_id"`
-	Content    string `json:"content"`
-	CreatedAt  string `json:"created_at"`
 }
 
 // Client is a middleman between the websocket connection and the hub.
@@ -61,10 +68,12 @@ type Client struct {
 	// Buffered channel of outbound messages.
 	Send chan []byte
 
-	WebsetId int64
-	UserId   int64
-	Ctx      context.Context
-	SvcCtx   *svc.ServiceContext
+	WebsetId  int64
+	UserId    int64
+	UserName  string
+	AvatarUrl string
+	Ctx       context.Context
+	SvcCtx    *svc.ServiceContext
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -94,10 +103,15 @@ func (c *Client) ReadPump() {
 		logx.Debug("chat msg: ", chatWriteMsg)
 
 		// generate chat msg id
-		chatMsgId := c.genChatMsgId(c.UserId, c.WebsetId)
+		chatMsgId, err := c.genChatMsgId(c.UserId, c.WebsetId)
+		if err != nil {
+			logx.Error("get chat id key from redis error: ", err)
+			// TODO(chancy): 1.如何通知用户发送失败了 2.告警
+			continue
+		}
 
 		// save to db
-		resDb, err := c.SvcCtx.ChatModel.Insert(c.Ctx, &model.TChat{
+		resDb, err := c.SvcCtx.ChatModel.Insert(context.Background(), &model.TChat{
 			ChatId:   chatMsgId,
 			UserId:   c.UserId,
 			WebsetId: c.WebsetId,
@@ -106,23 +120,28 @@ func (c *Client) ReadPump() {
 		})
 		if err != nil {
 			logx.Error("insert chat msg to db failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
+			continue
 		} else {
 			rowsAffected, err := resDb.RowsAffected()
 			if err != nil {
 				logx.Error("insert chat msg to db and get RowsAffected failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
+				continue
 			} else if rowsAffected == 0 {
 				logx.Error("insert chat msg to db failed, rows affected=0", " chatWriteMsg: ", chatWriteMsg)
+				continue
 			}
 		}
 
-		// TODO(chancyGao): 审核
+		// TODO(chancyGao): 机审 过关键词库
 
 		// broadcast to all clients
 		chatSendMsg := ChatSendMsg{
-			UserId:     c.UserId,
-			Content:    chatWriteMsg.Content,
-			ViewingCnt: c.Hub.ViewingCnt,
-			CreatedAt:  time.Now().Format("2006-01-02 15:04:05"),
+			UserId:    c.UserId,
+			UserName:  c.UserName,
+			AvatarUrl: c.AvatarUrl,
+
+			Content:   chatWriteMsg.Content,
+			CreatedAt: time.Now().Format("2006-01-02 15:04"),
 		}
 		chatSendMsgByte, err := json.Marshal(chatSendMsg)
 		if err != nil {
@@ -181,11 +200,38 @@ func (c *Client) WritePump() {
 	}
 }
 
-func (c *Client) genChatMsgId(userId, websetId int64) string {
-	// current time
-	curTimeStr := time.Now().Format("20060102150405")
-	userIdStr := gocast.ToString(userId)
-	websetIdStr := gocast.ToString(websetId)
-	chatMsgId := curTimeStr + userIdStr + websetIdStr
-	return chatMsgId
+var (
+	RdsKeyChatIdKeyPrefix = "ChatIdCnt_"
+)
+
+func (c *Client) genChatMsgId(userId, websetId int64) (int64, error) {
+	// id格式 6位日期 + 5位秒数 + 4位计数
+	dateStr := time.Now().Format("060102")
+
+	// 获取当前时间到当天 0 点的秒数（一天有86,400秒）
+	now := time.Now()
+	zeroTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	duration := now.Sub(zeroTime)
+	secondsStr := fmt.Sprintf("%05d", int64(duration.Seconds()))
+
+	chatMsgId := dateStr + secondsStr
+	key := RdsKeyChatIdKeyPrefix + gocast.ToString(websetId) + "_" + chatMsgId
+	ctx := context.Background()
+	count, err := c.SvcCtx.RedisClient.Incr(ctx, key).Result()
+	if err != nil {
+		logx.Error("get chat id count from redis error:", err)
+	}
+	logx.Debug("count:", count)
+	if count == 1 {
+		// 每一秒的第一个订单号，设置一下key过期时间
+		c.SvcCtx.RedisClient.Expire(ctx, key, 1*time.Second)
+	} else if count >= 10000 {
+		return -1, fmt.Errorf("more than 9999 msg during 1 second")
+	}
+	countStr := fmt.Sprintf("%05d", count)
+
+	chatMsgId += countStr
+	logx.Debug("gen chat id:", chatMsgId)
+
+	return gocast.ToInt64(chatMsgId), nil
 }

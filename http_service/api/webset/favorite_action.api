@@ -2,7 +2,6 @@ syntax = "v1"
 
 type FavoriteActionReq {
 	ActionType int32 `form:"action_type"` 
-	Token      string `form:"token"`       
 	WebsetID   int64 `form:"webset_id"`    
 }
 

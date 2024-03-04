@@ -2,12 +2,14 @@ package logic
 
 import (
 	"context"
+	"time"
 
 	"null-links/rpc_service/user/internal/svc"
 	"null-links/rpc_service/user/pb/user"
 
-	"github.com/zeromicro/go-zero/core/logx"
 	"null-links/internal"
+
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"math/rand"
 )
@@ -32,13 +34,13 @@ var (
 
 func (l *GetValidtaionCodeLogic) GetValidtaionCode(in *user.GetValidtaionCodeReq) (*user.GetValidtaionCodeResp, error) {
 	resp := &user.GetValidtaionCodeResp{}
-	logx.Debug("GetValidtaionCodeLogic.GetValidtaionCode", "email: ", in.Email)
+	logx.Debug("get validation cod, email: ", in.Email)
 
 	recipient := in.Email
 	validationCode := l.generateValidationCode()
 
-	// Redis存储验证码, 5分钟过期
-	err := l.svcCtx.RedisClient.Setex(RdsKeyEmailValidationPre+recipient, validationCode, 300)
+	// Redis存储验证码, 10分钟过期
+	_, err := l.svcCtx.RedisClient.SetEx(l.ctx, RdsKeyEmailValidationPre+"_"+recipient, validationCode, 10*time.Minute).Result()
 	if err != nil {
 		logx.Error("failed to set email validation code to redis, error:", err, " email: ", recipient)
 		resp.StatusCode = internal.StatusRpcErr
@@ -46,9 +48,10 @@ func (l *GetValidtaionCodeLogic) GetValidtaionCode(in *user.GetValidtaionCodeReq
 		return resp, nil
 	}
 
-	data := validationCode + "::" + recipient
-	if err := l.svcCtx.ValidationKqPusherClient.Push(data); err != nil {
-		logx.Error("ValidationKqPusherClient Push error:", err)
+	// kafka pusher
+	data := recipient + "::" + validationCode
+	if err := l.svcCtx.VdEmailMqPusher.Push(data); err != nil {
+		logx.Error("VdEmailMqPusher Push error:", err)
 		resp.StatusCode = 0
 		resp.StatusMsg = "push email validation code to kq failed, err: " + err.Error()
 		return resp, nil

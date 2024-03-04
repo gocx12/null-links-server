@@ -1,24 +1,23 @@
 Name: user.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:8083
 
 Log:
   ServiceName: "rpc_user"
   Mode: "console"
   Encoding: "plain"
   Level: "debug"
-  Path: "rpc_service/user/logs"
+  Path: "/data/logs"
 
 DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
-Redis:
-  Host: "127.0.0.1:6379",
-  Type: "node",
-  Pass: "123456",
-  Tls:  false,
+RedisConf:
+  Host: "127.0.0.1:6379"
+  Password: ""
+  DB:   0
 
-ValidationKqPusherConf:
+VdEmailMqPusherConf:
   Brokers:
-    - 127.0.0.1:9092
+    - 10.63.180.57:9092
   Topic: validation-email
 
 Etcd:

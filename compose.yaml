@@ -1,35 +1,50 @@
 version: "3.0"
 
 networks:
-  etcd-net:           # 网络
+  web-network:           # 网络
     driver: bridge    # 桥接模式
 
 services:
-  http_service:
-    build: ./http_service
+  chat_service:
+    build: 
+      context: ./  # 将项目根目录作为构建上下文
+      dockerfile: ./chat_service/Dockerfile
     ports:
-      - "8080:8080"
+      - "8081:8081"
+    container_name: chat_service
+    networks:
+      - web-network
 
-  rpc_user:
-    build: ./rpc_service/user
-    ports:
-      - "8001:8080"
-    volumes:
-      - ./rpc_service/user:/go/src/rpc_service/user
+  # http_service:
+  #   build: 
+  #     context: ./  
+  #     dockerfile: ./http_service/Dockerfile
+  #   ports:
+  #     - "8888:8888"
+  #   container_name: http_service
+
+  # rpc_user:
+  #   build: 
+  #     context: ./  
+  #     dockerfile: ./rpc_service/webset/Dockerfile
+  #   ports:
+  #     - "8083:8083"
+  #   container_name: rpc_user
     
-  rpc_webset:
-    build: ./rpc_service/webset
-    ports:
-      - "8002:8080"
-    volumes:
-      - ./rpc_service/webset:/go/src/rpc_service/webset
+  # rpc_webset:
+  #   build: 
+  #     context: ./ 
+  #     dockerfile: ./rpc_service/webset/Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   container_name: rpc_webset
 
   etcd:
-    image: bitnami/etcd:latest  # 镜像
+    image: bitnami/etcd:latest  # 镜像k
     container_name: etcd       # 容器名 --name
     restart: always             # 总是重启
     networks:
-      - etcd-net                # 使用的网络 --network
+      - web-network                # 使用的网络 --network
     ports:                      # 端口映射 -p
       - "2379:2379"
       - "2380:2380"
@@ -41,4 +56,76 @@ services:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
     volumes:
-      - etcd1_data:/bitnami/etcd                            # 挂载的数据卷
+      - /data/null-links/etcd/data:/bitnami/etcd/data                            # 挂载的数据卷
+    
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    volumes:
+      - /data/null-links/zookeeper:/data
+      - /data/null-links/zookeeper:/datalog
+      - /data/null-links/zookeeper:/logs
+    container_name: zookeeper
+    networks:
+      - web-network
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+      # - "29092:29092"
+      # - "19092:19092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.63.180.57:9092
+      KAFKA_BROKER_ID: 0
+      KAFKA_CREATE_TOPICS: "validation-email:1:1"
+    volumes:
+      - /data/null-links/kafka:/kafka
+    depends_on:
+      - zookeeper
+    hostname: kafka
+    container_name: kafka
+    networks:
+      - web-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - 9093:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "TRUE"
+
+  minio:
+    image: bitnami/minio
+    hostname: "minio"
+    ports:
+      - 9000:9000 # api 端口
+      - 9001:9001 # 控制台端口
+    privileged: true
+    environment:
+      MINIO_ROOT_USER: admin    #管理后台用户名
+      MINIO_ROOT_PASSWORD: admin123 #管理后台密码，最小8个字符
+    volumes:
+      - /data/null-links/minio/data:/data               #映射当前目录下的data目录至容器内/data目录
+      - /data/null-links/minio/config:/root/.minio/     #映射配置目录
+    # command: server /data
+    restart: always
+    container_name: minio
+
+  redis:
+    image: redis:4.0.1
+    container_name: redis
+    volumes:
+      - /data/null-links/redis/datadir:/data
+      - /data/null-links/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - /data/null-links/redis/logs:/logs
+    command: redis-server
+    ports:
+      - 6379:6379

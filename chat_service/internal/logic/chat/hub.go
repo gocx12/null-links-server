@@ -44,7 +44,6 @@ func NewHub(websetId int64) *Hub {
 			Register:   make(chan *Client),
 			unregister: make(chan *Client),
 			clients:    make(map[*Client]bool),
-			ViewingCnt: 0,
 		}
 		hubMap[websetId] = hub
 		go hub.run()
@@ -89,9 +88,7 @@ func (h *Hub) broadcastMsg(message []byte) {
 }
 
 func genViewCntChangeMsg(viewingCnt uint32) []byte {
-	viewCntChangeMsg := ChatSendMsg{
-		UserId:     -1,
-		Content:    "",
+	viewCntChangeMsg := InitSendMsg{
 		ViewingCnt: viewingCnt,
 	}
 	viewCntChangeMsgByte, err := json.Marshal(viewCntChangeMsg)

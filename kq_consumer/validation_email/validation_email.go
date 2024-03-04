@@ -2,49 +2,70 @@ package main
 
 import (
 	"bytes"
-	"fmt"
-	"github.com/jordan-wright/email"
-	"github.com/zeromicro/go-queue/kq"
-	"github.com/zeromicro/go-zero/core/conf"
 	"net/http"
 	"net/smtp"
 	"strings"
 	"text/template"
 
+	"github.com/jordan-wright/email"
+	"github.com/zeromicro/go-queue/kq"
+	"github.com/zeromicro/go-zero/core/conf"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+type Email struct {
+	SmtpDomain string
+	Sender     string
+	Password   string
+}
+type Conf struct {
+	Mode               string
+	Email              Email
+	VdEmailKqConsumser kq.KqConf
+}
+
+var c Conf
+
+// 验证码邮件模板
+type TicketInfo struct {
+	Picture        string
+	Title          string
+	Desc           string
+	Warning        string
+	ValidationCode string
+}
+
 func main() {
-	var c kq.KqConf
 	conf.MustLoad("./kq_consumer/validation_email/config.yaml", &c)
 
-	RunValidationPageServer()
+	// if c.Mode == "debug" {
+	// 	logx.Debug("start server")
+	// 	runVdEmailPageServer()
+	// }
 
-	q := kq.MustNewQueue(c, kq.WithHandle(sendEmail))
+	logx.Info("validation email kq consumer starting")
+	q := kq.MustNewQueue(c.VdEmailKqConsumser, kq.WithHandle(sendEmail))
 	defer q.Stop()
 	q.Start()
 }
 
 func sendEmail(k, v string) error {
+	logx.Debug("sendEmail", "k: ", k, " v: ", v)
 	// 邮件服务器地址和端口 发件人邮箱和密码
-	smtpDomain := "smtp.163.com"
-	sender := "null_links@163.com"
-	password := "1Q2W3E4r5t"
-	auth := smtp.PlainAuth("GWRLOVSZYVLRYQCH", sender, password, smtpDomain)
+	smtpDomain := c.Email.SmtpDomain
+	sender := c.Email.Sender
+	password := c.Email.Password
+	auth := smtp.PlainAuth("", sender, password, smtpDomain)
 
-	// 收件人邮箱
+	// 收件人邮箱与验证码
 	kqValue := v
 	kqVaules := strings.Split(kqValue, "::")
-	validationCode := kqVaules[0]
-	recipient := kqVaules[1]
+	recipient := kqVaules[0]
+	validationCode := kqVaules[1]
 
 	// 邮件主题和内容
 	subject := "Null-Links 注册验证码"
-	// body := fmt.Sprintf("本邮件来自NULL Links, 您的验证码是: %s。请在5分钟内完成验证。", validationCode)
-	// message := "From: " + sender + "\n\r" +
-	// 	"To: " + recipient + "\n\r" +
-	// 	"Subject: " + subject + "\n\r\n\r" +
-	// 	body
 
 	ticketInfo := TicketInfo{
 		Picture:        "http://localhost:3000/static/logo.png",
@@ -62,12 +83,6 @@ func sendEmail(k, v string) error {
 	tmpl.Execute(body, ticketInfo)
 
 	// 发送邮件
-	// err := smtp.SendMail(smtpDomain, auth, sender, []string{recipient}, []byte(message))
-	// if err != nil {
-	// 	logx.Error("Failed to send email:", err)
-	// 	return err
-	// }
-
 	e := email.NewEmail()
 	e.From = sender
 	e.To = []string{recipient}
@@ -76,19 +91,11 @@ func sendEmail(k, v string) error {
 	err = e.Send(smtpDomain+":25", auth)
 	if err != nil {
 		// TODO(chancyGao): 增加告警
-		logx.Error("Failed to send email:", err, " recipient: ", recipient)
+		logx.Error("Failed to send email:", err, " ,recipient: ", recipient)
 		return err
 	}
 
 	return nil
-}
-
-type TicketInfo struct {
-	Picture        string
-	Title          string
-	Desc           string
-	Warning        string
-	ValidationCode string
 }
 
 func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
@@ -98,13 +105,20 @@ func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
 	return tmpl, err
 }
 
+func runVdEmailPageServer() {
+	http.HandleFunc("/", renderHtml)
+	err := http.ListenAndServe("127.0.0.1:3002", nil)
+
+	if err != nil {
+		logx.Error("HTTP server failed, err: ", err)
+		return
+	}
+	logx.Info("starting http://localhost:3002")
+}
+
 func renderHtml(responseWriter http.ResponseWriter, request *http.Request) {
 	// 解析指定文件生成模板对象
 	ticketInfo := TicketInfo{
-		Picture:        "http://localhost:3000/static/null_link_logo.ico",
-		Title:          "Null-Links 注册验证码",
-		Desc:           "欢迎注册Null-Links。",
-		Warning:        "请不要回复本邮件",
 		ValidationCode: "abca",
 	}
 	tmpl, err := genHtml(ticketInfo)
@@ -113,17 +127,4 @@ func renderHtml(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 	tmpl.Execute(responseWriter, ticketInfo)
-}
-
-func RunValidationPageServer() {
-	fs := http.FileServer(http.Dir("./kq_consumer/validation_email/"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
-	http.HandleFunc("/", renderHtml)
-	err := http.ListenAndServe("127.0.0.1:3000", nil)
-	if err != nil {
-		fmt.Println("HTTP server failed,err:", err)
-		return
-	}
-	fmt.Print("starting http://localhost:3000")
 }

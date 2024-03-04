@@ -39,7 +39,6 @@ type (
 		Id        int64        `db:"id"`         // 主键id
 		UserId    int64        `db:"user_id"`    // 用户id
 		WebsetId  int64        `db:"webset_id"`  // 网页单id
-		IsLike    int64        `db:"is_like"`    // 是否点赞
 		Status    int64        `db:"status"`     // 在库状态
 		CreatedAt time.Time    `db:"created_at"` // 创建时间
 		UpdatedAt time.Time    `db:"updated_at"` // 更新时间
@@ -82,14 +81,14 @@ func (m *defaultTLikeModel) FindOne(ctx context.Context, id int64) (*TLike, erro
 }
 
 func (m *defaultTLikeModel) Insert(ctx context.Context, data *TLike) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, tLikeRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.WebsetId, data.IsLike, data.Status, data.DeletedAt)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, tLikeRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.UserId, data.WebsetId, data.Status, data.DeletedAt)
 	return ret, err
 }
 
 func (m *defaultTLikeModel) Update(ctx context.Context, data *TLike) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, tLikeRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.WebsetId, data.IsLike, data.Status, data.DeletedAt, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.WebsetId, data.Status, data.DeletedAt, data.Id)
 	return err
 }
 

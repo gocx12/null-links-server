@@ -3,7 +3,6 @@ syntax = "v1"
 import "../webset.api"
 
 type PublishListReq {
-	Token  string `form:"token"`   
 	UserID int64 `form:"user_id"` 
 	Page   int32 `form:"page"`
 	PageSize int32 `form:"page_size"`

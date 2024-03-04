@@ -36,13 +36,13 @@ func (l *CheckUsernameLogic) CheckUsername(in *user.CheckUsernameReq) (*user.Che
 	case nil:
 		resp.StatusCode = internal.StatusSuccess
 		resp.StatusMsg = "success"
-		resp.Result = 1
+		resp.Result = 0
 		return resp, nil
 	case model.ErrNotFound:
 		logx.Debug("username: ", in.Username)
 		resp.StatusCode = internal.StatusSuccess
 		resp.StatusMsg = "success"
-		resp.Result = 0
+		resp.Result = 1
 		return resp, nil
 	default:
 		logx.Error("get user info from db error: ", err)

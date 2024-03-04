@@ -2,7 +2,11 @@
 
 package middleware
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
 
 // CorsMiddleware 跨域请求处理中间件
 type CorsMiddleware struct {
@@ -20,6 +24,7 @@ func (m *CorsMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		// 放行所有 OPTIONS 方法
 		if r.Method == "OPTIONS" {
+			logx.Debug("OPTIONS")
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}

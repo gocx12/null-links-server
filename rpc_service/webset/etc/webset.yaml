@@ -1,5 +1,13 @@
 Name: webset.rpc
 ListenOn: 0.0.0.0:8080
+
+Log:
+  ServiceName: "rpc_wenset"
+  Mode: "console"
+  Encoding: "plain"
+  Level: "debug"
+  Path: "/data/logs"
+
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -8,8 +16,9 @@ Etcd:
 DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
   
 RedisConf:
-  Addr: "127.0.0.1:6379",
-  Password: "123456",
+  Host: "127.0.0.1:6379"
+  Password: ""
+  DB:   0
 
 UserRpcConf:
   Etcd:
