@@ -10,7 +10,7 @@ services:
       context: ./  # 将项目根目录作为构建上下文
       dockerfile: ./chat_service/Dockerfile
     ports:
-      - "8081:8081"
+      - "8889:8889"
     container_name: chat_service
     networks:
       - web-network
@@ -39,24 +39,24 @@ services:
   #     - "8080:8080"
   #   container_name: rpc_webset
 
-  etcd:
-    image: bitnami/etcd:latest  # 镜像k
-    container_name: etcd       # 容器名 --name
-    restart: always             # 总是重启
-    networks:
-      - web-network                # 使用的网络 --network
-    ports:                      # 端口映射 -p
-      - "2379:2379"
-      - "2380:2380"
-    environment:                # 环境变量 --env
-      - ALLOW_NONE_AUTHENTICATION=yes                       # 允许不用密码登录
-      - ETCD_NAME=etcd                                     # etcd 的名字
-      # - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
-      # - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380           # 用于监听伙伴通讯的URL列表
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
-    volumes:
-      - /data/null-links/etcd/data:/bitnami/etcd/data                            # 挂载的数据卷
+  # etcd:
+  #   image: bitnami/etcd:latest  # 镜像k
+  #   container_name: etcd       # 容器名 --name
+  #   restart: always             # 总是重启
+  #   networks:
+  #     - web-network                # 使用的网络 --network
+  #   ports:                      # 端口映射 -p
+  #     - "2379:2379"
+  #     - "2380:2380"
+  #   environment:                # 环境变量 --env
+  #     - ALLOW_NONE_AUTHENTICATION=yes                       # 允许不用密码登录
+  #     - ETCD_NAME=etcd                                     # etcd 的名字
+  #     # - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380  # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
+  #     # - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380           # 用于监听伙伴通讯的URL列表
+  #     - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379         # 用于监听客户端通讯的URL列表
+  #     - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379        # 列出这个成员的客户端URL，通告给集群中的其他成员
+  #   volumes:
+  #     - /data/null-links/etcd/data:/bitnami/etcd/data                            # 挂载的数据卷
     
   zookeeper:
     image: wurstmeister/zookeeper
