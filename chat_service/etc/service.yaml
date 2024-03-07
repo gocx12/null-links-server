@@ -4,7 +4,8 @@ Port: 8889
 
 Log:
   ServiceName: "chat_service"
-  Mode: "console"
+  # Mode: "console"
+  Mode: "file"
   Encoding: "plain"
   Level: "debug"
   Path: "/data/logs"

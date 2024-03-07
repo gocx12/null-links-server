@@ -9,17 +9,33 @@ Link us with links
 https://app.apifox.com/project/3613606
 
 # deploy
-1. 安装golang
+1. golang 安装
 ```bash
 
 ```
 
-2. 安装chrome内核，用于截图功能
+2. 安装chrome内核(用于截图功能)
+
 ```bash
 
 ```
 
-3. docker容器化部署依赖
+3. openresty 安装
+https://openresty.org/cn/linux-packages.html#ubuntu
+```bash
+sudo apt-get -y install --no-install-recommends wget gnupg ca-certificates lsb-release
+
+wget -O - https://openresty.org/package/pubkey.gpg | sudo apt-key add -
+
+echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" \
+| sudo tee /etc/apt/sources.list.d/openresty.list
+
+sudo apt-get update
+
+sudo apt-get -y install openresty
+```
+
+4. docker容器化部署依赖
 腾讯云教程: https://cloud.tencent.com/document/product/1207/45596
 
 ubuntu docker engine 安装:
