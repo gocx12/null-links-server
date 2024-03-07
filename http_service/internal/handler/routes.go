@@ -46,12 +46,24 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/get_validation_code",
 				Handler: user.GetValidationCodeHandler(serverCtx),
 			},
+		},
+		rest.WithPrefix("/user"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
 			{
 				Method:  http.MethodGet,
 				Path:    "/info",
 				Handler: user.UserInfoHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/modify",
+				Handler: user.ModifyHandler(serverCtx),
+			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/user"),
 	)
 

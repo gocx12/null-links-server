@@ -13,4 +13,11 @@ type Config struct {
 	}
 	UserRpcConf   zrpc.RpcClientConf
 	WebsetRpcConf zrpc.RpcClientConf
+	MinIO         struct {
+		Endpoint        string
+		AccessKeyID     string
+		SecretAccessKey string
+		UseSSL          bool
+		DownloadHost    string
+	}
 }

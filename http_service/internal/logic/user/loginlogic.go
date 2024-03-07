@@ -65,7 +65,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		if respRpc.StatusCode == internal.StatusUserNotExist {
 			resp.StatusCode = internal.StatusUserNotExist
 			resp.StatusMsg = "该邮箱不存在"
-		} else if resp.StatusCode == internal.StatusPasswordErr {
+		} else if respRpc.StatusCode == internal.StatusPasswordErr {
 			resp.StatusCode = internal.StatusPasswordErr
 			resp.StatusMsg = "密码错误"
 		} else {
@@ -96,5 +96,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	resp.StatusMsg = "登录成功"
 	resp.UserID = respRpc.UserId
 	resp.Token = token
+	resp.Username = respRpc.Username
+	resp.AvatarUrl = respRpc.AvatarUrl
 	return
 }

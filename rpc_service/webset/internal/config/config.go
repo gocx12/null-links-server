@@ -13,4 +13,15 @@ type Config struct {
 		Password string
 		DB       int
 	}
+	MinIO struct {
+		Endpoint        string
+		AccessKeyID     string
+		SecretAccessKey string
+		UseSSL          bool
+		DownloadHost    string
+	}
+	WlCoverKqConsumser struct {
+		Brokers []string
+		Topic   string
+	}
 }

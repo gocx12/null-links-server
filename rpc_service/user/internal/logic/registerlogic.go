@@ -67,11 +67,15 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 	res, err := l.svcCtx.UserModel.Insert(l.ctx, data)
 	if err != nil {
 		logx.Error("insert user into mysql error: ", err, ", data: ", data)
-		if match, _ := regexp.MatchString(".*(23000).*", err.Error()); match {
+		if match, _ := regexp.MatchString(".*(23000).*uidx_email.*", err.Error()); match {
+			resp.StatusCode = internal.StatusEmailExist
+			resp.StatusMsg = "this email has already existed"
+			resp.UserId = -1
+			return resp, nil
+		} else if match, _ := regexp.MatchString(".*(23000).*uidx_username.*", err.Error()); match {
 			resp.StatusCode = internal.StatusUserNameExist
 			resp.StatusMsg = "this username has already existed"
 			resp.UserId = -1
-
 			return resp, nil
 		}
 		resp.StatusCode = internal.StatusRpcErr
@@ -90,5 +94,6 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "success"
 	resp.UserId = id
+	resp.Username = in.Username
 	return resp, nil
 }

@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"null-links/rpc_service/webset/internal/model"
 	"null-links/rpc_service/webset/internal/svc"
@@ -10,6 +11,7 @@ import (
 
 	"null-links/internal"
 
+	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -42,54 +44,22 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 			FavoriteCnt: 0,
 			Status:      2, //status==2 待审核
 		}
-
-		// // 插入webset
-		// insRes, err := l.svcCtx.WebsetModel.Insert(l.ctx, &websetDb)
-		// if err != nil {
-		// 	logx.Error("insert webset failed, err: ", err)
-		// 	return &webset.PublishActionResp{
-		// 		StatusCode: internal.StatusRpcErr,
-		// 		StatusMsg:  "fail",
-		// 	}, nil
-		// }
-		// rowsAffected, err := insRes.RowsAffected()
-		// if err != nil {
-		// 	logx.Error("insert webset failed, err: ", err)
-		// 	return &webset.PublishActionResp{
-		// 		StatusCode: internal.StatusRpcErr,
-		// 		StatusMsg:  "fail",
-		// 	}, nil
-		// }
-		// if rowsAffected == 0 {
-		// 	logx.Error("insert webset failed, rows affected: ", rowsAffected)
-		// 	return &webset.PublishActionResp{
-		// 		StatusCode: internal.StatusRpcErr,
-		// 		StatusMsg:  "fail",
-		// 	}, nil
-		// }
-		// lastInsertId, err := insRes.LastInsertId()
-		// if err != nil {
-		// 	logx.Error("insert webset failed, get last insert id error: ", err)
-		// 	return &webset.PublishActionResp{
-		// 		StatusCode: internal.StatusRpcErr,
-		// 		StatusMsg:  "fail",
-		// 	}, nil
-		// }
-
-		// // 插入weblinks
-		// webLinkListDb := make([]model.TWeblink, 0, len(in.Webset.WebLinkList))
-		// for i, webLink := range in.Webset.WebLinkList {
-		// 	webLinkListDb = append(webLinkListDb, model.TWeblink{
-		// 		LinkId:   int64(i),
-		// 		WebsetId: lastInsertId,
-		// 		AuthorId: in.UserId,
-		// 		Describe: webLink.Describe,
-		// 		Url:      webLink.Url,
-		// 		CoverUrl: webLink.CoverUrl,
-		// 		Status:   2, // status==2 待审核
-		// 	})
-		// }
-		// _, err = l.svcCtx.WeblinkModel.BulkInsert(l.ctx, webLinkListDb)
+		// 插入weblinks
+		webLinkListDb := make([]model.TWeblink, 0, len(in.Webset.WebLinkList))
+		for i, webLink := range in.Webset.WebLinkList {
+			if !strings.HasPrefix(webLink.Url, "http") || !strings.HasPrefix(webLink.Url, "https") {
+				webLink.Url = "https://" + webLink.Url
+			}
+			webLinkListDb = append(webLinkListDb, model.TWeblink{
+				LinkId:   int64(i),
+				WebsetId: in.WebsetId,
+				AuthorId: in.UserId,
+				Describe: webLink.Describe,
+				Url:      webLink.Url,
+				CoverUrl: webLink.CoverUrl,
+				Status:   2, // status==2 待审核
+			})
+		}
 
 		// weblink 与 webset 在同一个数据库中，因此可以使用本地事务
 		err := l.svcCtx.WebsetModel.GetConn().TransactCtx(l.ctx, func(ctx context.Context, session sqlx.Session) error {
@@ -98,11 +68,9 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 			if err != nil {
 				return err
 			}
-			rowsAffected, err := r.RowsAffected()
-			if err != nil {
+			if rowsAffected, err := r.RowsAffected(); err != nil {
 				return err
-			}
-			if rowsAffected == 0 {
+			} else if rowsAffected == 0 {
 				return fmt.Errorf("insert webset failed, rows affected: %d", rowsAffected)
 			}
 
@@ -110,30 +78,25 @@ func (l *PublishActionLogic) PublishAction(in *webset.PublishActionReq) (*webset
 			if err != nil {
 				return err
 			}
-
-			// 插入weblinks
-			webLinkListDb := make([]model.TWeblink, 0, len(in.Webset.WebLinkList))
-			for i, webLink := range in.Webset.WebLinkList {
-				webLinkListDb = append(webLinkListDb, model.TWeblink{
-					LinkId:   int64(i),
-					WebsetId: lastInsertId,
-					AuthorId: in.UserId,
-					Describe: webLink.Describe,
-					Url:      webLink.Url,
-					CoverUrl: webLink.CoverUrl,
-					Status:   2, // status==2 待审核
-				})
+			for i := range webLinkListDb {
+				webLinkListDb[i].WebsetId = lastInsertId
 			}
 
+			// kafka pusher
+			data := gocast.ToString(lastInsertId)
+			if err := l.svcCtx.WlCoverKqConsumser.Push(data); err != nil {
+				logx.Error("WlCoverKqConsumser Push error:", err)
+			}
+
+			// 批量插入weblink
 			r, err = l.svcCtx.WeblinkModel.BulkInsertTrans(l.ctx, webLinkListDb, session)
 			if err != nil {
 				return err
 			}
-			rowsAffected, err = r.RowsAffected()
-			if err != nil {
+
+			if rowsAffected, err := r.RowsAffected(); err != nil {
 				return err
-			}
-			if rowsAffected == 0 {
+			} else if rowsAffected == 0 {
 				return fmt.Errorf("insert weblinks failed, rows affected: %d", rowsAffected)
 			}
 

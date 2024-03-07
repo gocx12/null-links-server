@@ -35,8 +35,10 @@ func NewTWebsetModel(conn sqlx.SqlConn) TWebsetModel {
 }
 
 func (m *customTWebsetModel) FindRecent(ctx context.Context, page, pageSize int32) (websets []*TWebset, err error) {
-	query := fmt.Sprintf("select %s from %s where status=1 order by created_at desc limit ?, ?", tWebsetRows, m.table)
-	err = m.conn.QueryRowsCtx(ctx, &websets, query, page, pageSize)
+	offset := (page - 1) * pageSize
+
+	query := fmt.Sprintf("select %s from %s where status=1 order by created_at desc limit ? offset ?", tWebsetRows, m.table)
+	err = m.conn.QueryRowsCtx(ctx, &websets, query, pageSize, offset)
 	return
 }
 

@@ -4,9 +4,11 @@ go 1.20
 
 require (
 	github.com/demdxx/gocast v1.2.0
+	github.com/go-rod/rod v0.114.7
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/gorilla/websocket v1.5.1
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
+	github.com/minio/minio-go/v7 v7.0.68
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/reugn/go-quartz v0.10.0
 	github.com/zeromicro/go-queue v1.1.8
@@ -52,7 +54,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
-	github.com/minio/minio-go/v7 v7.0.68 // indirect
 	github.com/minio/sha256-simd v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -68,6 +69,11 @@ require (
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/segmentio/kafka-go v0.4.38 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
+	github.com/ysmood/fetchup v0.2.3 // indirect
+	github.com/ysmood/goob v0.4.0 // indirect
+	github.com/ysmood/got v0.34.1 // indirect
+	github.com/ysmood/gson v0.7.3 // indirect
+	github.com/ysmood/leakless v0.8.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.10 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.10 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.10 // indirect

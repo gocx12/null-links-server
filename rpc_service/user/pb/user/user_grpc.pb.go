@@ -25,6 +25,7 @@ const (
 	UserService_GetValidtaionCode_FullMethodName = "/user.UserService/GetValidtaionCode"
 	UserService_UserInfo_FullMethodName          = "/user.UserService/UserInfo"
 	UserService_UserInfoList_FullMethodName      = "/user.UserService/UserInfoList"
+	UserService_Modify_FullMethodName            = "/user.UserService/Modify"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -37,6 +38,7 @@ type UserServiceClient interface {
 	GetValidtaionCode(ctx context.Context, in *GetValidtaionCodeReq, opts ...grpc.CallOption) (*GetValidtaionCodeResp, error)
 	UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 	UserInfoList(ctx context.Context, in *UserInfoListReq, opts ...grpc.CallOption) (*UserInfoListResp, error)
+	Modify(ctx context.Context, in *ModifyReq, opts ...grpc.CallOption) (*ModifyResp, error)
 }
 
 type userServiceClient struct {
@@ -101,6 +103,15 @@ func (c *userServiceClient) UserInfoList(ctx context.Context, in *UserInfoListRe
 	return out, nil
 }
 
+func (c *userServiceClient) Modify(ctx context.Context, in *ModifyReq, opts ...grpc.CallOption) (*ModifyResp, error) {
+	out := new(ModifyResp)
+	err := c.cc.Invoke(ctx, UserService_Modify_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -111,6 +122,7 @@ type UserServiceServer interface {
 	GetValidtaionCode(context.Context, *GetValidtaionCodeReq) (*GetValidtaionCodeResp, error)
 	UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
 	UserInfoList(context.Context, *UserInfoListReq) (*UserInfoListResp, error)
+	Modify(context.Context, *ModifyReq) (*ModifyResp, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -135,6 +147,9 @@ func (UnimplementedUserServiceServer) UserInfo(context.Context, *UserInfoReq) (*
 }
 func (UnimplementedUserServiceServer) UserInfoList(context.Context, *UserInfoListReq) (*UserInfoListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInfoList not implemented")
+}
+func (UnimplementedUserServiceServer) Modify(context.Context, *ModifyReq) (*ModifyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Modify not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -257,6 +272,24 @@ func _UserService_UserInfoList_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_Modify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ModifyReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Modify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_Modify_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Modify(ctx, req.(*ModifyReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -287,6 +320,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserInfoList",
 			Handler:    _UserService_UserInfoList_Handler,
+		},
+		{
+			MethodName: "Modify",
+			Handler:    _UserService_Modify_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

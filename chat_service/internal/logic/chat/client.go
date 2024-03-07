@@ -50,7 +50,7 @@ type ChatSendMsg struct {
 	UserName  string `json:"user_name"`
 	AvatarUrl string `json:"avatar_url"`
 	Content   string `json:"content"`
-	ChatId    string `json:"chat_id"`
+	ChatId    int64  `json:"chat_id"`
 	CreatedAt string `json:"created_at"`
 }
 
@@ -72,8 +72,10 @@ type Client struct {
 	UserId    int64
 	UserName  string
 	AvatarUrl string
-	Ctx       context.Context
-	SvcCtx    *svc.ServiceContext
+	InTime    time.Time
+
+	Ctx    context.Context
+	SvcCtx *svc.ServiceContext
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -139,7 +141,7 @@ func (c *Client) ReadPump() {
 			UserId:    c.UserId,
 			UserName:  c.UserName,
 			AvatarUrl: c.AvatarUrl,
-
+			ChatId:    chatMsgId,
 			Content:   chatWriteMsg.Content,
 			CreatedAt: time.Now().Format("2006-01-02 15:04"),
 		}
@@ -223,7 +225,7 @@ func (c *Client) genChatMsgId(userId, websetId int64) (int64, error) {
 	}
 	logx.Debug("count:", count)
 	if count == 1 {
-		// 每一秒的第一个订单号，设置一下key过期时间
+		// 每一秒的第一个，设置一下key过期时间
 		c.SvcCtx.RedisClient.Expire(ctx, key, 1*time.Second)
 	} else if count >= 10000 {
 		return -1, fmt.Errorf("more than 9999 msg during 1 second")

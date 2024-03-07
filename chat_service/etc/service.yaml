@@ -1,6 +1,6 @@
 Name: chat_service
 Host: 0.0.0.0
-Port: 8081
+Port: 8889
 
 Log:
   ServiceName: "chat_service"
@@ -22,8 +22,9 @@ DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseT
 
 # RPC
 UserRpcConf:
-  Etcd:
-    Hosts:
-      - 127.0.0.1:2379
-    Key: user.rpc
-  NonBlock: true
+  Target: 127.0.0.1:8081
+  # Etcd:
+  #   Hosts:
+  #     - 127.0.0.1:2379
+  #   Key: user.rpc
+  # NonBlock: true

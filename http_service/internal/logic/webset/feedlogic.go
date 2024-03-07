@@ -30,7 +30,9 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	resp = &types.FeedResp{}
 
 	respRpc, err := l.svcCtx.WebsetRpc.Feed(l.ctx, &webset.FeedReq{
-		UserId: req.UserId,
+		UserId:   req.UserId,
+		Page:     req.Page,
+		PageSize: req.PageSize,
 	})
 	if err != nil {
 		resp.StatusCode = internal.StatusRpcErr
@@ -44,8 +46,11 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	resp.WebsetList = make([]types.WebsetShort, 0, len(respRpc.WebsetList))
 	for _, webset := range respRpc.WebsetList {
 		resp.WebsetList = append(resp.WebsetList, types.WebsetShort{
-			ID:    webset.Id,
-			Title: webset.Title,
+			ID:        webset.Id,
+			Title:     webset.Title,
+			CoverUrl:  webset.CoverUrl,
+			LikeCount: webset.LikeCount,
+			ViewCount: webset.ViewCount,
 			AuthorInfo: types.UserShort{
 				Id:        webset.AuthorInfo.Id,
 				Name:      webset.AuthorInfo.Name,

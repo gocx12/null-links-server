@@ -19,6 +19,8 @@ type (
 	GetValidtaionCodeResp = user.GetValidtaionCodeResp
 	LoginReq              = user.LoginReq
 	LoginResp             = user.LoginResp
+	ModifyReq             = user.ModifyReq
+	ModifyResp            = user.ModifyResp
 	RegisterReq           = user.RegisterReq
 	RegisterResp          = user.RegisterResp
 	UserInfo              = user.UserInfo
@@ -34,6 +36,7 @@ type (
 		GetValidtaionCode(ctx context.Context, in *GetValidtaionCodeReq, opts ...grpc.CallOption) (*GetValidtaionCodeResp, error)
 		UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 		UserInfoList(ctx context.Context, in *UserInfoListReq, opts ...grpc.CallOption) (*UserInfoListResp, error)
+		Modify(ctx context.Context, in *ModifyReq, opts ...grpc.CallOption) (*ModifyResp, error)
 	}
 
 	defaultUserService struct {
@@ -75,4 +78,9 @@ func (m *defaultUserService) UserInfo(ctx context.Context, in *UserInfoReq, opts
 func (m *defaultUserService) UserInfoList(ctx context.Context, in *UserInfoListReq, opts ...grpc.CallOption) (*UserInfoListResp, error) {
 	client := user.NewUserServiceClient(m.cli.Conn())
 	return client.UserInfoList(ctx, in, opts...)
+}
+
+func (m *defaultUserService) Modify(ctx context.Context, in *ModifyReq, opts ...grpc.CallOption) (*ModifyResp, error) {
+	client := user.NewUserServiceClient(m.cli.Conn())
+	return client.Modify(ctx, in, opts...)
 }

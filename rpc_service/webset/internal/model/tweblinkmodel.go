@@ -16,7 +16,7 @@ type (
 	// and implement the added methods in customTWeblinkModel.
 	TWeblinkModel interface {
 		tWeblinkModel
-		FindMulti(ctx context.Context, websetIds []int64) (weblinks []*TWeblink, err error)
+		FindByWebsetId(ctx context.Context, websetId int64) (weblinks []*TWeblink, err error)
 		BulkInsert(ctx context.Context, data []TWeblink) (sql.Result, error)
 		BulkInsertTrans(ctx context.Context, data []TWeblink, session sqlx.Session) (sql.Result, error)
 	}
@@ -33,11 +33,10 @@ func NewTWeblinkModel(conn sqlx.SqlConn) TWeblinkModel {
 	}
 }
 
-func (m *customTWeblinkModel) FindMulti(ctx context.Context, websetIds []int64) (weblinks []*TWeblink, err error) {
+func (m *customTWeblinkModel) FindByWebsetId(ctx context.Context, websetId int64) (weblinks []*TWeblink, err error) {
 	query := fmt.Sprintf("select %s from %s where `webset_id` = ?", tWeblinkRows, m.table)
-	err = m.conn.QueryRowsCtx(ctx, &weblinks, query, websetIds)
+	err = m.conn.QueryRowsCtx(ctx, &weblinks, query, websetId)
 	return
-
 }
 
 func (m *customTWeblinkModel) getBulkInsertQuery(data []TWeblink) (string, []interface{}) {

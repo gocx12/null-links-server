@@ -41,18 +41,22 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		err = nil
 		return
 	} else if respRpc.StatusCode != internal.StatusSuccess {
-		if respRpc.StatusCode == internal.StatusEmailExist {
+		if respRpc.StatusCode == internal.StatusUserNameExist {
 			resp.StatusCode = internal.StatusGatewayErr
-			resp.StatusMsg = "该邮箱已注册，请更换邮箱，或直接登录"
-		} else if respRpc.StatusCode == internal.StatusValidationCodeErr {
-			resp.StatusCode = internal.StatusGatewayErr
-			resp.StatusMsg = "验证码错误"
-		} else {
-			resp.StatusCode = internal.StatusRpcErr
-			resp.StatusMsg = "注册失败"
+			resp.StatusMsg = "该用户名已存在，请更换用户名"
+			if respRpc.StatusCode == internal.StatusEmailExist {
+				resp.StatusCode = internal.StatusGatewayErr
+				resp.StatusMsg = "该邮箱已注册，请更换邮箱，或直接登录"
+			} else if respRpc.StatusCode == internal.StatusValidationCodeErr {
+				resp.StatusCode = internal.StatusGatewayErr
+				resp.StatusMsg = "验证码错误"
+			} else {
+				resp.StatusCode = internal.StatusRpcErr
+				resp.StatusMsg = "注册失败"
+			}
+			err = nil
+			return
 		}
-		err = nil
-		return
 	}
 	logx.Debug("debug: register rpc response: ", respRpc)
 	secretKey := l.svcCtx.Config.Auth.AccessSecret
@@ -75,6 +79,5 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	resp.StatusMsg = "注册成功"
 	resp.UserID = respRpc.UserId
 	resp.Token = token
-
 	return
 }

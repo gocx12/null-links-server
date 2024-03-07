@@ -11,5 +11,6 @@ type LoginResp {
 	StatusMsg  string `json:"status_msg,optional"` 
 	Token      string `json:"token"`               
 	UserID     int64  `json:"user_id"`
-	Username 	 string `json:"username"`         
+	Username 	 string `json:"username"`      
+	AvatarUrl  string `json:"avatar_url"`   
 }

@@ -22,6 +22,7 @@ type LoginResp struct {
 	Token      string `json:"token"`
 	UserID     int64  `json:"user_id"`
 	Username   string `json:"username"`
+	AvatarUrl  string `json:"avatar_url"`
 }
 
 type RegisterReq struct {
@@ -86,11 +87,22 @@ type UserShort struct {
 	AvatarUrl string `json:"avatar_url,optional"`
 }
 
+type ModifyReq struct {
+	UserId    int64  `json:"user_id"`
+	Username  string `json:"username,optional"`
+	AvatarUrl string `json:"avatar_url,optional"`
+}
+
+type ModifyResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
 type FeedReq struct {
 	LatestTime string `form:"latest_time,optional"`
 	UserId     int64  `form:"user_id,optional"`
-	Page       string `form:"page,optional"`
-	PageSize   string `form:"page_size,optional"`
+	Page       int32  `form:"page,optional"`
+	PageSize   int32  `form:"page_size,optional"`
 }
 
 type FeedResp struct {

@@ -53,10 +53,11 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 			resp.UserId = -1
 			return resp, nil
 		}
-
 		resp.StatusCode = internal.StatusSuccess
 		resp.StatusMsg = "success"
 		resp.UserId = UserInfoDb.Id
+		resp.Username = UserInfoDb.Username
+		resp.AvatarUrl = UserInfoDb.AvatarUrl
 		return resp, nil
 	case model.ErrNotFound:
 		resp.StatusCode = internal.StatusUserNotExist

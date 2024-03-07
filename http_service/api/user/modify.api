@@ -1,0 +1,12 @@
+syntax = "v1"
+
+type ModifyReq {
+	UserId 	int64 `json:"user_id"`
+  Username string `json:"username,optional"`  
+  AvatarUrl string `json:"avatar_url,optional"`
+}
+
+type ModifyResp {
+	StatusCode int32  `json:"status_code"`         
+	StatusMsg  string `json:"status_msg,optional"` 
+}

@@ -15,6 +15,7 @@ message RegisterResp {
   int32 status_code = 1;
   string status_msg = 2; 
   int64 user_id = 3; 
+  string username = 4;
 }
 
 message LoginReq {
@@ -27,6 +28,8 @@ message LoginResp {
   int32 status_code = 1;
   string status_msg = 2; 
   int64 user_id = 3; 
+  string username = 4;
+  string avatar_url = 5;
 }
 
 message CheckUsernameReq {
@@ -40,7 +43,7 @@ message CheckUsernameResp {
 }
 
 message GetValidtaionCodeReq {
-  string email = 1; 
+  string email = 1;
 }
 
 message GetValidtaionCodeResp {
@@ -50,7 +53,6 @@ message GetValidtaionCodeResp {
 
 message UserInfoReq {
   int64 user_id = 1; 
-  string token = 2; 
 }
 
 message UserInfoResp {
@@ -67,6 +69,20 @@ message UserInfoListResp {
   int32 status_code = 1; 
   string status_msg = 2; 
   repeated UserInfo user_list = 3; 
+}
+
+message ModifyReq {
+  int64 user_id = 1; 
+  string name = 2; 
+  string email = 3;
+  string avatar_url = 4;
+  string background_url = 5; 
+  string signature = 6; 
+}
+
+message ModifyResp {
+  int32 status_code = 1; 
+  string status_msg = 2; 
 }
 
 message UserInfo {
@@ -89,4 +105,5 @@ service UserService{
   rpc GetValidtaionCode (GetValidtaionCodeReq) returns (GetValidtaionCodeResp);
   rpc UserInfo (UserInfoReq) returns (UserInfoResp);
   rpc UserInfoList (UserInfoListReq) returns (UserInfoListResp);
+  rpc Modify (ModifyReq) returns (ModifyResp);
 }

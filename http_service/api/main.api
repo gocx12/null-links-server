@@ -5,6 +5,7 @@ import "./user/register.api"
 import "./user/check_username.api"
 import "./user/get_validation_code.api"
 import "./user/userinfo.api"
+import "./user/modify.api"
 
 import "./webset/feed.api"
 import "./webset/publish_action.api"
@@ -52,9 +53,19 @@ service service {
 
 	@handler GetValidationCode
 	get /get_validation_code (GetValidationCodeReq) returns (GetValidationCodeResp)
+}
 
+@server (
+	jwt:	Auth
+	prefix: /user
+	group:  user
+)
+service service {
 	@handler UserInfo
 	get /info (UserInfoReq) returns (UserInfoResp)
+
+	@handler Modify
+	post /modify (ModifyReq) returns (ModifyResp)
 }
 
 @server (

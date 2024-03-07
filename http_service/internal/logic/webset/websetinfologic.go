@@ -47,20 +47,31 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "获取网页单成功"
-
 	weblinkListResp := make([]types.WebLink, 0, len(websetInfoRpcReq.Webset.WebLinkList))
 	for _, weblink := range websetInfoRpcReq.Webset.WebLinkList {
 		weblinkResp := types.WebLink{
 			ID:       weblink.Id,
 			Describe: weblink.Describe,
 			Url:      weblink.Url,
+			CoverURL: weblink.CoverUrl,
 		}
 		weblinkListResp = append(weblinkListResp, weblinkResp)
 	}
 	resp.WebsetInfo = types.Webset{
-		ID:          websetInfoRpcReq.Webset.Id,
-		Title:       websetInfoRpcReq.Webset.Title,
-		WebLinkList: weblinkListResp,
+		ID:            websetInfoRpcReq.Webset.Id,
+		Title:         websetInfoRpcReq.Webset.Title,
+		Describe:      websetInfoRpcReq.Webset.Describe,
+		ViewCount:     websetInfoRpcReq.Webset.ViewCount,
+		LikeCount:     websetInfoRpcReq.Webset.LikeCount,
+		FavoriteCount: websetInfoRpcReq.Webset.FavoriteCount,
+		IsLike:        websetInfoRpcReq.Webset.IsLike,
+		IsFavorite:    websetInfoRpcReq.Webset.IsFavorite,
+		WebLinkList:   weblinkListResp,
+		AuthorInfo: types.User{
+			Id:        websetInfoRpcReq.Webset.AuthorInfo.Id,
+			Name:      websetInfoRpcReq.Webset.AuthorInfo.Name,
+			AvatarUrl: websetInfoRpcReq.Webset.AuthorInfo.AvatarUrl,
+		},
 	}
 
 	return

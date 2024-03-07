@@ -19,6 +19,7 @@ type (
 		FindOneByName(ctx context.Context, username string) (*TUser, error)
 		FindMulti(ctx context.Context, userIds []int64) ([]*TUser, error)
 		FindPasswordByEmail(ctx context.Context, email string) (*TUser, error)
+		UpdateAvatarUrl(ctx context.Context, userId int64, avatarUrl string) error
 	}
 
 	customTUserModel struct {
@@ -62,13 +63,15 @@ func (c *customTUserModel) FindPasswordByEmail(ctx context.Context, email string
 }
 
 func (c *customTUserModel) FindMulti(ctx context.Context, userIds []int64) ([]*TUser, error) {
+	userIdsInterface := make([]interface{}, 0, len(userIds))
 	placeHodlers := make([]string, 0, len(userIds))
-	for range userIds {
+	for _, id := range userIds {
 		placeHodlers = append(placeHodlers, "?")
+		userIdsInterface = append(userIdsInterface, id)
 	}
 	query := fmt.Sprintf("select %s from %s where `id` in (%s)", tUserRows, c.table, strings.Join(placeHodlers, ","))
 	var resp []*TUser
-	err := c.conn.QueryRowsCtx(ctx, &resp, query, userIds)
+	err := c.conn.QueryRowsCtx(ctx, &resp, query, userIdsInterface...)
 	switch err {
 	case nil:
 		return resp, nil
@@ -77,4 +80,10 @@ func (c *customTUserModel) FindMulti(ctx context.Context, userIds []int64) ([]*T
 	default:
 		return nil, err
 	}
+}
+
+func (c *customTUserModel) UpdateAvatarUrl(ctx context.Context, userId int64, avatarUrl string) error {
+	query := fmt.Sprintf("update %s set `avatar_url` = ? where `id` = ?", c.table)
+	_, err := c.conn.ExecCtx(ctx, query, avatarUrl, userId)
+	return err
 }

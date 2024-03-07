@@ -15,15 +15,24 @@ Auth:
 
 # RPC
 UserRpcConf:
-  Etcd:
-    Hosts:
-      - 127.0.0.1:2379
-    Key: user.rpc
-  NonBlock: true
+  Target: 127.0.0.1:8081
+  # Etcd:
+  #   Hosts:
+  #     - 127.0.0.1:2379
+  #   Key: user.rpc
+  # NonBlock: true
 
 WebsetRpcConf:
-  Etcd:
-    Hosts:
-      - 127.0.0.1:2379
-    Key: webset.rpc
-  NonBlock: true
+  Target: 127.0.0.1:8082
+  # Etcd:
+  #   Hosts:
+  #     - 127.0.0.1:2379
+  #   Key: webset.rpc
+  # NonBlock: true
+
+MinIO:
+  EndPoint: "127.0.0.1:9000"
+  AccessKeyID: "swjTlz02UIYY7iXCyCQM"
+  SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
+  UseSSL: false
+  DownloadHost: "http://127.0.0.1:9000"

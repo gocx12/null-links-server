@@ -13,7 +13,8 @@ type (
 	// and implement the added methods in customTChatModel.
 	TChatModel interface {
 		tChatModel
-		FindChatList(ctx context.Context, websetId, lastChatId int64, page, pageSize int32) ([]*TChat, error)
+		FindChatList(ctx context.Context, websetId int64, page, pageSize int32) ([]*TChat, error)
+		FindChatListChatId(ctx context.Context, websetId, lastChatId int64, page, pageSize int32) ([]*TChat, error)
 	}
 
 	customTChatModel struct {
@@ -28,7 +29,19 @@ func NewTChatModel(conn sqlx.SqlConn) TChatModel {
 	}
 }
 
-func (c *customTChatModel) FindChatList(ctx context.Context, websetId, lastChatId int64, page, pageSize int32) ([]*TChat, error) {
+func (c *customTChatModel) FindChatList(ctx context.Context, websetId int64, page, pageSize int32) ([]*TChat, error) {
+	query := "select * from t_chat where webset_id = ? order by created_at desc limit ?, ?"
+	var resp []*TChat
+	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, page, pageSize)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (c *customTChatModel) FindChatListChatId(ctx context.Context, websetId, lastChatId int64, page, pageSize int32) ([]*TChat, error) {
 	query := "select * from t_chat where webset_id = ? and chat_id < ? order by created_at desc limit ?, ?"
 	var resp []*TChat
 	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, lastChatId, page, pageSize)

@@ -51,3 +51,8 @@ func (s *UserServiceServer) UserInfoList(ctx context.Context, in *user.UserInfoL
 	l := logic.NewUserInfoListLogic(ctx, s.svcCtx)
 	return l.UserInfoList(in)
 }
+
+func (s *UserServiceServer) Modify(ctx context.Context, in *user.ModifyReq) (*user.ModifyResp, error) {
+	l := logic.NewModifyLogic(ctx, s.svcCtx)
+	return l.Modify(in)
+}

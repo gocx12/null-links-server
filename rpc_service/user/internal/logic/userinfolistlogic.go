@@ -51,7 +51,7 @@ func (l *UserInfoListLogic) UserInfoList(in *user.UserInfoListReq) (*user.UserIn
 		userList = append(userList, userInfo)
 	}
 
-	resp.StatusCode = 0
+	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "success"
 	resp.UserList = userList
 	return resp, nil

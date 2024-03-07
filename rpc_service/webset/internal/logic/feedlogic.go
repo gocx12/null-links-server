@@ -135,7 +135,7 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 		if err != nil {
 			logx.Error("get user info failed, err: ", err)
 		}
-		if userInfoListRpcResp.StatusCode == 1 {
+		if userInfoListRpcResp.StatusCode == internal.StatusSuccess {
 			for _, item := range websetsDb {
 				isFound := false
 				for _, userInfo := range userInfoListRpcResp.UserList {
@@ -153,8 +153,13 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 					}
 				}
 				if !isFound {
-					websetAuthorMap[item.AuthorId] = nil
+					websetAuthorMap[item.AuthorId] = &webset.UserInfoShort{}
 				}
+			}
+		} else {
+			logx.Error("get user info from rpc failed, err: ", userInfoListRpcResp.StatusMsg)
+			for _, item := range websetsDb {
+				websetAuthorMap[item.AuthorId] = &webset.UserInfoShort{}
 			}
 		}
 		wg.Done()

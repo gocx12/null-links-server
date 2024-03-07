@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `username` varchar(64) NOT NULL describe COMMENT '用户名',
+  `username` varchar(64) NOT NULL COMMENT '用户名',
   `email` varchar(64) NOT NULL COMMENT '邮箱地址',
   `password` varchar(64) NOT NULL COMMENT '密码', 
   `avatar_url` varchar(255) NOT NULL COMMENT '头像地址',
@@ -18,7 +18,8 @@ CREATE TABLE `t_user`
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uidx_username` (`username`)
+  UNIQUE KEY `uidx_username` (`username`),
+  UNIQUE KEY `uidx_email` (`email`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '用户信息表';
@@ -155,7 +156,7 @@ CREATE TABLE `t_weblink`
   `author_id` bigint(20) unsigned NOT NULL  COMMENT '添加者id',
   `describe`  varchar(255) NOT NULL COMMENT '描述',
   `url`       text NOT NULL COMMENT '网址',
-  `cover_url` varchar(255) NOT NULL COMMENT '封面地址',
+  `cover_url` text NOT NULL COMMENT '封面地址',
   `click_cnt` int NOT NULL DEFAULT 0 COMMENT '点击数',
   `status`    tinyint(3) NOT NULL DEFAULT 0 COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

@@ -1,5 +1,5 @@
 Name: user.rpc
-ListenOn: 0.0.0.0:8083
+ListenOn: 0.0.0.0:8081
 
 Log:
   ServiceName: "rpc_user"
@@ -20,7 +20,7 @@ VdEmailMqPusherConf:
     - 10.63.180.57:9092
   Topic: validation-email
 
-Etcd:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: user.rpc
+# Etcd:
+#   Hosts:
+#   - 127.0.0.1:2379
+#   Key: user.rpc

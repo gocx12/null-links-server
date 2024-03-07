@@ -25,7 +25,7 @@ type ChatHistoryReq struct {
 	Type       int32  `form:"type"`
 	Page       int32  `form:"page,optional"`
 	PageSize   int32  `form:"page_size,optional"`
-	LastChatId int64  `form:"chat_id,optional"`
+	LastChatId int64  `form:"last_chat_id,optional"`
 	StartTime  string `form:"start_time,optional"`
 	EndTime    string `form:"end_time,optional"`
 	Keyword    string `form:"keyword,optional"`

@@ -3,12 +3,12 @@ package logic
 import (
 	"context"
 
+	"null-links/rpc_service/user/pb/user"
 	"null-links/rpc_service/webset/internal/svc"
 	"null-links/rpc_service/webset/pb/webset"
 
 	"null-links/internal"
 
-	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -28,11 +28,7 @@ func NewWebsetInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Webset
 }
 
 func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetInfoResp, error) {
-	websetInfoResp := webset.WebsetInfoResp{
-		StatusCode: 1,
-		StatusMsg:  "success",
-		Webset:     nil,
-	}
+	websetInfoResp := webset.WebsetInfoResp{}
 
 	WebsetDb, err := l.svcCtx.WebsetModel.FindOne(l.ctx, in.WebsetId)
 	if err != nil {
@@ -42,50 +38,75 @@ func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetIn
 		return &websetInfoResp, err
 	}
 
-	// 点赞信息, redis优先
-	isLikeResp := false
-	var likeCnt int64 = 0
-	isLikeRds, err := l.svcCtx.RedisClient.HGet(l.ctx, RdsKeyUserWebsetLiked, gocast.ToString(in.WebsetId)+"::"+gocast.ToString(in.UserId)).Result()
-	if err != nil {
-		logx.Error("get like info from redis failed, err: ", err)
-		// TODO(chancyGao): 验证当redis不存在这个key时
-		likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
-		if err != nil && err != sqlx.ErrNotFound {
-			logx.Error("get like info failed, err: ", err)
-		} else if err == nil && likeInfoDb.Status == 1 {
-			isLikeResp = true
-		}
-	} else if isLikeRds == "1" {
-		isLikeResp = true
-	}
-
-	likeCntRds, err := l.svcCtx.RedisClient.HGet(l.ctx, RdsKeyWebsetLikedCnt, gocast.ToString(in.WebsetId)).Result()
-	if err != nil {
-		logx.Error("get like count from redis failed, err: ", err)
+	// 获取是否点赞信息
+	isLike := false
+	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
+	if err != nil && err != sqlx.ErrNotFound {
+		logx.Error("get like info error: ", err)
+	} else if err == sqlx.ErrNotFound {
+		isLike = false
+	} else if likeInfoDb.Status == 1 {
+		isLike = true
 	} else {
-		likeCnt = gocast.ToInt64(likeCntRds) + WebsetDb.LikeCnt
+		isLike = false
 	}
 
-	// 收藏信息， redis优先
+	// 获取是否收藏信息
 	isFavoriteResp := false
 	// favoriteInfoDb, err = l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, in.UserId)
 	// if err != nil {
 	// 	l.Logger.Error("get favorite info failed, user, err: ", err)
 	// }
 
+	// 获取作者信息
+	userInfoRpcRep, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
+		UserId: WebsetDb.AuthorId,
+	})
+	if err != nil {
+		logx.Error("get user info from rpc error: ", err)
+		websetInfoResp.StatusCode = internal.StatusRpcErr
+		websetInfoResp.StatusMsg = "get user info from rpc error"
+		return &websetInfoResp, nil
+	}
+
+	// 获取weblink信息
+	weblinksDb, err := l.svcCtx.WeblinkModel.FindByWebsetId(l.ctx, in.WebsetId)
+	if err != nil {
+		logx.Error("get user info from rpc error: ", err)
+		websetInfoResp.StatusCode = internal.StatusRpcErr
+		websetInfoResp.StatusMsg = "get weblink from rpc error"
+		return &websetInfoResp, nil
+	}
+
+	weblinkListResp := make([]*webset.WebLink, 0, len(weblinksDb))
+	for _, weblink := range weblinksDb {
+		weblinkResp := &webset.WebLink{
+			Id:       weblink.Id,
+			Describe: weblink.Describe,
+			Url:      weblink.Url,
+			CoverUrl: weblink.CoverUrl,
+		}
+		weblinkListResp = append(weblinkListResp, weblinkResp)
+	}
+
+	websetInfoResp.StatusCode = internal.StatusSuccess
+	websetInfoResp.StatusMsg = "success"
 	websetInfoResp.Webset = &webset.Webset{
 		Id:       WebsetDb.Id,
 		Title:    WebsetDb.Title,
 		Describe: WebsetDb.Describe,
 		AuthorInfo: &webset.UserInfo{
-			Id: WebsetDb.AuthorId,
+			Id:        WebsetDb.AuthorId,
+			Name:      userInfoRpcRep.UserInfo.Name,
+			AvatarUrl: userInfoRpcRep.UserInfo.AvatarUrl,
 		},
 		CoverUrl:      WebsetDb.CoverUrl,
 		ViewCount:     WebsetDb.ViewCnt,
-		LikeCount:     likeCnt,
+		LikeCount:     WebsetDb.LikeCnt,
 		FavoriteCount: WebsetDb.FavoriteCnt,
-		IsLike:        isLikeResp,
+		IsLike:        isLike,
 		IsFavorite:    isFavoriteResp,
+		WebLinkList:   weblinkListResp,
 	}
 
 	return &websetInfoResp, nil
