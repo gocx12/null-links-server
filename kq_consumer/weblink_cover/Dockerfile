@@ -9,7 +9,7 @@ WORKDIR /build
 
 COPY . .
 RUN go mod download
-RUN go build -ldflags="-s -w" -o /app/http_service ./http_service/service.go
+RUN go build -ldflags="-s -w" -o /app/weblink_cover ./kq_consumer/weblink_cover/weblink_cover.go
 
 FROM scratch
 
@@ -18,9 +18,7 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
-COPY --from=builder /app/http_service /app/http_service
+COPY --from=builder /app/weblink_cover /app/weblink_cover
+COPY --from=builder /build/kq_consumer/weblink_cover/config.yaml /app/config.yaml
 
-# 只需复制etc目录到当前工作目录即可
-COPY --from=builder /build/http_service/etc /app/etc
-
-CMD ["./http_service", "-f", "etc/service.yaml"]
+CMD ["./weblink_cover", "-f", "config.yaml"]

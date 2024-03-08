@@ -12,3 +12,5 @@ go run chat_service/service.go
 go run kq_consumer/validation_email/validation_email.go
 
 go run kq_consumer/weblink_cover/weblink_cover.go
+
+

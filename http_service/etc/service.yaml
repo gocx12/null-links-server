@@ -4,7 +4,8 @@ Port: 8888
 
 Log:
   ServiceName: "http_service"
-  Mode: "console"
+  # Mode: "console"
+  Mode: "file"
   Encoding: "plain"
   Level: "debug"
   Path: "/data/logs"
@@ -15,7 +16,7 @@ Auth:
 
 # RPC
 UserRpcConf:
-  Target: 127.0.0.1:8081
+  Target: 10.63.180.57:8081
   # Etcd:
   #   Hosts:
   #     - 127.0.0.1:2379
@@ -23,7 +24,7 @@ UserRpcConf:
   # NonBlock: true
 
 WebsetRpcConf:
-  Target: 127.0.0.1:8082
+  Target: 10.63.180.57:8082
   # Etcd:
   #   Hosts:
   #     - 127.0.0.1:2379

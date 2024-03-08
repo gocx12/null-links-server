@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"net/http"
 	"net/smtp"
 	"strings"
@@ -36,8 +37,11 @@ type TicketInfo struct {
 	ValidationCode string
 }
 
+var configFile = flag.String("f", "rpc_service/user/etc/user.yaml", "the config file")
+
 func main() {
-	conf.MustLoad("./kq_consumer/validation_email/config.yaml", &c)
+	flag.Parse()
+	conf.MustLoad(*configFile, &c)
 
 	// if c.Mode == "debug" {
 	// 	logx.Debug("start server")

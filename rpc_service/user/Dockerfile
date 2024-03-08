@@ -9,9 +9,7 @@ WORKDIR /build
 
 COPY . .
 RUN go mod download
-COPY rpc_service/user/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/rpc_service_user rpc_service/user/user.go
-
+RUN go build -ldflags="-s -w" -o /app/user ./rpc_service/user/user.go
 
 FROM scratch
 
@@ -20,7 +18,7 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
-COPY --from=builder /app/rpc_service_user /app/rpc_service_user
-# COPY --from=builder /app/etc /app/etc
+COPY --from=builder /app/user /app/user
+COPY --from=builder /build/rpc_service/user/etc /app/etc
 
-CMD ["./rpc_service_user", "-f", "etc/user.yaml"]
+CMD ["./user", "-f", "etc/user.yaml"]

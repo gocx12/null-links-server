@@ -14,30 +14,65 @@ services:
     container_name: chat_service
     networks:
       - web-network
+    depends_on:
+      - rpc_user
+      - rpc_webset
 
-  # http_service:
-  #   build: 
-  #     context: ./  
-  #     dockerfile: ./http_service/Dockerfile
-  #   ports:
-  #     - "8888:8888"
-  #   container_name: http_service
+  http_service:
+    build: 
+      context: ./  
+      dockerfile: ./http_service/Dockerfile
+    ports:
+      - "8888:8888"
+    container_name: http_service
+    networks:
+      - web-network
+    depends_on:
+      - rpc_user
+      - rpc_webset
 
-  # rpc_user:
-  #   build: 
-  #     context: ./  
-  #     dockerfile: ./rpc_service/webset/Dockerfile
-  #   ports:
-  #     - "8083:8083"
-  #   container_name: rpc_user
+  rpc_user:
+    build: 
+      context: ./  
+      dockerfile: ./rpc_service/user/Dockerfile
+    ports:
+      - "8081:8081"
+    container_name: rpc_user
+    networks:
+      - web-network
     
-  # rpc_webset:
-  #   build: 
-  #     context: ./ 
-  #     dockerfile: ./rpc_service/webset/Dockerfile
-  #   ports:
-  #     - "8080:8080"
-  #   container_name: rpc_webset
+  rpc_webset:
+    build: 
+      context: ./ 
+      dockerfile: ./rpc_service/webset/Dockerfile
+    ports:
+      - "8082:8082"
+    container_name: rpc_webset
+    networks:
+      - web-network
+    depends_on:
+      - rpc_user
+
+  kq_vdemail:
+    build: 
+      context: ./ 
+      dockerfile: ./kq_consumer/validation_email/Dockerfile
+    container_name: kq_vdemail
+    networks:
+      - web-network
+    depends_on:
+      - kafka
+
+  kq_wbcover:
+    build: 
+      context: ./ 
+      dockerfile: ./kq_consumer/weblink_cover/Dockerfile
+    container_name: kq_wbcover
+    networks:
+      - web-network
+    depends_on:
+      - kafka
+
 
   # etcd:
   #   image: bitnami/etcd:latest  # 镜像k
@@ -80,8 +115,8 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://10.63.180.57:9092
-      KAFKA_BROKER_ID: 0
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://zookeeper:9092
+      # KAFKA_BROKER_ID: 0
       KAFKA_CREATE_TOPICS: "validation-email:1:1"
     volumes:
       - /data/null-links/kafka:/kafka

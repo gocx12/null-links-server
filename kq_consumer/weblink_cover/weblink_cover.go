@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"io"
 	"sync"
@@ -38,12 +39,14 @@ type Conf struct {
 
 var (
 	c            Conf
+	configFile          = flag.String("f", "rpc_service/user/etc/user.yaml", "the config file")
 	format       string = ".png"
 	weblinkModel model.TWeblinkModel
 )
 
 func main() {
-	conf.MustLoad("./kq_consumer/weblink_cover/config.yaml", &c)
+	flag.Parse()
+	conf.MustLoad(*configFile, &c)
 	weblinkModel = model.NewTWeblinkModel(sqlx.NewMysql(c.DataSource))
 
 	logx.Info("weblink screeshot kq consumer starting")

@@ -3,7 +3,8 @@ ListenOn: 0.0.0.0:8081
 
 Log:
   ServiceName: "rpc_user"
-  Mode: "console"
+  # Mode: "console"
+  Mode: "file"
   Encoding: "plain"
   Level: "debug"
   Path: "/data/logs"
