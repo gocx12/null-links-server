@@ -11,7 +11,7 @@ Log:
   Path: "/data/logs"
 
 RedisConf:
-  Host: "127.0.0.1:6379"
+  Host: "{ipaddr}:6379"
   Password: ""
   DB:   0
 
@@ -19,13 +19,13 @@ Auth:
   AccessSecret: "AccessSecret"
   AccessExpire: 604800
 
-DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp({ipaddr}:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 # RPC
 UserRpcConf:
-  Target: 10.63.180.57:8081
+  Target: {ipaddr}:8081
   # Etcd:
   #   Hosts:
-  #     - 127.0.0.1:2379
+  #     - {ipaddr}:2379
   #   Key: user.rpc
   # NonBlock: true

@@ -8,6 +8,8 @@ ENV GOPROXY https://goproxy.io,direct
 WORKDIR /build
 
 COPY . .
+RUN chmod +x ./rpc_service/webset/pre.sh
+RUN /bin/bash ./rpc_service/webset/pre.sh
 RUN go mod download
 RUN go build -ldflags="-s -w" -o /app/webset ./rpc_service/webset/webset.go
 

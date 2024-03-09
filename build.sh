@@ -1,5 +1,10 @@
 # rsync -r ./http_service root@43.139.0.182:/data/null_tv/http_service
 
+# 获取本机ip地址
+ifconfig | grep "inet " | grep -v
+
+# 修改所有
+
 
 go run rpc_service/webset/webset.go
 

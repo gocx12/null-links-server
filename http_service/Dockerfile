@@ -8,6 +8,9 @@ ENV GOPROXY https://goproxy.io,direct
 WORKDIR /build
 
 COPY . .
+# 执行前置脚本
+RUN chmod +x ./http_service/pre.sh
+RUN /bin/bash ./http_service/pre.sh
 RUN go mod download
 RUN go build -ldflags="-s -w" -o /app/http_service ./http_service/service.go
 
@@ -19,7 +22,6 @@ ENV TZ Asia/Shanghai
 
 WORKDIR /app
 COPY --from=builder /app/http_service /app/http_service
-
 # 只需复制etc目录到当前工作目录即可
 COPY --from=builder /build/http_service/etc /app/etc
 

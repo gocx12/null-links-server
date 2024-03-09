@@ -8,6 +8,9 @@ ENV GOPROXY https://goproxy.io,direct
 WORKDIR /build
 
 COPY . .
+# 执行前置脚本
+RUN chmod +x ./chat_service/pre.sh
+RUN /bin/bash ./chat_service/pre.sh
 RUN go mod download
 RUN go build -ldflags="-s -w" -o /app/chat_service ./chat_service/service.go
 

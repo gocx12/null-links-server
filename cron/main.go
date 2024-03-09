@@ -10,10 +10,10 @@ import (
 )
 
 var redisConf = redis.Options{
-	Addr:     "127.0.0.1:6379",
+	Addr:     "{ipaddr}:6379",
 	Password: "123456",
 }
-var mysqlDataSource = "root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true"
+var mysqlDataSource = "root:123456@tcp({ipaddr}:3306)/db_null_links?charset=utf8mb4&parseTime=true"
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -30,13 +30,11 @@ func main() {
 	likeFuncJob := job.NewFunctionJob(LikeJob)
 	favoriteFuncJob := job.NewFunctionJob(FavoriteJob)
 
-
 	// register jobs to scheduler
 	sched.ScheduleJob(quartz.NewJobDetail(likeFuncJob, quartz.NewJobKey("likeFuncJob")),
 		cronTrigger)
 	sched.ScheduleJob(quartz.NewJobDetail(favoriteFuncJob, quartz.NewJobKey("favoriteFuncJob")),
 		cronTrigger)
-
 
 	// stop scheduler
 	// sched.Stop()

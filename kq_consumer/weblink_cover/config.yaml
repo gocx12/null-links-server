@@ -1,17 +1,17 @@
 
-DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp({ipaddr}:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 MinIO:
-  EndPoint: "127.0.0.1:9000"
+  EndPoint: "{ipaddr}:9000"
   AccessKeyID: "swjTlz02UIYY7iXCyCQM"
   SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
   UseSSL: false
-  DownloadHost: "http://127.0.0.1:9000"
+  DownloadHost: "http://{ipaddr}:9000"
 
 WlCoverKqConsumser:
   Name: kq
   Brokers:
-  - 10.63.180.57:9092
+  - {ipaddr}:9092
   Group: nl_consumer
   Topic: weblink-cover
   Offset: first

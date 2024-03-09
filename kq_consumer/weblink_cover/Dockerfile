@@ -8,6 +8,9 @@ ENV GOPROXY https://goproxy.io,direct
 WORKDIR /build
 
 COPY . .
+# 执行前置脚本
+RUN chmod +x ./kq_consumer/weblink_cover/pre.sh
+RUN /bin/bash ./kq_consumer/weblink_cover/pre.sh
 RUN go mod download
 RUN go build -ldflags="-s -w" -o /app/weblink_cover ./kq_consumer/weblink_cover/weblink_cover.go
 

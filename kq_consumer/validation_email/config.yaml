@@ -3,7 +3,7 @@ Mode: "debug"
 VdEmailKqConsumser:
   Name: kq
   Brokers:
-  - 10.63.180.57:9092
+  - {ipaddr}:9092
   Group: nl_consumer
   Topic: validation-email
   Offset: first
