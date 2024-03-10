@@ -10,10 +10,10 @@ import (
 )
 
 var redisConf = redis.Options{
-	Addr:     "{ipaddr}:6379",
+	Addr:     "10.63.180.57:6379",
 	Password: "123456",
 }
-var mysqlDataSource = "root:123456@tcp({ipaddr}:3306)/db_null_links?charset=utf8mb4&parseTime=true"
+var mysqlDataSource = "root:123456@tcp(10.63.180.57:3306)/db_null_links?charset=utf8mb4&parseTime=true"
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())

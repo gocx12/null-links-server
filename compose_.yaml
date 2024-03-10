@@ -1,0 +1,55 @@
+version: "3.0"
+
+
+services:
+  chat_service:
+    build: 
+      context: ./  # 将项目根目录作为构建上下文
+      dockerfile: ./chat_service/Dockerfile
+    ports:
+      - "8889:8889"
+    container_name: chat_service
+    depends_on:
+      - rpc_user
+      - rpc_webset
+
+  http_service:
+    build: 
+      context: ./  
+      dockerfile: ./http_service/Dockerfile
+    ports:
+      - "8888:8888"
+    container_name: http_service
+    depends_on:
+      - rpc_user
+      - rpc_webset
+
+  rpc_user:
+    build: 
+      context: ./  
+      dockerfile: ./rpc_service/user/Dockerfile
+    ports:
+      - "8081:8081"
+    container_name: rpc_user
+    
+  rpc_webset:
+    build: 
+      context: ./ 
+      dockerfile: ./rpc_service/webset/Dockerfile
+    ports:
+      - "8082:8082"
+    container_name: rpc_webset
+    depends_on:
+      - rpc_user
+
+  kq_vdemail:
+    build: 
+      context: ./ 
+      dockerfile: ./kq_consumer/validation_email/Dockerfile
+    container_name: kq_vdemail
+
+  kq_wbcover:
+    build: 
+      context: ./ 
+      dockerfile: ./kq_consumer/weblink_cover/Dockerfile
+    container_name: kq_wbcover

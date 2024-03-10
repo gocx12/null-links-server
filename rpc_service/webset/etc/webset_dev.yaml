@@ -1,0 +1,42 @@
+Name: webset.rpc
+ListenOn: 0.0.0.0:8082
+
+Log:
+  ServiceName: "rpc_wenset"
+  # Mode: "console"
+  Mode: "file"
+  Encoding: "plain"
+  Level: "debug"
+  Path: "/data/logs"
+
+# Etcd:
+#   Hosts:
+#   - 10.63.180.57:2379
+#   Key: webset.rpc
+
+DataSource: root:123456@tcp(10.63.180.57:3306)/db_null_links?charset=utf8mb4&parseTime=true
+  
+RedisConf:
+  Host: "10.63.180.57:6379"
+  Password: ""
+  DB:   0
+
+MinIO:
+  EndPoint: "10.63.180.57:9000"
+  AccessKeyID: "swjTlz02UIYY7iXCyCQM"
+  SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
+  UseSSL: false
+  DownloadHost: "http://10.63.180.57:9000"
+
+WlCoverKqConsumser:
+  Brokers:
+    - 10.63.180.57:9092
+  Topic: weblink-cover
+
+UserRpcConf:
+  Target: 10.63.180.57:8081
+  # Etcd:
+  #   Hosts:
+  #     - 10.63.180.57:2379
+  #   Key: user.rpc
+  # NonBlock: true

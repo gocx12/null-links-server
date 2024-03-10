@@ -9,19 +9,19 @@ Log:
   Level: "debug"
   Path: "/data/logs"
 
-DataSource: root:123456@tcp({ipaddr}:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp(192.168.0.50:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 RedisConf:
-  Host: "{ipaddr}:6379"
+  Host: "192.168.0.50:6379"
   Password: ""
   DB:   0
 
 VdEmailMqPusherConf:
   Brokers:
-    - {ipaddr}:9092
+    - 192.168.0.50:9092
   Topic: validation-email
 
 # Etcd:
 #   Hosts:
-#   - {ipaddr}:2379
+#   - 192.168.0.50:2379
 #   Key: user.rpc

@@ -11,32 +11,32 @@ Log:
 
 # Etcd:
 #   Hosts:
-#   - {ipaddr}:2379
+#   - 192.168.0.50:2379
 #   Key: webset.rpc
 
-DataSource: root:123456@tcp({ipaddr}:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp(192.168.0.50:3306)/db_null_links?charset=utf8mb4&parseTime=true
   
 RedisConf:
-  Host: "{ipaddr}:6379"
+  Host: "192.168.0.50:6379"
   Password: ""
   DB:   0
 
 MinIO:
-  EndPoint: "{ipaddr}:9000"
+  EndPoint: "192.168.0.50:9000"
   AccessKeyID: "swjTlz02UIYY7iXCyCQM"
   SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
   UseSSL: false
-  DownloadHost: "http://{ipaddr}:9000"
+  DownloadHost: "http://192.168.0.50:9000"
 
 WlCoverKqConsumser:
   Brokers:
-    - {ipaddr}:9092
+    - 192.168.0.50:9092
   Topic: weblink-cover
 
 UserRpcConf:
-  Target: {ipaddr}:8081
+  Target: 192.168.0.50:8081
   # Etcd:
   #   Hosts:
-  #     - {ipaddr}:2379
+  #     - 192.168.0.50:2379
   #   Key: user.rpc
   # NonBlock: true

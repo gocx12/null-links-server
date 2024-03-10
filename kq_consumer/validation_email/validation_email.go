@@ -111,7 +111,7 @@ func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
 
 func runVdEmailPageServer() {
 	http.HandleFunc("/", renderHtml)
-	err := http.ListenAndServe("{ipaddr}:3002", nil)
+	err := http.ListenAndServe("10.63.180.57:3002", nil)
 
 	if err != nil {
 		logx.Error("HTTP server failed, err: ", err)

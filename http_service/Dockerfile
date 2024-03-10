@@ -9,8 +9,6 @@ WORKDIR /build
 
 COPY . .
 # 执行前置脚本
-RUN chmod +x ./http_service/pre.sh
-RUN /bin/bash ./http_service/pre.sh
 RUN go mod download
 RUN go build -ldflags="-s -w" -o /app/http_service ./http_service/service.go
 

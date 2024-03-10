@@ -8,11 +8,9 @@ ENV GOPROXY https://goproxy.io,direct
 WORKDIR /build
 
 COPY . .
-# 执行前置脚本
-RUN chmod +x ./rpc_service/user/pre.sh
-RUN /bin/bash ./rpc_service/user/pre.sh
 RUN go mod download
-RUN go build -ldflags="-s -w" -o /app/user ./rpc_service/user/user.go
+RUN go build -ldflags="-s -w" -o ./user ./rpc_service/user/user.go
+
 
 FROM scratch
 
@@ -23,5 +21,6 @@ ENV TZ Asia/Shanghai
 WORKDIR /app
 COPY --from=builder /app/user /app/user
 COPY --from=builder /build/rpc_service/user/etc /app/etc
+
 
 CMD ["./user", "-f", "etc/user.yaml"]

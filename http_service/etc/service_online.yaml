@@ -16,24 +16,24 @@ Auth:
 
 # RPC
 UserRpcConf:
-  Target: {ipaddr}:8081
+  Target: 192.168.0.50:8081
   # Etcd:
   #   Hosts:
-  #     - {ipaddr}:2379
+  #     - 192.168.0.50:2379
   #   Key: user.rpc
   # NonBlock: true
 
 WebsetRpcConf:
-  Target: {ipaddr}:8082
+  Target: 192.168.0.50:8082
   # Etcd:
   #   Hosts:
-  #     - {ipaddr}:2379
+  #     - 192.168.0.50:2379
   #   Key: webset.rpc
   # NonBlock: true
 
 MinIO:
-  EndPoint: "{ipaddr}:9000"
+  EndPoint: "192.168.0.50:9000"
   AccessKeyID: "swjTlz02UIYY7iXCyCQM"
   SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
   UseSSL: false
-  DownloadHost: "http://{ipaddr}:9000"
+  DownloadHost: "http://192.168.0.50:9000"

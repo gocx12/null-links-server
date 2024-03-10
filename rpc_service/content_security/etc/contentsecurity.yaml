@@ -2,5 +2,5 @@ Name: contentsecurity.rpc
 ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-  - {ipaddr}:2379
+  - 10.63.180.57:2379
   Key: contentsecurity.rpc

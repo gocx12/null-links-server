@@ -9,8 +9,6 @@ WORKDIR /build
 
 COPY . .
 # 执行前置脚本
-RUN chmod +x ./kq_consumer/validation_email/pre.sh
-RUN /bin/bash ./kq_consumer/validation_email/pre.sh
 RUN go mod download
 RUN go build -ldflags="-s -w" -o /app/validation_email ./kq_consumer/validation_email/validation_email.go
 
