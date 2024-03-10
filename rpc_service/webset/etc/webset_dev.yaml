@@ -2,12 +2,12 @@ Name: webset.rpc
 ListenOn: 0.0.0.0:8082
 
 Log:
-  ServiceName: "rpc_wenset"
-  # Mode: "console"
-  Mode: "file"
+  ServiceName: "rpc_webset"
+  Mode: "console"
+  # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/rpc_webset/logs"
 
 # Etcd:
 #   Hosts:

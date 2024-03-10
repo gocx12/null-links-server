@@ -1,3 +1,10 @@
+Log:
+  ServiceName: "chat_service"
+  Mode: "console"
+  # Mode: "file"
+  Encoding: "plain"
+  Level: "debug"
+  Path: "/data/kq_consumer/weblink_cover/logs"
 
 DataSource: root:123456@tcp(10.63.180.57:3306)/db_null_links?charset=utf8mb4&parseTime=true
 

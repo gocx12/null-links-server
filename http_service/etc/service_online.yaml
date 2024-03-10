@@ -8,7 +8,7 @@ Log:
   Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/http_service/logs"
 
 Auth:
   AccessSecret: "AccessSecret12"

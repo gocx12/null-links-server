@@ -3,11 +3,11 @@ ListenOn: 0.0.0.0:8081
 
 Log:
   ServiceName: "rpc_user"
-  # Mode: "console"
-  Mode: "file"
+  Mode: "console"
+  # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/rpc_user/logs"
 
 DataSource: root:123456@tcp(10.63.180.57:3306)/db_null_links?charset=utf8mb4&parseTime=true
 

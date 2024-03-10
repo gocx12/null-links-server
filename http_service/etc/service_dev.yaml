@@ -4,11 +4,11 @@ Port: 8888
 
 Log:
   ServiceName: "http_service"
-  # Mode: "console"
-  Mode: "file"
+  Mode: "console"
+  # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/http_service/logs"
 
 Auth:
   AccessSecret: "AccessSecret12"

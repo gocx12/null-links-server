@@ -1,5 +1,13 @@
 Mode: "debug"
 
+Log:
+  ServiceName: "chat_service"
+  Mode: "console"
+  # Mode: "file"
+  Encoding: "plain"
+  Level: "debug"
+  Path: "/data/kq_consumer/validation_email/logs"
+
 VdEmailKqConsumser:
   Name: kq
   Brokers:

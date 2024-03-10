@@ -3,7 +3,7 @@
 # 获取本机ip地址
 MACHINE="159.138.156.216"
 ipaddr=$(hostname -I | awk '{print $1}')
-MODE="dev"
+MODE="online"
 
 build(){
   echo '===== Mode:build ====='
@@ -59,7 +59,8 @@ run() {
 
 syncFile() {
   echo '===== Mode:syncFile ====='
-  rsync -r ./build root@$MACHINE:/data/null_link_server
+  rsync -avzP --progress  ./build.sh root@$MACHINE:/data/null-links-server && echo "Sync successful"
+  rsync -avzP --progress  ./build/ root@$MACHINE:/data/null-links-server && echo "Sync successful"
 }
 
 while [ -n "$1" ]
@@ -75,9 +76,10 @@ do
     "--sync")
         syncFile
         ;;
-    # "--mod")
-    #     buildWithDownload
-    #     ;;
+    "--publish")
+        build
+        syncFile
+        ;;
     # "--vendor")
     #     buildWithVendor
     #     ;;

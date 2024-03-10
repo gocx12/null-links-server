@@ -7,7 +7,7 @@ Log:
   Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/rpc_user/logs"
 
 DataSource: root:123456@tcp(192.168.0.50:3306)/db_null_links?charset=utf8mb4&parseTime=true
 

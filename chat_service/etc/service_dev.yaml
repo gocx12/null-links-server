@@ -4,11 +4,11 @@ Port: 8889
 
 Log:
   ServiceName: "chat_service"
-  # Mode: "console"
-  Mode: "file"
+  Mode: "console"
+  # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/chat_service/logs"
 
 RedisConf:
   Host: "10.63.180.57:6379"

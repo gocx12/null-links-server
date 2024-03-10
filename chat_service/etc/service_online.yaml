@@ -8,7 +8,7 @@ Log:
   Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/logs"
+  Path: "/data/chat_service/logs"
 
 RedisConf:
   Host: "192.168.0.50:6379"
