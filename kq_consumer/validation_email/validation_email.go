@@ -37,7 +37,7 @@ type TicketInfo struct {
 	ValidationCode string
 }
 
-var configFile = flag.String("f", "rpc_service/user/etc/user.yaml", "the config file")
+var configFile = flag.String("f", "kq_consumer/validation_email/config.yaml", "the config file")
 
 func main() {
 	flag.Parse()

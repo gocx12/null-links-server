@@ -39,7 +39,7 @@ type Conf struct {
 
 var (
 	c            Conf
-	configFile          = flag.String("f", "rpc_service/user/etc/user.yaml", "the config file")
+	configFile          = flag.String("f", "kq_consumer/weblink_cover/config.yaml", "the config file")
 	format       string = ".png"
 	weblinkModel model.TWeblinkModel
 )

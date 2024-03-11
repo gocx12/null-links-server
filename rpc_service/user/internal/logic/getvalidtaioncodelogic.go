@@ -42,7 +42,7 @@ func (l *GetValidtaionCodeLogic) GetValidtaionCode(in *user.GetValidtaionCodeReq
 	// Redis存储验证码, 10分钟过期
 	_, err := l.svcCtx.RedisClient.SetEx(l.ctx, RdsKeyEmailValidationPre+"_"+recipient, validationCode, 10*time.Minute).Result()
 	if err != nil {
-		logx.Error("failed to set email validation code to redis, error:", err, " email: ", recipient)
+		logx.Error("failed to set email validation code to redis, error:", err, ", email: ", recipient)
 		resp.StatusCode = internal.StatusRpcErr
 		resp.StatusMsg = "set email validation code to redis failed"
 		return resp, nil

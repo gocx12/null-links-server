@@ -40,6 +40,11 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		err = nil
 		return
 	}
+	if respRpc.StatusCode != internal.StatusSuccess {
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "获取网页单流失败"
+		return
+	}
 
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "获取网页单流成功"

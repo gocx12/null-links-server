@@ -34,10 +34,18 @@ func (l *CheckUsernameLogic) CheckUsername(req *types.CheckUsernameReq) (resp *t
 		logx.Error("call UserRpc failed, err: ", err)
 		resp = &types.CheckUsernameResp{
 			StatusCode: internal.StatusRpcErr,
-			StatusMsg:  "检查用户错误",
+			StatusMsg:  "检查用户名错误",
 			Result:     0,
 		}
 		err = nil
+		return
+	} else if respRpc.StatusCode != internal.StatusSuccess {
+		logx.Error("call UserRpc failed, StatusCode: ", respRpc.StatusCode, ", StatusMsg: ", respRpc.StatusMsg)
+		resp = &types.CheckUsernameResp{
+			StatusCode: internal.StatusRpcErr,
+			StatusMsg:  "检查用户名错误",
+			Result:     0,
+		}
 		return
 	}
 

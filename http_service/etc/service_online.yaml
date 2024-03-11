@@ -33,7 +33,7 @@ WebsetRpcConf:
 
 MinIO:
   EndPoint: "192.168.0.50:9000"
-  AccessKeyID: "swjTlz02UIYY7iXCyCQM"
-  SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
+  AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
+  SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
   UseSSL: false
-  DownloadHost: "http://192.168.0.50:9000"
+  DownloadHost: "http://pic.null-links.com"

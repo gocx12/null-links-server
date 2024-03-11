@@ -1,5 +1,5 @@
 Log:
-  ServiceName: "chat_service"
+  ServiceName: "weblink_cover"
   Mode: "console"
   # Mode: "file"
   Encoding: "plain"

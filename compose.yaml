@@ -46,7 +46,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://zookeeper:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.50:9092
       # KAFKA_BROKER_ID: 0
       KAFKA_CREATE_TOPICS: "validation-email:1:1"
     volumes:
@@ -55,6 +55,7 @@ services:
       - zookeeper
     hostname: kafka
     container_name: kafka
+    restart: always
     networks:
       - web-network
 

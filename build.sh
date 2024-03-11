@@ -35,6 +35,7 @@ build(){
     cp -r ./kq_consumer/weblink_cover/*_online.yaml ./build/kq_consumer/weblink_cover/config.yaml
     cp -r ./kq_consumer/validation_email/*_online.yaml ./build/kq_consumer/validation_email/config.yaml
   fi
+  cp -r ./kq_consumer/validation_email/validation_code_page.html ./build/kq_consumer/validation_email/validation_code_page.html
 
   go build -ldflags="-s -w" -o ./build/chat_service/chat_service ./chat_service/service.go
   go build -ldflags="-s -w" -o ./build/kq_consumer/weblink_cover/weblink_cover ./kq_consumer/weblink_cover/weblink_cover.go

@@ -14,7 +14,7 @@ Log:
 #   - 192.168.0.50:2379
 #   Key: webset.rpc
 
-DataSource: admin:df<ew$>d!J@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
   
 RedisConf:
   Host: "192.168.0.50:6379"
@@ -23,10 +23,10 @@ RedisConf:
 
 MinIO:
   EndPoint: "192.168.0.50:9000"
-  AccessKeyID: "swjTlz02UIYY7iXCyCQM"
-  SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
+  AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
+  SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
   UseSSL: false
-  DownloadHost: "http://192.168.0.50:9000"
+  DownloadHost: "http://pic.null-links.com"
 
 WlCoverKqConsumser:
   Brokers:

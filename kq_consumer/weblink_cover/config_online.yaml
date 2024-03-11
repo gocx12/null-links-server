@@ -1,19 +1,19 @@
 Log:
-  ServiceName: "chat_service"
+  ServiceName: "weblink_cover"
   # Mode: "console"
   Mode: "file"
   Encoding: "plain"
   Level: "debug"
   Path: "/data/logs/kq_consumer/weblink_cover"
 
-DataSource: admin:df<ew$>d!J@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 MinIO:
   EndPoint: "192.168.0.50:9000"
-  AccessKeyID: "swjTlz02UIYY7iXCyCQM"
-  SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
+  AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
+  SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
   UseSSL: false
-  DownloadHost: "http://192.168.0.50:9000"
+  DownloadHost: "http://pic.null-links.com"
 
 WlCoverKqConsumser:
   Name: kq
