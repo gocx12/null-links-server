@@ -7,14 +7,14 @@ Log:
   Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/rpc_webset/logs"
+  Path: "/data/logs/rpc_webset"
 
 # Etcd:
 #   Hosts:
 #   - 192.168.0.50:2379
 #   Key: webset.rpc
 
-DataSource: root:123456@tcp(192.168.0.50:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: admin:df<ew$>d!J@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
   
 RedisConf:
   Host: "192.168.0.50:6379"

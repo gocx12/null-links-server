@@ -8,7 +8,7 @@ Log:
   # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/chat_service/logs"
+  Path: "/data/logs/chat_service"
 
 RedisConf:
   Host: "10.63.180.57:6379"
@@ -19,7 +19,7 @@ Auth:
   AccessSecret: "AccessSecret"
   AccessExpire: 604800
 
-DataSource: root:123456@tcp(10.63.180.57:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 # RPC
 UserRpcConf:

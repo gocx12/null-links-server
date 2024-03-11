@@ -6,7 +6,7 @@ Log:
   # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/kq_consumer/validation_email/logs"
+  Path: "/data/logs/kq_consumer/validation_email"
 
 VdEmailKqConsumser:
   Name: kq
@@ -18,6 +18,6 @@ VdEmailKqConsumser:
   Consumers: 1
 
 email:
- SmtpDomain: "smtp.163.com"
- Sender: "null_links@163.com"
- Password: "UKASRFRWQZFNUIAN"
+ SmtpDomain: "smtp.exmail.qq.com"
+ Sender: "noreply@null-links.com"
+ Password: "r5UbqseThNS6Dhqw"

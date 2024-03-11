@@ -4,9 +4,9 @@ Log:
   # Mode: "file"
   Encoding: "plain"
   Level: "debug"
-  Path: "/data/kq_consumer/weblink_cover/logs"
+  Path: "/data/logs/kq_consumer/weblink_cover"
 
-DataSource: root:123456@tcp(10.63.180.57:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 MinIO:
   EndPoint: "10.63.180.57:9000"

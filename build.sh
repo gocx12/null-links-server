@@ -60,7 +60,7 @@ run() {
 syncFile() {
   echo '===== Mode:syncFile ====='
   rsync -avzP --progress  ./build.sh root@$MACHINE:/data/null-links-server && echo "Sync successful"
-  rsync -avzP --progress  ./build/ root@$MACHINE:/data/null-links-server && echo "Sync successful"
+  rsync -avzP --progress  ./build root@$MACHINE:/data/null-links-server && echo "Sync successful"
 }
 
 while [ -n "$1" ]
