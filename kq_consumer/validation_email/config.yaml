@@ -11,7 +11,7 @@ Log:
 VdEmailKqConsumser:
   Name: kq
   Brokers:
-  - 159.138.156.216:9092
+  - 159.138.156.216:19094
   Group: nl_consumer
   Topic: validation-email
   Offset: first
