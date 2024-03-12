@@ -18,6 +18,6 @@ VdEmailKqConsumser:
   Consumers: 1
 
 email:
- SmtpDomain: "smtp.exmail.qq.com"
+ SmtpDomain: "smtp.exmail.qq.com:25"
  Sender: "noreply@null-links.com"
- Password: "r5UbqseThNS6Dhqw"
+ Password: "sNAsafJrw8F7W49n"

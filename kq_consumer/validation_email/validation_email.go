@@ -38,6 +38,7 @@ type TicketInfo struct {
 }
 
 var configFile = flag.String("f", "kq_consumer/validation_email/config.yaml", "the config file")
+var templateFile = flag.String("t", "kq_consumer/validation_email/validation_code_page.html", "the template file")
 
 func main() {
 	flag.Parse()
@@ -55,7 +56,7 @@ func main() {
 }
 
 func sendEmail(k, v string) error {
-	logx.Debug("sendEmail", "k: ", k, " v: ", v)
+	logx.Info("sendEmail", "k: ", k, " v: ", v)
 	// 邮件服务器地址和端口 发件人邮箱和密码
 	smtpDomain := c.Email.SmtpDomain
 	sender := c.Email.Sender
@@ -65,6 +66,10 @@ func sendEmail(k, v string) error {
 	// 收件人邮箱与验证码
 	kqValue := v
 	kqVaules := strings.Split(kqValue, "::")
+	if len(kqVaules) != 2 {
+		logx.Error("invalid kq value: ", kqValue)
+		return nil
+	}
 	recipient := kqVaules[0]
 	validationCode := kqVaules[1]
 
@@ -92,7 +97,7 @@ func sendEmail(k, v string) error {
 	e.To = []string{recipient}
 	e.Subject = subject
 	e.HTML = body.Bytes()
-	err = e.Send(smtpDomain+":25", auth)
+	err = e.Send(smtpDomain, auth)
 	if err != nil {
 		// TODO(chancyGao): 增加告警
 		logx.Error("Failed to send email:", err, " ,recipient: ", recipient)
@@ -104,7 +109,7 @@ func sendEmail(k, v string) error {
 
 func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
 	// 解析指定文件生成模板对象
-	tmpl, err := template.ParseFiles("./kq_consumer/validation_email/validation_code_page.html")
+	tmpl, err := template.ParseFiles(*templateFile)
 
 	return tmpl, err
 }

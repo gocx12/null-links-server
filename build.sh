@@ -55,7 +55,7 @@ run() {
   nohup ./build/chat_service/chat_service -f ./build/chat_service/etc/service.yaml  > /dev/null 2>&1 &
 
   nohup ./build/kq_consumer/weblink_cover/weblink_cover -f ./build/kq_consumer/weblink_cover/config.yaml > /dev/null 2>&1 &
-  nohup ./build/kq_consumer/validation_email/validation_email -f ./build/kq_consumer/validation_email/config.yaml > /dev/null 2>&1 &
+  nohup ./build/kq_consumer/validation_email/validation_email -f ./build/kq_consumer/validation_email/config.yaml -t ./build/kq_consumer/validation_email/validation_code_page.html > /dev/null 2>&1 &
 }
 
 syncFile() {
