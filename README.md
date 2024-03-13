@@ -61,16 +61,37 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo docker run hello-world
 ```
 
-docker compose 安装：
-```bash
-sudo apt-get update
-sudo apt-get install docker-compose-plugin
-
-docker compose version
-```
-
 
 容器启动
 ```
 docker compose -f compose.yaml up --remove-orphans -d
+```
+
+5. mysql
+安装
+```bash
+sudo apt install mysql-server
+```
+
+创建用户
+```bash
+sudo mysql
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';
+
+
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
+```
+
+建库建表
+```bash
+cd sql
+
+sudo mysql
+source null_links.sql;
+```
+
+6. github ssh配置
+```bash
+ssh-keygen -t rsa -b 4096 -C "xxx@example.com"
 ```
