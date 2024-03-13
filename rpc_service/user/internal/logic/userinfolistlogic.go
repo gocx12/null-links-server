@@ -26,6 +26,11 @@ func NewUserInfoListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserInfoListLogic) UserInfoList(in *user.UserInfoListReq) (*user.UserInfoListResp, error) {
 	resp := &user.UserInfoListResp{}
+	if len(in.UserIdList) == 0 {
+		resp.StatusCode = internal.StatusParamErr
+		resp.StatusMsg = "empty user id list"
+		return resp, nil
+	}
 
 	userListDb, err := l.svcCtx.UserModel.FindMulti(l.ctx, in.UserIdList)
 	if err != nil {
