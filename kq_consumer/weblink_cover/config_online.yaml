@@ -9,7 +9,7 @@ Log:
 DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 MinIO:
-  EndPoint: "192.168.0.50:9000"
+  EndPoint: "10.0.0.5:9000"
   AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
   SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
   UseSSL: false
@@ -18,7 +18,7 @@ MinIO:
 WlCoverKqConsumser:
   Name: kq
   Brokers:
-  - 192.168.0.50:9092
+  - 10.0.0.5:9092
   Group: nl_consumer
   Topic: weblink-cover
   Offset: first

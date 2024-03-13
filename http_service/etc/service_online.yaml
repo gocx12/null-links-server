@@ -16,23 +16,23 @@ Auth:
 
 # RPC
 UserRpcConf:
-  Target: 192.168.0.50:8081
+  Target: 10.0.0.5:8081
   # Etcd:
   #   Hosts:
-  #     - 192.168.0.50:2379
+  #     - 10.0.0.5:2379
   #   Key: user.rpc
   # NonBlock: true
 
 WebsetRpcConf:
-  Target: 192.168.0.50:8082
+  Target: 10.0.0.5:8082
   # Etcd:
   #   Hosts:
-  #     - 192.168.0.50:2379
+  #     - 10.0.0.5:2379
   #   Key: webset.rpc
   # NonBlock: true
 
 MinIO:
-  EndPoint: "192.168.0.50:9000"
+  EndPoint: "10.0.0.5:9000"
   AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
   SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
   UseSSL: false

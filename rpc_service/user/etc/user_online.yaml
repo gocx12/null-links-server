@@ -12,16 +12,16 @@ Log:
 DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 RedisConf:
-  Host: "192.168.0.50:6379"
+  Host: "10.0.0.5:6379"
   Password: ""
   DB:   0
 
 VdEmailMqPusherConf:
   Brokers:
-    - 192.168.0.50:9092
+    - 10.0.0.5:9092
   Topic: validation-email
 
 # Etcd:
 #   Hosts:
-#   - 192.168.0.50:2379
+#   - 10.0.0.5:2379
 #   Key: user.rpc

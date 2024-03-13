@@ -11,7 +11,7 @@ Log:
   Path: "/data/logs/chat_service"
 
 RedisConf:
-  Host: "192.168.0.50:6379"
+  Host: "10.0.0.5:6379"
   Password: ""
   DB:   0
 
@@ -23,9 +23,9 @@ DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&par
 
 # RPC
 UserRpcConf:
-  Target: 192.168.0.50:8081
+  Target: 10.0.0.5:8081
   # Etcd:
   #   Hosts:
-  #     - 192.168.0.50:2379
+  #     - 10.0.0.5:2379
   #   Key: user.rpc
   # NonBlock: true
