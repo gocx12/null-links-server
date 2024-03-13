@@ -35,6 +35,7 @@ type Conf struct {
 		UseSSL          bool
 		DownloadHost    string
 	}
+	Log logx.LogConf
 }
 
 var (
@@ -47,6 +48,8 @@ var (
 func main() {
 	flag.Parse()
 	conf.MustLoad(*configFile, &c)
+	logx.MustSetup(c.Log)
+
 	weblinkModel = model.NewTWeblinkModel(sqlx.NewMysql(c.DataSource))
 
 	logx.Info("weblink screeshot kq consumer starting")

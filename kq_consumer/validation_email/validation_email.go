@@ -17,10 +17,12 @@ import (
 
 type Email struct {
 	SmtpDomain string
+	SmtpPort   string
 	Sender     string
 	Password   string
 }
 type Conf struct {
+	Log                logx.LogConf
 	Mode               string
 	Email              Email
 	VdEmailKqConsumser kq.KqConf
@@ -43,6 +45,7 @@ var templateFile = flag.String("t", "kq_consumer/validation_email/validation_cod
 func main() {
 	flag.Parse()
 	conf.MustLoad(*configFile, &c)
+	logx.MustSetup(c.Log)
 
 	// if c.Mode == "debug" {
 	// 	logx.Debug("start server")
@@ -56,9 +59,10 @@ func main() {
 }
 
 func sendEmail(k, v string) error {
-	logx.Info("sendEmail", "k: ", k, " v: ", v)
+	logx.Info("sendEmail", " k: ", k, " v: ", v)
 	// 邮件服务器地址和端口 发件人邮箱和密码
 	smtpDomain := c.Email.SmtpDomain
+	smtpPort := c.Email.SmtpPort
 	sender := c.Email.Sender
 	password := c.Email.Password
 	auth := smtp.PlainAuth("", sender, password, smtpDomain)
@@ -97,7 +101,7 @@ func sendEmail(k, v string) error {
 	e.To = []string{recipient}
 	e.Subject = subject
 	e.HTML = body.Bytes()
-	err = e.Send(smtpDomain, auth)
+	err = e.Send(smtpDomain+":"+smtpPort, auth)
 	if err != nil {
 		// TODO(chancyGao): 增加告警
 		logx.Error("Failed to send email:", err, " ,recipient: ", recipient)

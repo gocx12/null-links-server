@@ -40,15 +40,17 @@ func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetIn
 
 	// 获取是否点赞信息
 	isLike := false
-	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
-	if err != nil && err != sqlx.ErrNotFound {
-		logx.Error("get like info error: ", err)
-	} else if err == sqlx.ErrNotFound {
-		isLike = false
-	} else if likeInfoDb.Status == 1 {
-		isLike = true
-	} else {
-		isLike = false
+	if in.UserId != -1 {
+		likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
+		if err != nil && err != sqlx.ErrNotFound {
+			logx.Error("get like info error: ", err)
+		} else if err == sqlx.ErrNotFound {
+			isLike = false
+		} else if likeInfoDb.Status == 1 {
+			isLike = true
+		} else {
+			isLike = false
+		}
 	}
 
 	// 获取是否收藏信息
