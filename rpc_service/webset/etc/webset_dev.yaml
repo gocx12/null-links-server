@@ -1,5 +1,6 @@
 Name: webset.rpc
 ListenOn: 0.0.0.0:8082
+Mode: dev
 
 Log:
   ServiceName: "rpc_webset"
@@ -11,22 +12,22 @@ Log:
 
 # Etcd:
 #   Hosts:
-#   - 10.63.180.57:2379
+#   - 127.0.0.1:2379
 #   Key: webset.rpc
 
-DataSource: admin:df<ew$>d!J@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
   
 RedisConf:
-  Host: "10.63.180.57:6379"
+  Host: "127.0.0.1:6379"
   Password: ""
   DB:   0
 
 MinIO:
-  EndPoint: "10.63.180.57:9000"
+  EndPoint: "127.0.0.1:9000"
   AccessKeyID: "swjTlz02UIYY7iXCyCQM"
   SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
   UseSSL: false
-  DownloadHost: "http://10.63.180.57:9000"
+  DownloadHost: "http://127.0.0.1:9000"
 
 WlCoverKqConsumser:
   Brokers:
@@ -34,9 +35,9 @@ WlCoverKqConsumser:
   Topic: weblink-cover
 
 UserRpcConf:
-  Target: 10.63.180.57:8081
+  Target: 127.0.0.1:8081
   # Etcd:
   #   Hosts:
-  #     - 10.63.180.57:2379
+  #     - 127.0.0.1:2379
   #   Key: user.rpc
   # NonBlock: true

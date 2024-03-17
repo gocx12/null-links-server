@@ -31,7 +31,7 @@ build(){
     cp -r ./http_service/etc/*_online.yaml ./build/http_service/etc/service.yaml
     cp -r ./chat_service/etc/*_online.yaml ./build/chat_service/etc/service.yaml
     cp -r ./rpc_service/user/etc/*_online.yaml ./build/rpc_service/user/etc/user.yaml
-    cp -r ./rpc_service/webset/etc/*_online.yaml ./build/rpc_service/webset/etc/service.yaml
+    cp -r ./rpc_service/webset/etc/*_online.yaml ./build/rpc_service/webset/etc/webset.yaml
     cp -r ./kq_consumer/weblink_cover/*_online.yaml ./build/kq_consumer/weblink_cover/config.yaml
     cp -r ./kq_consumer/validation_email/*_online.yaml ./build/kq_consumer/validation_email/config.yaml
   fi
@@ -49,7 +49,7 @@ run() {
   echo '===== Mode:run ====='
   # 启动服务
   nohup ./build/rpc_service/user/rpc_user -f ./build/rpc_service/user/etc/user.yaml > /dev/null 2>&1 &
-  nohup ./build/rpc_service/webset/rpc_webset -f ./build/rpc_service/webset/etc/service.yaml > /dev/null 2>&1 &
+  nohup ./build/rpc_service/webset/rpc_webset -f ./build/rpc_service/webset/etc/webset.yaml > /dev/null 2>&1 &
 
   nohup ./build/http_service/http_service -f ./build/http_service/etc/service.yaml > /dev/null 2>&1 &
   nohup ./build/chat_service/chat_service -f ./build/chat_service/etc/service.yaml  > /dev/null 2>&1 &

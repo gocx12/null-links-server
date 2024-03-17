@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 
 	"null-links/rpc_service/webset/internal/config"
 	"null-links/rpc_service/webset/internal/server"
@@ -32,8 +34,32 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
-	defer s.Stop()
+	// defer s.Stop()
+	svcGroup := service.NewServiceGroup()
+	defer svcGroup.Stop()
+	svcGroup.Add(s)
+
+	fmt.Printf("c.mode: ", c.Mode)
+	if c.Mode == service.DevMode || c.Mode == service.TestMode {
+		svcGroup.Add(pprofServer{})
+	}
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
-	s.Start()
+	// s.Start()
+	svcGroup.Start()
+}
+
+type pprofServer struct{}
+
+func (pprofServer) Start() {
+	addr := "0.0.0.0:6062"
+	fmt.Printf("Start pprof server, listen addr %s\n", addr)
+	err := http.ListenAndServe(addr, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (pprofServer) Stop() {
+	fmt.Printf("Stop pprof server\n")
 }

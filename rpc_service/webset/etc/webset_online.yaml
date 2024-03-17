@@ -1,42 +1,43 @@
 Name: webset.rpc
 ListenOn: 0.0.0.0:8082
+Mode: online
 
 Log:
   ServiceName: "rpc_webset"
   # Mode: "console"
   Mode: "file"
   Encoding: "plain"
-  Level: "debug"
+  Level: "info"
   Path: "/data/logs/rpc_webset"
 
 # Etcd:
 #   Hosts:
-#   - 10.0.0.5:2379
+#   - 192.168.0.50:2379
 #   Key: webset.rpc
 
-DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: admin:pL%al8oB5c@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
   
 RedisConf:
-  Host: "10.0.0.5:6379"
+  Host: "192.168.0.50:6379"
   Password: ""
   DB:   0
 
 MinIO:
-  EndPoint: "10.0.0.5:9000"
-  AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
-  SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
+  EndPoint: "43.128.2.203:9000"
+  AccessKeyID: "JXhP9O5DxAdqLNMxln0R"
+  SecretAccessKey: "xGihi168kR4FyBAWTAZNCeVxDHajIKgMX71xv9tB"
   UseSSL: false
   DownloadHost: "http://pic.null-links.com"
 
 WlCoverKqConsumser:
   Brokers:
-    - 10.0.0.5:9092
+    - 192.168.0.50:9092
   Topic: weblink-cover
 
 UserRpcConf:
-  Target: 10.0.0.5:8081
+  Target: 192.168.0.50:8081
   # Etcd:
   #   Hosts:
-  #     - 10.0.0.5:2379
+  #     - 192.168.0.50:2379
   #   Key: user.rpc
   # NonBlock: true

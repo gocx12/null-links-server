@@ -1,13 +1,13 @@
 Name: http_service
 Host: 0.0.0.0
 Port: 8888
-
+Mode: online
 Log:
   ServiceName: "http_service"
   # Mode: "console"
   Mode: "file"
   Encoding: "plain"
-  Level: "debug"
+  Level: "info"
   Path: "/data/logs/http_service"
 
 Auth:
@@ -16,24 +16,24 @@ Auth:
 
 # RPC
 UserRpcConf:
-  Target: 10.0.0.5:8081
+  Target: 192.168.0.50:8081
   # Etcd:
   #   Hosts:
-  #     - 10.0.0.5:2379
+  #     - 192.168.0.50:2379
   #   Key: user.rpc
   # NonBlock: true
 
 WebsetRpcConf:
-  Target: 10.0.0.5:8082
+  Target: 192.168.0.50:8082
   # Etcd:
   #   Hosts:
-  #     - 10.0.0.5:2379
+  #     - 192.168.0.50:2379
   #   Key: webset.rpc
   # NonBlock: true
 
 MinIO:
-  EndPoint: "10.0.0.5:9000"
-  AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
-  SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
+  EndPoint: "43.128.2.203:9000"
+  AccessKeyID: "JXhP9O5DxAdqLNMxln0R"
+  SecretAccessKey: "xGihi168kR4FyBAWTAZNCeVxDHajIKgMX71xv9tB"
   UseSSL: false
   DownloadHost: "http://pic.null-links.com"

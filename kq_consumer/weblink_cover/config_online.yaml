@@ -3,22 +3,22 @@ Log:
   # Mode: "console"
   Mode: "file"
   Encoding: "plain"
-  Level: "debug"
+  Level: "info"
   Path: "/data/logs/kq_consumer/weblink_cover"
 
-DataSource: admin:pLabc@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
+DataSource: admin:pL%al8oB5c@tcp(43.139.0.182:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 MinIO:
-  EndPoint: "10.0.0.5:9000"
-  AccessKeyID: "UKrp44MZWBoZRQZTTHbu"
-  SecretAccessKey: "p4NcdI8gMZDaf4gNUthKcieVoodVbFWjXsMjYZBu"
+  EndPoint: "43.128.2.203:9000"
+  AccessKeyID: "JXhP9O5DxAdqLNMxln0R"
+  SecretAccessKey: "xGihi168kR4FyBAWTAZNCeVxDHajIKgMX71xv9tB"
   UseSSL: false
   DownloadHost: "http://pic.null-links.com"
 
 WlCoverKqConsumser:
   Name: kq
   Brokers:
-  - 10.0.0.5:9092
+  - 192.168.0.50:9092
   Group: nl_consumer
   Topic: weblink-cover
   Offset: first

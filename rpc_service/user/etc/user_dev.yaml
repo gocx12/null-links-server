@@ -1,5 +1,6 @@
 Name: user.rpc
 ListenOn: 0.0.0.0:8081
+Mode: dev
 
 Log:
   ServiceName: "rpc_user"
@@ -12,7 +13,7 @@ Log:
 DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
 
 RedisConf:
-  Host: "10.63.180.57:6379"
+  Host: "127.0.0.1:6379"
   Password: ""
   DB:   0
 

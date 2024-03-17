@@ -1,6 +1,7 @@
 Name: http_service
 Host: 0.0.0.0
 Port: 8888
+Mode: dev
 
 Log:
   ServiceName: "http_service"
@@ -16,24 +17,24 @@ Auth:
 
 # RPC
 UserRpcConf:
-  Target: 10.63.180.57:8081
+  Target: 127.0.0.1:8081
   # Etcd:
   #   Hosts:
-  #     - 10.63.180.57:2379
+  #     - 127.0.0.1:2379
   #   Key: user.rpc
   # NonBlock: true
 
 WebsetRpcConf:
-  Target: 10.63.180.57:8082
+  Target: 127.0.0.1:8082
   # Etcd:
   #   Hosts:
-  #     - 10.63.180.57:2379
+  #     - 127.0.0.1:2379
   #   Key: webset.rpc
   # NonBlock: true
 
 MinIO:
-  EndPoint: "10.63.180.57:9000"
+  EndPoint: "127.0.0.1:9000"
   AccessKeyID: "swjTlz02UIYY7iXCyCQM"
   SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
   UseSSL: false
-  DownloadHost: "http://10.63.180.57:9000"
+  DownloadHost: "http://127.0.0.1:9000"

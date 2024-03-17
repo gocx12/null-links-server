@@ -5,13 +5,13 @@ Log:
   # Mode: "console"
   Mode: "file"
   Encoding: "plain"
-  Level: "debug"
+  Level: "info"
   Path: "/data/logs/kq_consumer/validation_email"
 
 VdEmailKqConsumser:
   Name: kq
   Brokers:
-  - 10.0.0.5:9092
+  - 192.168.0.50:9092
   Group: nl_consumer
   Topic: validation-email
   Offset: first

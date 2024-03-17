@@ -33,7 +33,7 @@ func UploadPicHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		err := r.ParseMultipartForm(10 << 20) // 10 MB
 		if err != nil {
 			logx.Error("parse multi part form error: ", err)
-			http.Error(w, "parse multi part form error: "+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "上传失败", http.StatusInternalServerError)
 			return
 		}
 
@@ -41,7 +41,7 @@ func UploadPicHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		file, header, err := r.FormFile("image") // "file" is the field name in the form
 		if err != nil {
 			logx.Error("Retrieve file error: ", err)
-			http.Error(w, "Retrieve error:"+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "上传失败", http.StatusInternalServerError)
 			return
 		}
 		defer file.Close()
@@ -60,7 +60,7 @@ func UploadPicHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		})
 		if err != nil {
 			logx.Error("init minio client error: ", err)
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "上传失败", http.StatusInternalServerError)
 		}
 
 		userId := gocast.ToInt64(r.FormValue("user_id"))
@@ -74,12 +74,12 @@ func UploadPicHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		} else if businessId == 3 {
 			bucketName = "avatar"
 		} else {
-			http.Error(w, "unknown business_id", http.StatusBadRequest)
+			http.Error(w, "上传失败", http.StatusInternalServerError)
 		}
 		objectName, err := generateUniqueFilename(file, userId)
 		if err != nil {
 			logx.Error("generate unique filename error: ", err)
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "上传失败", http.StatusInternalServerError)
 		}
 
 		var wg sync.WaitGroup
@@ -92,7 +92,7 @@ func UploadPicHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			info, err := minioClient.PutObject(r.Context(), bucketName, objectName, file, -1, minio.PutObjectOptions{ContentType: contentType})
 			if err != nil {
 				logx.Error("minio upload error: ", err)
-				http.Error(w, err.Error(), http.StatusBadRequest)
+				http.Error(w, "上传失败", http.StatusInternalServerError)
 			}
 			logx.Debugf("Successfully uploaded %s of size %v\n", objectName, info)
 			wg.Done()
