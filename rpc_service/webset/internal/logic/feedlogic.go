@@ -62,36 +62,38 @@ func (l *FeedLogic) Feed(in *webset.FeedReq) (*webset.FeedResp, error) {
 	websetAuthorMap := make(map[int64]*webset.UserInfoShort)
 
 	go func() {
+		for _, item := range websetsDb {
+			websetLikeMap[item.Id] = false
+		}
 		// 获取点赞信息
-		if in.UserId == -1 {
-			// 没有id信息则全部未点赞
-			for _, item := range websetsDb {
-				websetLikeMap[item.Id] = false
-			}
-		} else {
-			likeInfosDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfos(l.ctx, websetIdList, in.UserId)
-			if err != nil {
-				logx.Error("get like info failed, user, err: ", err)
-			}
-			for index, item := range websetsDb {
-				isFound := false
-				for _, likeInfo := range likeInfosDb {
-
-					likeCnt, err := l.svcCtx.RedisClient.HGet(l.ctx, RdsKeyWebsetLikedCnt, gocast.ToString(item.Id)).Result()
+		if in.UserId != -1 {
+			websetIdListFiltered := make([]int64, 0, len(websetIdList))
+			for _, websetId := range websetIdList {
+				// 检查该webset对应的布隆过滤器是否存在
+				res, err := l.svcCtx.RedisClient.Exists(l.ctx, "BF_LIKE_"+gocast.ToString(websetId)).Result()
+				if err != nil {
+					logx.Error("check whether BF_LIKE_ exists from redis error: ", err)
+					websetIdListFiltered = append(websetIdListFiltered, websetId)
+				} else if res == 1 {
+					// 布隆过滤器存在
+					res, err := l.svcCtx.RedisClient.BFExists(l.ctx, "BF_LIKE_"+gocast.ToString(websetId), in.UserId).Result()
 					if err != nil {
-						logx.Error("get like count from redis failed, err: ", err)
-					}
-					// mysql + redis = 总点赞数
-					websetsDb[index].LikeCnt = item.LikeCnt + gocast.ToInt64(likeCnt)
-
-					if item.Id == likeInfo.WebsetId {
-						websetLikeMap[item.Id] = (likeInfo.Status == 1)
-						isFound = true
-						break
+						logx.Error("get like info from redis bloom filter error: ", err)
+						websetIdListFiltered = append(websetIdListFiltered, websetId)
+					} else if !res {
+						// 用户未点赞
+						logx.Debug("user not liked")
+						websetLikeMap[websetId] = false
 					}
 				}
-				if !isFound {
-					websetLikeMap[item.Id] = false
+			}
+			// 从数据库获取未被布隆过滤器过滤掉的webset的点赞信息
+			likeInfosDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfos(l.ctx, websetIdListFiltered, in.UserId)
+			if err != nil {
+				logx.Error("get like info failed, user, err: ", err)
+			} else {
+				for _, likeInfo := range likeInfosDb {
+					websetLikeMap[likeInfo.WebsetId] = (likeInfo.Status == 1)
 				}
 			}
 		}

@@ -54,7 +54,6 @@ func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActi
 
 		// like 与 webset 在同一个数据库中，因此可以使用本地事务
 		err := l.svcCtx.WebsetModel.GetConn().TransactCtx(l.ctx, func(ctx context.Context, session sqlx.Session) error {
-
 			likeStatus, err := l.svcCtx.LikeModel.FindStatusWebsetIdUserIdTrans(l.ctx, in.WebsetId, in.UserId, session)
 			if err != nil && err != sqlx.ErrNotFound {
 				return err
@@ -106,20 +105,13 @@ func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActi
 			logx.Error("like webset failed, err: ", err)
 			likeActionResp.StatusCode = internal.StatusRpcErr
 			likeActionResp.StatusMsg = "like webset failed"
+		} else {
+			likeActionResp.StatusCode = internal.StatusSuccess
+			likeActionResp.StatusMsg = "success"
 		}
 
-		likeActionResp.StatusCode = internal.StatusSuccess
-		likeActionResp.StatusMsg = "success"
 	} else if in.ActionType == 2 {
 		// 取消点赞
-		// redis事务
-		// _, err := l.svcCtx.RedisClient.TxPipelined(l.ctx, func(pipe redis.Pipeliner) error {
-		// 	key := gocast.ToString(in.WebsetId) + "::" + gocast.ToString(in.UserId)
-		// 	pipe.HSet(l.ctx, RdsKeyUserWebsetLiked, key, 2)
-		// 	// 点赞数-1
-		// 	pipe.HIncrBy(l.ctx, RdsKeyWebsetLikedCnt, gocast.ToString(in.WebsetId), -1)
-		// 	return nil
-		// })
 
 		// like 与 webset 在同一个数据库中，因此可以使用本地事务
 		err := l.svcCtx.WebsetModel.GetConn().TransactCtx(l.ctx, func(ctx context.Context, session sqlx.Session) error {
@@ -174,10 +166,11 @@ func (l *LikeActionLogic) LikeAction(in *webset.LikeActionReq) (*webset.LikeActi
 			logx.Error("like webset failed, err: ", err)
 			likeActionResp.StatusCode = internal.StatusRpcErr
 			likeActionResp.StatusMsg = "like webset failed"
+		} else {
+			likeActionResp.StatusCode = internal.StatusSuccess
+			likeActionResp.StatusMsg = "success"
 		}
 
-		likeActionResp.StatusCode = internal.StatusSuccess
-		likeActionResp.StatusMsg = "success"
 	} else {
 		// 未知操作类型
 		logx.Error("unknown like action type")

@@ -38,8 +38,6 @@ func main() {
 	svcGroup := service.NewServiceGroup()
 	defer svcGroup.Stop()
 	svcGroup.Add(s)
-
-	fmt.Printf("c.mode: ", c.Mode)
 	if c.Mode == service.DevMode || c.Mode == service.TestMode {
 		svcGroup.Add(pprofServer{})
 	}

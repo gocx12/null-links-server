@@ -9,6 +9,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-queue/kq"
+
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -21,8 +22,7 @@ type ServiceContext struct {
 	WebsetModel        model.TWebsetModel
 	RedisClient        *redis.Client
 	WlCoverKqConsumser *kq.Pusher
-
-	UserRpc userservice.UserService
+	UserRpc            userservice.UserService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

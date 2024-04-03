@@ -9,6 +9,7 @@ import (
 
 	"null-links/internal"
 
+	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -38,18 +39,36 @@ func (l *WebsetInfoLogic) WebsetInfo(in *webset.WebsetInfoReq) (*webset.WebsetIn
 		return &websetInfoResp, err
 	}
 
-	// 获取是否点赞信息
+	// 获取是否点赞信息, 如果用户未登录，则默认为未点赞
 	isLike := false
+	getLikeInfoFromBF := false
 	if in.UserId != -1 {
-		likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
-		if err != nil && err != sqlx.ErrNotFound {
-			logx.Error("get like info error: ", err)
-		} else if err == sqlx.ErrNotFound {
-			isLike = false
-		} else if likeInfoDb.Status == 1 {
-			isLike = true
-		} else {
-			isLike = false
+		// 检查该webset对应的布隆过滤器是否存在
+		res, err := l.svcCtx.RedisClient.Exists(l.ctx, "BF_LIKE_"+gocast.ToString(in.WebsetId)).Result()
+		if err != nil {
+			logx.Error("check whether BF_LIKE_ exists from redis error: ", err)
+		} else if res == 1 {
+			// 布隆过滤器存在
+			res, err := l.svcCtx.RedisClient.BFExists(l.ctx, "BF_LIKE_"+gocast.ToString(in.WebsetId), in.UserId).Result()
+			if err != nil {
+				logx.Error("get like info from redis bloom filter error: ", err)
+			} else if !res {
+				// 用户未点赞
+				logx.Debug("user not liked")
+				getLikeInfoFromBF = true
+			}
+		}
+		if !getLikeInfoFromBF {
+			likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, in.WebsetId, in.UserId)
+			if err != nil && err != sqlx.ErrNotFound {
+				logx.Error("get like info error: ", err)
+			} else if err == sqlx.ErrNotFound {
+				isLike = false
+			} else if likeInfoDb.Status == 1 {
+				isLike = true
+			} else {
+				isLike = false
+			}
 		}
 	}
 

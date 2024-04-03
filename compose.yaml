@@ -92,13 +92,26 @@ services:
     restart: always
     container_name: minio
 
+  # redis:
+  #   image: redis:4.0.1
+  #   container_name: redis
+  #   volumes:
+  #     - /data/null-links/redis/datadir:/data
+  #     - /data/null-links/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+  #     - /data/null-links/redis/logs:/logs
+  #   command: redis-server
+  #   ports:
+  #     - 6379:6379
   redis:
-    image: redis:4.0.1
+    image: redislabs/rebloom
     container_name: redis
-    volumes:
-      - /data/null-links/redis/datadir:/data
-      - /data/null-links/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
-      - /data/null-links/redis/logs:/logs
-    command: redis-server
+    restart: always
     ports:
       - 6379:6379
+    volumes:
+      - /data/null-links/redis/data:/data
+      - /data/null-links/redis/conf/redis.conf:/usr/lib/redis/redis.conf
+      - /data/null-links/redis/logs:/logs
+    command: redis-server
+    networks:
+      - web-network
