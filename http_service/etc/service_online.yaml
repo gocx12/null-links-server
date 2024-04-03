@@ -1,7 +1,7 @@
 Name: http_service
 Host: 0.0.0.0
 Port: 8888
-Mode: online
+Mode: pro
 Log:
   ServiceName: "http_service"
   # Mode: "console"

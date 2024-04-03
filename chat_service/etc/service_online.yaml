@@ -1,7 +1,7 @@
 Name: chat_service
 Host: 0.0.0.0
 Port: 8889
-Mode: online
+Mode: pro
 
 Log:
   ServiceName: "chat_service"
