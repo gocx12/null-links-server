@@ -7,13 +7,20 @@ import (
 
 type Config struct {
 	rest.RestConf
-	Auth struct {
+	DataSource string
+	Auth       struct {
 		AccessSecret string
 		AccessExpire int64
 	}
 	UserRpcConf   zrpc.RpcClientConf
 	WebsetRpcConf zrpc.RpcClientConf
-	MinIO         struct {
+
+	RedisConf struct {
+		Host     string
+		Password string
+		DB       int
+	}
+	MinIO struct {
 		Endpoint        string
 		AccessKeyID     string
 		SecretAccessKey string
