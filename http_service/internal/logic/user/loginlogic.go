@@ -2,14 +2,16 @@ package user
 
 import (
 	"context"
+	"encoding/base64"
 	"time"
 
+	"null-links/cron/model"
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
 	"null-links/internal"
-	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"golang.org/x/crypto/scrypt"
 )
 
 type LoginLogic struct {
@@ -17,6 +19,9 @@ type LoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
+
+var PW_HASH_BYTES = 32
+var SALT = []byte{126, 145, 58, 233, 153, 107, 4, 231}
 
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
 	return &LoginLogic{
@@ -31,7 +36,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	if req.Username == "" && req.UserEmail == "" {
 		resp = &types.LoginResp{
 			StatusCode: internal.StatusParamErr,
-			StatusMsg:  "请输入用户名或邮箱",
+			StatusMsg:  "please input your name or your email address",
 			UserID:     -1,
 		}
 		err = nil
@@ -40,7 +45,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	if req.Password == "" {
 		resp = &types.LoginResp{
 			StatusCode: internal.StatusParamErr,
-			StatusMsg:  "请输入密码",
+			StatusMsg:  "please input your password",
 			UserID:     -1,
 		}
 		err = nil
@@ -48,55 +53,56 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	}
 
 	resp = &types.LoginResp{}
-	respRpc, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
-		Username: req.Username,
-		Email:    req.UserEmail,
-		Password: req.Password,
-	})
-	if err != nil {
-		logx.Error("call UserRpc failed, err: " + err.Error())
-		resp.StatusCode = internal.StatusRpcErr
-		resp.StatusMsg = "登录失败"
-		err = nil
-		return
-	} else if respRpc.StatusCode != internal.StatusSuccess {
-		// the username does not exsit or the password is incorrect
-		logx.Error("call UserRpc failed, err: " + respRpc.StatusMsg)
-		if respRpc.StatusCode == internal.StatusUserNotExist {
-			resp.StatusCode = internal.StatusUserNotExist
-			resp.StatusMsg = "该邮箱不存在"
-		} else if respRpc.StatusCode == internal.StatusPasswordErr {
-			resp.StatusCode = internal.StatusPasswordErr
-			resp.StatusMsg = "密码错误"
-		} else {
+
+	UserInfoDb, err := l.svcCtx.UserModel.FindPasswordByEmail(l.ctx, req.UserEmail)
+
+	switch err {
+	case nil:
+		hash, err := scrypt.Key([]byte(req.Password), SALT, 1<<15, 8, 1, PW_HASH_BYTES)
+		encodedHash := base64.StdEncoding.EncodeToString(hash)
+		if err != nil {
+			logx.Error("scrypt encode password error: " + err.Error())
 			resp.StatusCode = internal.StatusRpcErr
-			resp.StatusMsg = "登录失败"
+			resp.StatusMsg = ""
+			resp.UserID = -1
+			return nil, err
 		}
-		resp.UserID = respRpc.UserId // is -1
-		err = nil
-		return
+		if UserInfoDb.Password != encodedHash {
+			resp.StatusCode = internal.StatusPasswordErr
+			resp.StatusMsg = "password is incorrect"
+			resp.UserID = -1
+			return resp, nil
+		}
+		resp.StatusCode = internal.StatusSuccess
+		resp.StatusMsg = "success"
+		resp.UserID = UserInfoDb.Id
+		resp.Username = UserInfoDb.Username
+		resp.AvatarUrl = UserInfoDb.AvatarUrl
+
+		secretKey := l.svcCtx.Config.Auth.AccessSecret
+		iat := time.Now().Unix()
+		seconds := l.svcCtx.Config.Auth.AccessExpire
+		payload := resp.UserID // save user id in payload
+
+		token, err := internal.GenJwtToken(secretKey, iat, seconds, payload)
+		if err != nil {
+			logx.Error("generate token err:", err, " ,token:", token)
+			resp.StatusCode = internal.StatusGatewayErr
+			resp.StatusMsg = "login error"
+			err = nil
+		}
+
+		return resp, nil
+
+	case model.ErrNotFound:
+		resp.StatusCode = internal.StatusUserNotExist
+		resp.StatusMsg = "the email does not exist"
+		resp.UserID = -1
+		return resp, nil
+	default:
+		logx.Error("get user info from db error: ", err)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "get user info from db error"
+		return resp, nil
 	}
-
-	secretKey := l.svcCtx.Config.Auth.AccessSecret
-	iat := time.Now().Unix()
-	seconds := l.svcCtx.Config.Auth.AccessExpire
-	payload := respRpc.UserId // save user id in payload
-
-	token, err := internal.GenJwtToken(secretKey, iat, seconds, payload)
-	if err != nil {
-		logx.Error("generate token err:", err, " ,token:", token)
-		resp.StatusCode = internal.StatusGatewayErr
-		resp.StatusMsg = "登录失败"
-		resp.UserID = respRpc.UserId // is -1
-		err = nil
-		return
-	}
-
-	resp.StatusCode = internal.StatusSuccess
-	resp.StatusMsg = "登录成功"
-	resp.UserID = respRpc.UserId
-	resp.Token = token
-	resp.Username = respRpc.Username
-	resp.AvatarUrl = respRpc.AvatarUrl
-	return
 }
