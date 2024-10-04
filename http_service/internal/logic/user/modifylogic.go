@@ -6,7 +6,6 @@ import (
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
 	"null-links/internal"
-	"null-links/rpc_service/user/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,10 +26,8 @@ func NewModifyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ModifyLogi
 
 func (l *ModifyLogic) Modify(req *types.ModifyReq) (resp *types.ModifyResp, err error) {
 	// todo: add your logic here and delete this line
-	modifyRpcResp, err := l.svcCtx.UserRpc.Modify(l.ctx, &user.ModifyReq{
-		UserId:    req.UserId,
-		AvatarUrl: req.AvatarUrl,
-	})
+
+	err = l.svcCtx.UserModel.UpdateAvatarUrl(l.ctx, req.UserId, req.AvatarUrl)
 	if err != nil {
 		resp = &types.ModifyResp{
 			StatusCode: internal.StatusRpcErr,
@@ -38,7 +35,7 @@ func (l *ModifyLogic) Modify(req *types.ModifyReq) (resp *types.ModifyResp, err 
 		}
 		err = nil
 	}
-	if modifyRpcResp.StatusCode != internal.StatusSuccess {
+	if resp.StatusCode != internal.StatusSuccess {
 		resp = &types.ModifyResp{
 			StatusCode: internal.StatusRpcErr,
 			StatusMsg:  "修改用户信息失败",
@@ -47,7 +44,7 @@ func (l *ModifyLogic) Modify(req *types.ModifyReq) (resp *types.ModifyResp, err 
 	}
 
 	resp = &types.ModifyResp{
-		StatusCode: modifyRpcResp.StatusCode,
+		StatusCode: resp.StatusCode,
 		StatusMsg:  "修改用户信息成功",
 	}
 

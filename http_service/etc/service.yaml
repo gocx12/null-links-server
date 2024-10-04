@@ -2,6 +2,8 @@ Name: http_service
 Host: 0.0.0.0
 Port: 8888
 
+DataSource: root:123456@tcp(127.0.0.1:3306)/db_null_links?charset=utf8mb4&parseTime=true
+
 Log:
   ServiceName: "http_service"
   Mode: "console"
@@ -13,22 +15,32 @@ Auth:
   AccessSecret: "AccessSecret12"
   AccessExpire: 604800
 
-# RPC
-UserRpcConf:
-  Target: 127.0.0.1:8081
-  # Etcd:
-  #   Hosts:
-  #     - 127.0.0.1:2379
-  #   Key: user.rpc
-  # NonBlock: true
+# # RPC
+# UserRpcConf:
+#   Target: 127.0.0.1:8081
+#   # Etcd:
+#   #   Hosts:
+#   #     - 127.0.0.1:2379
+#   #   Key: user.rpc
+#   # NonBlock: true
 
-WebsetRpcConf:
-  Target: 127.0.0.1:8082
-  # Etcd:
-  #   Hosts:
-  #     - 127.0.0.1:2379
-  #   Key: webset.rpc
-  # NonBlock: true
+# WebsetRpcConf:
+#   Target: 127.0.0.1:8082
+#   # Etcd:
+#   #   Hosts:
+#   #     - 127.0.0.1:2379
+#   #   Key: webset.rpc
+#   # NonBlock: true
+
+VdEmailMqPusherConf:
+  Brokers:
+    - 10.63.180.57:9092
+  Topic: validation-email
+
+RedisConf:
+  Host: "127.0.0.1:6379"
+  Password: ""
+  DB:   0
 
 MinIO:
   EndPoint: "127.0.0.1:9000"

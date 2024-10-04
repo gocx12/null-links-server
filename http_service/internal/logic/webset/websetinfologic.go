@@ -5,9 +5,9 @@ import (
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
 	"null-links/internal"
-	"null-links/rpc_service/webset/pb/webset"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type WebsetInfoLogic struct {
@@ -27,28 +27,52 @@ func NewWebsetInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Webset
 func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.WebsetInfoResp, err error) {
 	resp = &types.WebsetInfoResp{}
 
-	websetInfoRpcReq, err := l.svcCtx.WebsetRpc.WebsetInfo(l.ctx, &webset.WebsetInfoReq{
-		UserId:   req.UserID,
-		WebsetId: req.WebsetID,
-	})
-
+	WebsetDb, err := l.svcCtx.WebsetModel.FindOne(l.ctx, req.WebsetID)
 	if err != nil {
-		logx.Error("call WebsetRpc failed, err: ", err)
+		logx.Error("get webset info from db failed, err: ", err)
 		resp.StatusCode = internal.StatusRpcErr
-		resp.StatusMsg = "获取网页单失败"
-		err = nil
-		return
-	} else if websetInfoRpcReq.StatusCode != internal.StatusSuccess {
-		logx.Error("call WebsetRpc failed, err: ", websetInfoRpcReq.StatusMsg)
-		resp.StatusCode = internal.StatusRpcErr
-		resp.StatusMsg = "获取网页单失败"
-		return
+		resp.StatusMsg = "get webset info from db failed"
+		return resp, err
 	}
 
-	resp.StatusCode = internal.StatusSuccess
-	resp.StatusMsg = "获取网页单成功"
-	weblinkListResp := make([]types.WebLink, 0, len(websetInfoRpcReq.Webset.WebLinkList))
-	for _, weblink := range websetInfoRpcReq.Webset.WebLinkList {
+	// 获取是否点赞信息
+	isLike := false
+	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, req.WebsetID, req.UserID)
+	if err != nil && err != sqlx.ErrNotFound {
+		logx.Error("get like info error: ", err)
+	} else if err == sqlx.ErrNotFound {
+		isLike = false
+	} else if likeInfoDb.Status == 1 {
+		isLike = true
+	} else {
+		isLike = false
+	}
+
+	// 获取是否收藏信息
+	isFavoriteResp := false
+	// favoriteInfoDb, err = l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, in.UserId)
+	// if err != nil {
+	// 	l.Logger.Error("get favorite info failed, user, err: ", err)
+	// }
+
+	// 获取作者信息
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserID)
+	if err != nil {
+		logx.Error("get user info from db error. err=", err)
+		return nil, err
+	}
+
+	// 获取weblink信息
+	weblinksDb, err := l.svcCtx.WeblinkModel.FindByWebsetId(l.ctx, req.WebsetID)
+	if err != nil {
+		logx.Error("get weblink info from db error=", err)
+		resp.StatusCode = internal.StatusGatewayErr
+		resp.StatusMsg = "fail"
+		return resp, nil
+	}
+
+	weblinkListResp := make([]types.WebLink, 0, len(weblinksDb))
+	for _, weblink := range weblinksDb {
 		weblinkResp := types.WebLink{
 			ID:       weblink.Id,
 			Describe: weblink.Describe,
@@ -57,21 +81,25 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 		}
 		weblinkListResp = append(weblinkListResp, weblinkResp)
 	}
+
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = "success"
 	resp.WebsetInfo = types.Webset{
-		ID:            websetInfoRpcReq.Webset.Id,
-		Title:         websetInfoRpcReq.Webset.Title,
-		Describe:      websetInfoRpcReq.Webset.Describe,
-		ViewCount:     websetInfoRpcReq.Webset.ViewCount,
-		LikeCount:     websetInfoRpcReq.Webset.LikeCount,
-		FavoriteCount: websetInfoRpcReq.Webset.FavoriteCount,
-		IsLike:        websetInfoRpcReq.Webset.IsLike,
-		IsFavorite:    websetInfoRpcReq.Webset.IsFavorite,
-		WebLinkList:   weblinkListResp,
+		ID:       WebsetDb.Id,
+		Title:    WebsetDb.Title,
+		Describe: WebsetDb.Describe,
 		AuthorInfo: types.User{
-			Id:        websetInfoRpcReq.Webset.AuthorInfo.Id,
-			Name:      websetInfoRpcReq.Webset.AuthorInfo.Name,
-			AvatarUrl: websetInfoRpcReq.Webset.AuthorInfo.AvatarUrl,
+			Id:        WebsetDb.AuthorId,
+			Name:      userInfoDb.Username,
+			AvatarUrl: userInfoDb.AvatarUrl,
 		},
+		CoverURL:      WebsetDb.CoverUrl,
+		ViewCount:     WebsetDb.ViewCnt,
+		LikeCount:     WebsetDb.LikeCnt,
+		FavoriteCount: WebsetDb.FavoriteCnt,
+		IsLike:        isLike,
+		IsFavorite:    isFavoriteResp,
+		WebLinkList:   weblinkListResp,
 	}
 
 	return

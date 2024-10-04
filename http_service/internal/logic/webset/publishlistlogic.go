@@ -3,10 +3,9 @@ package webset
 import (
 	"context"
 
+	"null-links/cron/model"
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
-	"null-links/rpc_service/webset/pb/webset"
-
 	"null-links/internal"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -28,38 +27,49 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 
 func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
 	resp = &types.PublishListResp{}
-	publishListRpcResp, err := l.svcCtx.WebsetRpc.PublishList(l.ctx, &webset.PublishListReq{
-		UserId:   req.UserID,
-		Page:     req.Page,
-		PageSize: req.PageSize,
-	})
+
+	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, req.UserID, req.Page, req.PageSize)
 	if err != nil {
-		logx.Error("call WebsetRpc failed, err: ", err)
+		logx.Error("get publish list from db error=", err, " ,userId=", req.UserID)
 		resp.StatusCode = internal.StatusRpcErr
-		resp.StatusMsg = "获取发布列表失败"
+		resp.StatusMsg = "get publish list failed from db error"
 		return
 	}
 
-	resp.StatusCode = internal.StatusSuccess
-	resp.StatusMsg = "获取发布列表成功"
-	resp.WebsetList = make([]types.WebsetShort, 0, len(publishListRpcResp.WebsetList))
-	for _, webset := range publishListRpcResp.WebsetList {
-		resp.WebsetList = append(resp.WebsetList, types.WebsetShort{
-			ID:       webset.Id,
-			Title:    webset.Title,
-			CoverUrl: webset.CoverUrl,
+	UserIdList := make([]int64, 0, len(publishListDb))
+	for _, item := range publishListDb {
+		UserIdList = append(UserIdList, item.AuthorId)
+	}
+
+	// 获取用户信息
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserID)
+	if err != nil && err != model.ErrNotFound {
+		logx.Error("get user info from db error. err=", err)
+		return nil, nil
+	}
+
+	WebsetListResp := make([]types.WebsetShort, 0, len(publishListDb))
+	// TODO(chancy): 增加在线状态
+	for _, item := range publishListDb {
+		WebsetListResp = append(WebsetListResp, types.WebsetShort{
+			ID:            item.Id,
+			Title:         item.Title,
+			CoverUrl:      item.CoverUrl,
+			ViewCount:     item.ViewCnt,
+			LikeCount:     item.LikeCnt,
+			IsLike:        false,
+			FavoriteCount: item.FavoriteCnt,
 			AuthorInfo: types.UserShort{
-				Id:        webset.AuthorInfo.Id,
-				Name:      webset.AuthorInfo.Name,
-				AvatarUrl: webset.AuthorInfo.AvatarUrl,
+				Id:        item.AuthorId,
+				Name:      userInfoDb.Username,
+				AvatarUrl: userInfoDb.AvatarUrl,
 			},
-			CreatedAt:     webset.CreatedAt,
-			ViewCount:     webset.ViewCount,
-			LikeCount:     webset.LikeCount,
-			FavoriteCount: webset.FavoriteCount,
-			IsLike:        webset.IsLike,
 		})
 	}
+
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = "success"
+	resp.WebsetList = WebsetListResp
 
 	return
 }

@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type Config struct {
@@ -12,8 +11,8 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
-	UserRpcConf   zrpc.RpcClientConf
-	WebsetRpcConf zrpc.RpcClientConf
+	// UserRpcConf   zrpc.RpcClientConf
+	// WebsetRpcConf zrpc.RpcClientConf
 
 	RedisConf struct {
 		Host     string
