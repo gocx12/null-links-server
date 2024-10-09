@@ -54,6 +54,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		return resp, nil
 	}
 
+	// 密码加密
 	hash, err := scrypt.Key([]byte(req.Password), SALT, 1<<15, 8, 1, PW_HASH_BYTES)
 	if err != nil {
 		logx.Error("scrpyt error: ", err)
@@ -66,18 +67,19 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		Password: encodedHash,
 	}
 
+	// 用户信息写入数据库
 	resDB, err := l.svcCtx.UserModel.Insert(l.ctx, data)
 	if err != nil {
 		logx.Error("insert user into mysql error: ", err, ", data: ", data)
 		if match, _ := regexp.MatchString(".*(23000).*uidx_email.*", err.Error()); match {
 			resp.StatusCode = internal.StatusEmailExist
 			resp.StatusMsg = "this email has already existed"
-			resp.UserID = -1
+			resp.UserId = -1
 			return resp, nil
 		} else if match, _ := regexp.MatchString(".*(23000).*uidx_username.*", err.Error()); match {
 			resp.StatusCode = internal.StatusUserNameExist
 			resp.StatusMsg = "this username has already existed"
-			resp.UserID = -1
+			resp.UserId = -1
 			return resp, nil
 		}
 		resp.StatusCode = internal.StatusRpcErr
@@ -97,7 +99,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		resp = &types.RegisterResp{
 			StatusCode: internal.StatusGatewayErr,
 			StatusMsg:  "register error",
-			UserID:     -1, // is -1
+			UserId:     -1, // is -1
 		}
 		err = nil
 		return
@@ -105,7 +107,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "success"
-	resp.UserID = id
+	resp.UserId = id
 	resp.Token = token
 	return
 }

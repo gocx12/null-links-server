@@ -6,7 +6,7 @@ type PublishActionReq {
 	AuthorId	int64		`json:"author_id"`
 	Title 		string 		`json:"title"`
 	Describe 	string 		`json:"description"`
-	CoverURL  string     `json:"cover_url"`
+	CoverUrl  string     `json:"cover_url"`
 	WebLinkList []WebLinkPublish	`json:"weblink_list"`
 	WebsetId	int64 `json:"webest_id,optional"`
 }
@@ -14,7 +14,7 @@ type PublishActionReq {
 type WebLinkPublish {
 	Url 		string 	`json:"url"`
 	Describe 	string 	`json:"description"`
-	CoverURL	string 		`json:"cover_url,optional"`
+	CoverUrl	string 		`json:"cover_url,optional"`
 }
 
 type PublishActionResp {

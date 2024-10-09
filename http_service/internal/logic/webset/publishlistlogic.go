@@ -28,9 +28,9 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
 	resp = &types.PublishListResp{}
 
-	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, req.UserID, req.Page, req.PageSize)
+	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, req.UserId, req.Page, req.PageSize)
 	if err != nil {
-		logx.Error("get publish list from db error=", err, " ,userId=", req.UserID)
+		logx.Error("get publish list from db error=", err, " ,userId=", req.UserId)
 		resp.StatusCode = internal.StatusRpcErr
 		resp.StatusMsg = "get publish list failed from db error"
 		return
@@ -42,7 +42,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 	}
 
 	// 获取用户信息
-	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserID)
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserId)
 	if err != nil && err != model.ErrNotFound {
 		logx.Error("get user info from db error. err=", err)
 		return nil, nil
@@ -52,7 +52,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 	// TODO(chancy): 增加在线状态
 	for _, item := range publishListDb {
 		WebsetListResp = append(WebsetListResp, types.WebsetShort{
-			ID:            item.Id,
+			Id:            item.Id,
 			Title:         item.Title,
 			CoverUrl:      item.CoverUrl,
 			ViewCount:     item.ViewCnt,

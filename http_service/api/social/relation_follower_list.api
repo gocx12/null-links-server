@@ -3,7 +3,7 @@ syntax = "v1"
 import "../user.api"
 
 type RelationFollowerListReq {
-	UserID string `form:"user_id"` 
+	UserId string `form:"user_id"` 
 }
 
 type RelationFollowerListResp {

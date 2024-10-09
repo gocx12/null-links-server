@@ -3,8 +3,8 @@ syntax = "v1"
 import "../webset.api"
 
 type WebsetInfoReq {
-	UserID 		int64 	`form:"user_id"`
-	WebsetID 	int64 	`form:"webset_id"` 
+	UserId 		int64 	`form:"user_id"`
+	WebsetId 	int64 	`form:"webset_id"` 
 }
 
 type WebsetInfoResp {

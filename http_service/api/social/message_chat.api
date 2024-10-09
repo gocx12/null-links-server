@@ -3,7 +3,7 @@ syntax = "v1"
 import "message.api"
 
 type MessageChatReq {
-	ToUserID string `form:"to_user_id"` 
+	ToUserId string `form:"to_user_id"` 
 	Token    string `form:"token"`      
 }
 

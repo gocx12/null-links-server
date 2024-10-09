@@ -3,7 +3,7 @@ syntax = "v1"
 import "user.api"
 
 type Webset {
-	ID				int64  		`json:"id"`
+	Id				int64  		`json:"id"`
 	Title			string 		`json:"title"`
 	Describe		string 		`json:"describe"`
 	AuthorInfo		User		`json:"author_info"`
@@ -17,7 +17,7 @@ type Webset {
 }
 
 type WebsetShort {
-	ID            	int64  		`json:"id"`
+	Id            	int64  		`json:"id"`
 	Title         	string 		`json:"title"`
 	Describe			string 		`json:"describe"`
 	CoverUrl 			string 		`json:"cover_url"`
@@ -30,7 +30,7 @@ type WebsetShort {
 }
 
 type WebLink {
-	ID          int64  		`json:"id"`
+	Id          int64  		`json:"id"`
 	Describe		string 		`json:"describe"`
 	Url 				string 		`json:"url"`
 	AuthorInfo	User			`json:"author_info"`

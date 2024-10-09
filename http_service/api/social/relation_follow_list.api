@@ -9,7 +9,7 @@ type FriendUser {
 }
 
 type RelationFollowListReq {
-	UserID string `form:"user_id"`
+	UserId string `form:"user_id"`
 }
 
 type RelationFollowListResp {

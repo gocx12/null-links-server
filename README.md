@@ -74,3 +74,9 @@ docker compose version
 ```
 docker compose -f compose.yaml up --remove-orphans -d
 ```
+
+
+# modify
+```
+goctl api go --api http_service/api/main.api --dir http_service
+```

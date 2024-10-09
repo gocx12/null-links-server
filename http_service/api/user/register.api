@@ -11,5 +11,5 @@ type RegisterResp {
 	StatusCode int32  `json:"status_code"`         
 	StatusMsg  string `json:"status_msg,optional"` 
 	Token      string `json:"token"`               
-	UserID     int64  `json:"user_id"`             
+	UserId     int64  `json:"user_id"`             
 }

@@ -50,7 +50,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 			Webset: &webset.Webset{
 				Title:       req.Title,
 				Describe:    req.Describe,
-				CoverUrl:    req.CoverURL,
+				CoverUrl:    req.CoverUrl,
 				WebLinkList: weblinkListRpcReq,
 			},
 		}

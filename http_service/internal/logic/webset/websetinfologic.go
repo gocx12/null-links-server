@@ -27,7 +27,7 @@ func NewWebsetInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Webset
 func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.WebsetInfoResp, err error) {
 	resp = &types.WebsetInfoResp{}
 
-	WebsetDb, err := l.svcCtx.WebsetModel.FindOne(l.ctx, req.WebsetID)
+	WebsetDb, err := l.svcCtx.WebsetModel.FindOne(l.ctx, req.WebsetId)
 	if err != nil {
 		logx.Error("get webset info from db failed, err: ", err)
 		resp.StatusCode = internal.StatusRpcErr
@@ -37,7 +37,7 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 
 	// 获取是否点赞信息
 	isLike := false
-	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, req.WebsetID, req.UserID)
+	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, req.WebsetId, req.UserId)
 	if err != nil && err != sqlx.ErrNotFound {
 		logx.Error("get like info error: ", err)
 	} else if err == sqlx.ErrNotFound {
@@ -56,14 +56,14 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	// }
 
 	// 获取作者信息
-	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserID)
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserId)
 	if err != nil {
 		logx.Error("get user info from db error. err=", err)
 		return nil, err
 	}
 
 	// 获取weblink信息
-	weblinksDb, err := l.svcCtx.WeblinkModel.FindByWebsetId(l.ctx, req.WebsetID)
+	weblinksDb, err := l.svcCtx.WeblinkModel.FindByWebsetId(l.ctx, req.WebsetId)
 	if err != nil {
 		logx.Error("get weblink info from db error=", err)
 		resp.StatusCode = internal.StatusGatewayErr
@@ -74,7 +74,7 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	weblinkListResp := make([]types.WebLink, 0, len(weblinksDb))
 	for _, weblink := range weblinksDb {
 		weblinkResp := types.WebLink{
-			ID:       weblink.Id,
+			Id:       weblink.Id,
 			Describe: weblink.Describe,
 			Url:      weblink.Url,
 			CoverURL: weblink.CoverUrl,
@@ -85,7 +85,7 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "success"
 	resp.WebsetInfo = types.Webset{
-		ID:       WebsetDb.Id,
+		Id:       WebsetDb.Id,
 		Title:    WebsetDb.Title,
 		Describe: WebsetDb.Describe,
 		AuthorInfo: types.User{

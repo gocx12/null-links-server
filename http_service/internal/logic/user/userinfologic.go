@@ -26,7 +26,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 }
 
 func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	if req.UserID < 0 {
+	if req.UserId < 0 {
 		logx.Error()
 		return &types.UserInfoResp{
 			StatusCode: internal.StatusParamErr,
@@ -34,7 +34,7 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		}, nil
 	}
 
-	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserID)
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserId)
 	if err != nil && err != model.ErrNotFound {
 		logx.Error("get user info from db error. err=", err)
 		return nil, err

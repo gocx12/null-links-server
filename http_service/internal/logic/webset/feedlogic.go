@@ -83,7 +83,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	resp.WebsetList = make([]types.WebsetShort, 0, len(websetListDB))
 	for _, webset := range websetListDB {
 		resp.WebsetList = append(resp.WebsetList, types.WebsetShort{
-			ID:            webset.Id,
+			Id:            webset.Id,
 			Title:         webset.Title,
 			CoverUrl:      webset.CoverUrl,
 			IsLike:        websetHasLikeMap[webset.Id],

@@ -3,11 +3,11 @@ syntax = "v1"
 import "../user.api"
 
 type UserInfoReq {
-	UserID int64	`form:"user_id"` 	
+	UserId int64	`form:"user_id"` 	
 }
 
 type UserInfoResp {
 	StatusCode 	int32 		`json:"status_code"`         	
 	StatusMsg  	string		`json:"status_msg,optional"` 	
-	User 	User	`json:"user_info"`						
+	User 				User			`json:"user_info"`						
 }
