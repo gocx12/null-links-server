@@ -67,7 +67,7 @@ func (l *LikeActionLogic) likeAction(in *webset.LikeActionReq) (*webset.LikeActi
 	}
 
 	if in.ActionType == 1 {
-		// 点赞
+		// type == 1, 点赞
 
 		// // redis事务
 		// _, err := l.svcCtx.RedisClient.TxPipelined(l.ctx, func(pipe redis.Pipeliner) error {
@@ -99,7 +99,9 @@ func (l *LikeActionLogic) likeAction(in *webset.LikeActionReq) (*webset.LikeActi
 				} else if rowsAffected == 0 {
 					return fmt.Errorf("update like record failed, rows affected: %d", rowsAffected)
 				}
-			} else if likeStatus == 1 {
+			}
+
+			if likeStatus == 1 {
 				return fmt.Errorf("like record already exists, user_id:%d, webset_id:%d", in.UserId, in.WebsetId)
 			} else {
 				// 点赞记录已存在，修改状态
@@ -137,7 +139,7 @@ func (l *LikeActionLogic) likeAction(in *webset.LikeActionReq) (*webset.LikeActi
 		likeActionResp.StatusCode = internal.StatusSuccess
 		likeActionResp.StatusMsg = "success"
 	} else if in.ActionType == 2 {
-		// 取消点赞
+		// type == 2, 取消点赞
 		// redis事务
 		// _, err := l.svcCtx.RedisClient.TxPipelined(l.ctx, func(pipe redis.Pipeliner) error {
 		// 	key := gocast.ToString(in.WebsetId) + "::" + gocast.ToString(in.UserId)
@@ -167,7 +169,9 @@ func (l *LikeActionLogic) likeAction(in *webset.LikeActionReq) (*webset.LikeActi
 				} else if rowsAffected == 0 {
 					return fmt.Errorf("update like record failed, rows affected: %d", rowsAffected)
 				}
-			} else if likeStatus == 2 {
+			}
+
+			if likeStatus == 2 {
 				return fmt.Errorf("cancel like record already exists, user_id:%d, webset_id:%d", in.UserId, in.WebsetId)
 			} else {
 				// 点赞记录已存在，修改状态

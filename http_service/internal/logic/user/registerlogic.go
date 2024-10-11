@@ -44,10 +44,13 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		}
 		logx.Error("get validation code from redis failed, err: ", err)
 		resp.StatusCode = internal.StatusRpcErr
-		resp.StatusMsg = "get validation code from redis failed"
+		resp.StatusMsg = "register error"
 		return resp, nil
 	}
+
 	logx.Debug("req valid:", req.ValidationCode, ", redis valid:", validationCode)
+
+	// 检查验证码是否正确
 	if validationCode != req.ValidationCode {
 		resp.StatusCode = internal.StatusValidationCodeErr
 		resp.StatusMsg = "the validation code is error"
@@ -61,13 +64,13 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		return resp, nil
 	}
 	encodedHash := base64.StdEncoding.EncodeToString(hash)
+
+	// 用户信息写入数据库
 	data := &model.TUser{
 		Username: req.Username,
 		Email:    req.UserEmail,
 		Password: encodedHash,
 	}
-
-	// 用户信息写入数据库
 	resDB, err := l.svcCtx.UserModel.Insert(l.ctx, data)
 	if err != nil {
 		logx.Error("insert user into mysql error: ", err, ", data: ", data)
@@ -83,12 +86,19 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 			return resp, nil
 		}
 		resp.StatusCode = internal.StatusRpcErr
-		resp.StatusMsg = "insert user info into mysql error: " + err.Error()
+		resp.StatusMsg = "register error"
 		return resp, nil
 	}
 
+	// 获取新写入用户的id
 	id, err := resDB.LastInsertId()
-	logx.Debug("debug: register rpc response: ", resp)
+	if err != nil {
+		logx.Error("get last insert id error: ", err)
+		resp.StatusCode = internal.StatusRpcErr
+		resp.StatusMsg = "get last insert id error"
+		return resp, nil
+	}
+
 	secretKey := l.svcCtx.Config.Auth.AccessSecret
 	iat := time.Now().Unix()
 	seconds := l.svcCtx.Config.Auth.AccessExpire

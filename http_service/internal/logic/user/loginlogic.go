@@ -54,6 +54,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 
 	resp = &types.LoginResp{}
 
+	// 查询数据库，获取用户信息
 	UserInfoDb, err := l.svcCtx.UserModel.FindPasswordByEmail(l.ctx, req.UserEmail)
 
 	switch err {
