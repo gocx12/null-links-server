@@ -36,11 +36,6 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 		return
 	}
 
-	UserIdList := make([]int64, 0, len(publishListDb))
-	for _, item := range publishListDb {
-		UserIdList = append(UserIdList, item.AuthorId)
-	}
-
 	// 获取用户信息
 	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserId)
 	if err != nil && err != model.ErrNotFound {

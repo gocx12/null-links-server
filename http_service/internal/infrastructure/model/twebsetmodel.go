@@ -40,7 +40,7 @@ func NewTWebsetModel(conn sqlx.SqlConn) TWebsetModel {
 func (m *customTWebsetModel) FindRecent(ctx context.Context, page, pageSize int32) (websets []*TWebset, err error) {
 	offset := (page - 1) * pageSize
 
-	query := fmt.Sprintf("select %s from %s where status=1 order by created_at desc limit ? offset ?", tWebsetRows, m.table)
+	query := fmt.Sprintf("select %s from %s where status = 1 order by created_at desc limit ? offset ?", tWebsetRows, m.table)
 	err = m.conn.QueryRowsCtx(ctx, &websets, query, pageSize, offset)
 	return
 }
@@ -57,7 +57,7 @@ func (m *customTWebsetModel) GetConn() sqlx.SqlConn {
 
 func (m *defaultTWebsetModel) InsertTrans(ctx context.Context, data *TWebset, session sqlx.Session) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWebsetRowsExpectAutoSet)
-	ret, err := session.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Describe, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.DeletedAt)
+	ret, err := session.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Describe, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.UpdatedAt)
 	return ret, err
 }
 
