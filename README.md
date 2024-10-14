@@ -83,5 +83,8 @@ goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_webset --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_weblink --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_like --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
-goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_favorite --url "root:123456@tcp(127.0.0.1:3306)/db_null_links"
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_favorite --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_topic --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_chat --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_relation --url "root:123456@tcp(127.0.0.1:3306)/db_null_links"
 ```

@@ -53,22 +53,6 @@ CREATE TABLE `t_like`
   DEFAULT CHARSET = utf8mb4
   COMMENT = '点赞表';
 
-DROP TABLE IF EXISTS `t_comment`;
-CREATE TABLE `t_comment`
-(
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `video_id` bigint(20) unsigned NOT NULL COMMENT '视频id',
-  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户id',
-  `content` varchar(255) NOT NULL COMMENT '评论内容',
-  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '在库状态',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COMMENT = '评论表';
-
 DROP TABLE IF EXISTS `t_relation`;
 CREATE TABLE `t_relation`
 (
@@ -83,21 +67,6 @@ CREATE TABLE `t_relation`
   DEFAULT CHARSET = utf8mb4
   COMMENT = '关注表';
 
-DROP TABLE IF EXISTS `t_message`;
-CREATE TABLE `t_message`
-(
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `from_user_id` bigint(20) unsigned NOT NULL COMMENT '发送者id',
-  `to_user_id` bigint(20) unsigned NOT NULL COMMENT '接收者id',
-  `content` text NOT NULL COMMENT '消息内容',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COMMENT = '私信表';
-
 DROP TABLE IF EXISTS `t_chat`;
 CREATE TABLE `t_chat`
 (
@@ -105,6 +74,7 @@ CREATE TABLE `t_chat`
   `chat_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '聊天消息id',
   `user_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '用户id',
   `webset_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '网页单id',
+  `topic_id` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '话题id',
   `content` text NOT NULL COMMENT '消息内容',
   `type` varchar(3) NOT NULL DEFAULT '0' COMMENT '消息类型',
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
@@ -115,6 +85,18 @@ CREATE TABLE `t_chat`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '聊天表';
+
+DROP TABLE IF EXISTS `t_topic`;
+CREATE TABLE `t_topic`
+(
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '话题表';
 
 DROP TABLE IF EXISTS `t_webset`;
 CREATE TABLE `t_webset`
