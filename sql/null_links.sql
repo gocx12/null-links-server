@@ -16,7 +16,6 @@ CREATE TABLE `t_user`
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uidx_username` (`username`),
   UNIQUE KEY `uidx_email` (`email`)
@@ -33,7 +32,6 @@ CREATE TABLE `t_favorite`
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   INDEX idx_user_id_webset_id (`user_id`, `webset_id`)
 ) ENGINE = InnoDB
@@ -81,7 +79,6 @@ CREATE TABLE `t_relation`
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -97,7 +94,6 @@ CREATE TABLE `t_message`
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -115,7 +111,6 @@ CREATE TABLE `t_chat`
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   INDEX idx_webset_id_created_at_status (`webset_id`, `created_at`, `status`)
 ) ENGINE = InnoDB
@@ -137,7 +132,6 @@ CREATE TABLE `t_webset`
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   INDEX idx_created_at (`created_at`),
   INDEX idx_view_cnt (`view_cnt`),
@@ -161,7 +155,6 @@ CREATE TABLE `t_weblink`
   `status`    tinyint(3) NOT NULL DEFAULT 0 COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   INDEX idx_webset_id_link_id_status (`webset_id`, `link_id`, `status`)
 ) ENGINE = InnoDB

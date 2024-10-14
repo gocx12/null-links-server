@@ -48,7 +48,7 @@ func (l *GetValidationCodeLogic) GetValidationCode(req *types.GetValidationCodeR
 	// 	return
 	// }
 
-	logx.Debug("get validation cod, email: ", req.Email)
+	logx.Debug("get validation code, email: ", req.Email)
 
 	recipient := req.Email
 	validationCode := l.generateValidationCode()

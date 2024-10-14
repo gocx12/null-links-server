@@ -2,10 +2,11 @@ package internal
 
 var (
 	StatusSuccess    int32 = 1000 // success
-	StatusParamErr   int32 = 1001 // param error
-	StatusAuthErr    int32 = 1002 // auth error
-	StatusRpcErr     int32 = 1003 // rpc error
-	StatusGatewayErr int32 = 1004 // gateway error
+	StatusErr        int32 = 1001 // error
+	StatusParamErr   int32 = 1002 // param error
+	StatusAuthErr    int32 = 1003 // auth error
+	StatusRpcErr     int32 = 1004 // rpc error
+	StatusGatewayErr int32 = 1005 // gateway error
 
 	// User
 	StatusUserNotExist int32 = 2001 // username does not exist
