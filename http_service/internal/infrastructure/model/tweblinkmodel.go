@@ -47,12 +47,12 @@ func (m *customTWeblinkModel) getBulkInsertQuery(data []TWeblink) (string, []int
 		valueArgs = append(valueArgs, d.LinkId)
 		valueArgs = append(valueArgs, d.WebsetId)
 		valueArgs = append(valueArgs, d.AuthorId)
-		valueArgs = append(valueArgs, d.Describe)
+		valueArgs = append(valueArgs, d.Description)
 		valueArgs = append(valueArgs, d.Url)
 		valueArgs = append(valueArgs, d.CoverUrl)
 		valueArgs = append(valueArgs, d.Status)
 	}
-	query := fmt.Sprintf("insert into %s (`link_id`, `webset_id`, `author_id`, `describe`, `url`, `cover_url`, `status`) values %s", m.table, strings.Join(placeHolderStrs, ","))
+	query := fmt.Sprintf("insert into %s (`link_id`, `webset_id`, `author_id`, `description`, `url`, `cover_url`, `status`) values %s", m.table, strings.Join(placeHolderStrs, ","))
 	return query, valueArgs
 }
 

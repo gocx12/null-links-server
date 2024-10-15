@@ -21,7 +21,7 @@ type (
 		InsertTrans(ctx context.Context, data *TWebset, session sqlx.Session) (sql.Result, error)
 		UpdateLikeCntTrans(ctx context.Context, incr int32, websetId int64, session sqlx.Session) (sql.Result, error)
 		UpdateStatus(ctx context.Context, status int64, id int64) error
-		UpdateWebsetInfo(ctx context.Context, data *TWebset) error
+		UpdateWebsetInfo(ctx context.Context, data *TWebset) (sql.Result, error)
 		GetConn() sqlx.SqlConn
 	}
 
@@ -57,7 +57,7 @@ func (m *customTWebsetModel) GetConn() sqlx.SqlConn {
 
 func (m *defaultTWebsetModel) InsertTrans(ctx context.Context, data *TWebset, session sqlx.Session) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWebsetRowsExpectAutoSet)
-	ret, err := session.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Describe, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.UpdatedAt)
+	ret, err := session.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Description, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.UpdatedAt)
 	return ret, err
 }
 
@@ -68,10 +68,10 @@ func (m *defaultTWebsetModel) UpdateLikeCntTrans(ctx context.Context, incr int32
 }
 
 // 更新webset信息，点赞数量等字段不更新
-func (m *defaultTWebsetModel) UpdateWebsetInfo(ctx context.Context, data *TWebset) error {
-	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, strings.Join([]string{"title", "author_id", "describe", "cover_url", "category", "status", "updated_at"}, "=?, ")+"=?")
-	_, err := m.conn.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Describe, data.CoverUrl, data.Category, data.Status, data.UpdatedAt, data.Id)
-	return err
+func (m *defaultTWebsetModel) UpdateWebsetInfo(ctx context.Context, data *TWebset) (sql.Result, error) {
+	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, strings.Join([]string{"title", "author_id", "description", "cover_url", "category", "status"}, "=?, ")+"=?")
+	ret, err := m.conn.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Description, data.CoverUrl, data.Category, data.Status, data.Id)
+	return ret, err
 }
 
 func (m *defaultTWebsetModel) UpdateStatus(ctx context.Context, status int64, id int64) error {
