@@ -121,38 +121,37 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 	// 构造webset
 	websetDb := model.TWebset{
 		Title:       req.Title,
-		Describe:    req.Describe,
+		Description: req.Describe,
 		AuthorId:    req.AuthorId,
 		CoverUrl:    req.CoverUrl,
 		Category:    0, // 分区，暂时不用
 		ViewCnt:     0,
 		LikeCnt:     0,
 		FavoriteCnt: 0,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
 		Status:      gocast.ToInt64(WebsetPendReview.code()),
 	}
 
 	// 插入weblinks
 	webLinkListDb := make([]model.TWeblink, 0, len(req.WebLinkList))
 	for i, webLink := range req.WebLinkList {
+		// url 格式化
 		if !strings.HasPrefix(webLink.Url, "http") || !strings.HasPrefix(webLink.Url, "https") {
 			webLink.Url = "https://" + webLink.Url
 		}
 		webLinkListDb = append(webLinkListDb, model.TWeblink{
-			LinkId:   int64(i),
-			WebsetId: req.WebsetId,
-			AuthorId: req.AuthorId,
-			Describe: webLink.Describe,
-			Url:      webLink.Url,
-			CoverUrl: webLink.CoverUrl,
-			Status:   gocast.ToInt64(WeblinkPendReview), // status==2 待审核
+			LinkId:      int64(i),
+			WebsetId:    req.WebsetId,
+			AuthorId:    req.AuthorId,
+			Description: webLink.Describe,
+			Url:         webLink.Url,
+			CoverUrl:    webLink.CoverUrl,
+			Status:      gocast.ToInt64(WeblinkPendReview), // status==2 待审核
 		})
 	}
 
 	// weblink 与 webset 在同一个数据库中，因此可以使用本地事务
 	err = l.svcCtx.WebsetModel.GetConn().TransactCtx(l.ctx, func(ctx context.Context, session sqlx.Session) error {
-		// 插入webset
+		// 1.插入webset
 		r, err := l.svcCtx.WebsetModel.InsertTrans(l.ctx, &websetDb, session)
 		if err != nil {
 			return err
@@ -171,14 +170,15 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 			webLinkListDb[i].WebsetId = lastInsertId
 		}
 
+		// 2.截图作为weblink封面
 		// kafka pusher
-		// 截图作为weblink封面
 		data := gocast.ToString(lastInsertId)
 		if err := l.svcCtx.WlCoverKqConsumser.Push(data); err != nil {
-			logx.Error("WlCoverKqConsumser Push error:", err)
+			logx.Error("wlCoverKqConsumser push error:", err)
+			return err
 		}
 
-		// 批量插入weblink
+		// 3.批量插入weblink
 		r, err = l.svcCtx.WeblinkModel.BulkInsertTrans(l.ctx, webLinkListDb, session)
 		if err != nil {
 			return err
@@ -204,14 +204,14 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 func (l *PublishActionLogic) doUpdate(req *types.PublishActionReq) (err error) {
 	// 更新
 	err = l.svcCtx.WebsetModel.UpdateWebsetInfo(l.ctx, &model.TWebset{
-		Id:        req.WebsetId,
-		Title:     req.Title,
-		Describe:  req.Describe,
-		AuthorId:  req.AuthorId,
-		CoverUrl:  req.CoverUrl,
-		UpdatedAt: time.Now(),
-		Category:  0,
-		Status:    gocast.ToInt64(WebsetPendReview.code()), // status==2 待审核
+		Id:          req.WebsetId,
+		Title:       req.Title,
+		Description: req.Describe,
+		AuthorId:    req.AuthorId,
+		CoverUrl:    req.CoverUrl,
+		UpdatedAt:   time.Now(),
+		Category:    0,
+		Status:      gocast.ToInt64(WebsetPendReview.code()), // status==2 待审核
 
 	})
 	return

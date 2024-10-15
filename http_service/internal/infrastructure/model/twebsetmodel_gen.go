@@ -40,7 +40,7 @@ type (
 		Id          int64     `db:"id"`           // 主键id
 		Title       string    `db:"title"`        // 标题
 		AuthorId    int64     `db:"author_id"`    // 作者id
-		Describe    string    `db:"describe"`     // 描述
+		Description string    `db:"description"`  // 描述
 		CoverUrl    string    `db:"cover_url"`    // 封面地址
 		Category    int64     `db:"category"`     // 分区
 		ViewCnt     int64     `db:"view_cnt"`     // 观看数
@@ -81,13 +81,13 @@ func (m *defaultTWebsetModel) FindOne(ctx context.Context, id int64) (*TWebset, 
 
 func (m *defaultTWebsetModel) Insert(ctx context.Context, data *TWebset) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWebsetRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Describe, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Description, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status)
 	return ret, err
 }
 
 func (m *defaultTWebsetModel) Update(ctx context.Context, data *TWebset) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, tWebsetRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Describe, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Description, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.Id)
 	return err
 }
 

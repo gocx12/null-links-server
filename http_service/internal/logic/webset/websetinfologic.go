@@ -75,7 +75,7 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	for _, weblink := range weblinksDb {
 		weblinkResp := types.WebLink{
 			Id:       weblink.Id,
-			Describe: weblink.Describe,
+			Describe: weblink.Description,
 			Url:      weblink.Url,
 			CoverURL: weblink.CoverUrl,
 		}
@@ -87,7 +87,7 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	resp.WebsetInfo = types.Webset{
 		Id:       WebsetDb.Id,
 		Title:    WebsetDb.Title,
-		Describe: WebsetDb.Describe,
+		Describe: WebsetDb.Description,
 		AuthorInfo: types.User{
 			Id:        WebsetDb.AuthorId,
 			Name:      userInfoDb.Username,

@@ -71,7 +71,7 @@ docker compose version
 
 
 容器启动
-```
+```bash
 docker compose -f compose.yaml up --remove-orphans -d
 ```
 
@@ -89,3 +89,11 @@ goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_chat --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_relation --url "root:123456@tcp(127.0.0.1:3306)/db_null_links"
 ```
+
+
+# kafka UI
+1. configure new cluster
+
+name: 随便填
+host: kafka
+port: 9092

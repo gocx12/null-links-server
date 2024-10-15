@@ -14,7 +14,7 @@ WORKDIR /build
 COPY . .
 RUN go mod download
 
-COPY http_service/etc /app/etc
+COPY ./http_service/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/http_service http_service/service.go
 
 # FROM scratch

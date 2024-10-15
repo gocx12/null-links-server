@@ -85,13 +85,16 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		seconds := l.svcCtx.Config.Auth.AccessExpire
 		payload := resp.UserID // save user id in payload
 
+		// 生成token
 		token, err := internal.GenJwtToken(secretKey, iat, seconds, payload)
 		if err != nil {
 			logx.Error("generate token err:", err, " ,token:", token)
 			resp.StatusCode = internal.StatusGatewayErr
 			resp.StatusMsg = "login error"
 			err = nil
+			return resp, nil
 		}
+		resp.Token = token
 
 		return resp, nil
 

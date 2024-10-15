@@ -11,7 +11,7 @@ MinIO:
 WlCoverKqConsumser:
   Name: kq
   Brokers:
-  - 10.63.180.57:9092
+  - 127.0.0.1:9094
   Group: nl_consumer
   Topic: weblink-cover
   Offset: first

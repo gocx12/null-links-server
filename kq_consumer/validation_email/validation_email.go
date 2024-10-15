@@ -51,7 +51,7 @@ func main() {
 }
 
 func sendEmail(k, v string) error {
-	logx.Debug("sendEmail", "k: ", k, " v: ", v)
+	logx.Info("sendEmail", "k: ", k, " v: ", v)
 	// 邮件服务器地址和端口 发件人邮箱和密码
 	smtpDomain := c.Email.SmtpDomain
 	sender := c.Email.Sender
@@ -91,7 +91,7 @@ func sendEmail(k, v string) error {
 	err = e.Send(smtpDomain+":25", auth)
 	if err != nil {
 		// TODO(chancyGao): 增加告警
-		logx.Error("Failed to send email:", err, " ,recipient: ", recipient)
+		logx.Error("Failed to send email:", err, ", recipient: ", recipient)
 		return err
 	}
 

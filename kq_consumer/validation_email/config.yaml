@@ -3,13 +3,18 @@ Mode: "debug"
 VdEmailKqConsumser:
   Name: kq
   Brokers:
-  - 10.63.180.57:9092
+  - 127.0.0.1:9094
   Group: nl_consumer
   Topic: validation-email
   Offset: first
   Consumers: 1
 
+# email:
+#  SmtpDomain: "smtp.163.com"
+#  Sender: "null_links@163.com"
+#  Password: "UKASRFRWQZFNUIAN"
 email:
- SmtpDomain: "smtp.163.com"
- Sender: "null_links@163.com"
- Password: "UKASRFRWQZFNUIAN"
+  SmtpDomain: "smtp.exmail.qq.com"
+  Sender: "null-links-noreply@null-links.com"
+  Password: "UwRQi9rTc4hxHKx4"
+ 

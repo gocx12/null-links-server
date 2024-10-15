@@ -37,17 +37,17 @@ type (
 	}
 
 	TWeblink struct {
-		Id        int64     `db:"id"`         // 主键id
-		LinkId    int64     `db:"link_id"`    // 网页id
-		WebsetId  int64     `db:"webset_id"`  // 网页单id
-		AuthorId  int64     `db:"author_id"`  // 添加者id
-		Describe  string    `db:"describe"`   // 描述
-		Url       string    `db:"url"`        // 网址
-		CoverUrl  string    `db:"cover_url"`  // 封面地址
-		ClickCnt  int64     `db:"click_cnt"`  // 点击数
-		Status    int64     `db:"status"`     // 在库状态
-		CreatedAt time.Time `db:"created_at"` // 创建时间
-		UpdatedAt time.Time `db:"updated_at"` // 更新时间
+		Id          int64     `db:"id"`          // 主键id
+		LinkId      int64     `db:"link_id"`     // 网页id
+		WebsetId    int64     `db:"webset_id"`   // 网页单id
+		AuthorId    int64     `db:"author_id"`   // 添加者id
+		Description string    `db:"description"` // 描述
+		Url         string    `db:"url"`         // 网址
+		CoverUrl    string    `db:"cover_url"`   // 封面地址
+		ClickCnt    int64     `db:"click_cnt"`   // 点击数
+		Status      int64     `db:"status"`      // 在库状态
+		CreatedAt   time.Time `db:"created_at"`  // 创建时间
+		UpdatedAt   time.Time `db:"updated_at"`  // 更新时间
 	}
 )
 
@@ -80,13 +80,13 @@ func (m *defaultTWeblinkModel) FindOne(ctx context.Context, id int64) (*TWeblink
 
 func (m *defaultTWeblinkModel) Insert(ctx context.Context, data *TWeblink) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWeblinkRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.WebsetId, data.AuthorId, data.Describe, data.Url, data.CoverUrl, data.ClickCnt, data.Status)
+	ret, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.WebsetId, data.AuthorId, data.Description, data.Url, data.CoverUrl, data.ClickCnt, data.Status)
 	return ret, err
 }
 
 func (m *defaultTWeblinkModel) Update(ctx context.Context, data *TWeblink) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, tWeblinkRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.WebsetId, data.AuthorId, data.Describe, data.Url, data.CoverUrl, data.ClickCnt, data.Status, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.LinkId, data.WebsetId, data.AuthorId, data.Description, data.Url, data.CoverUrl, data.ClickCnt, data.Status, data.Id)
 	return err
 }
 

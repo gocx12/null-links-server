@@ -34,8 +34,13 @@ Auth:
 
 VdEmailMqPusherConf:
   Brokers:
-    - 10.63.180.57:9092
+    - 127.0.0.1:9094
   Topic: validation-email
+
+WlCoverKqConsumser:
+  Brokers:
+    - 127.0.0.1:9094
+  Topic: weblink-cover
 
 RedisConf:
   Host: "127.0.0.1:6379"
