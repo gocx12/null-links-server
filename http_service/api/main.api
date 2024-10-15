@@ -20,6 +20,11 @@ import "./social/relation_friend_list.api"
 import "./social/message_action.api"
 import "./common/upload.api"
 import "./common/report.api"
+import "./chat/history.api"
+import "./chat/like.api"
+import "./chat/link.api"
+import "./chat/get_all_topic.api"
+import "./chat/chat_ws.api"
 
 type PingReq {}
 
@@ -132,5 +137,26 @@ service service {
 
 	@handler Report
 	post /report (ReportReq) returns (ReportResp)
+}
+
+@server (
+	prefix: /chat
+	group:  chat
+)
+service service {
+	@handler ChatWs
+	get /ws (ChatWsReq) returns (ChatWsResp)
+
+	@handler History
+	get /history (ChatHistoryReq) returns (ChatHistoryResp)
+
+	@handler Like
+	get /like (ChatLikeReq) returns (ChatLikeResp)
+
+	@handler Link
+	get /link (ChatLinkReq) returns (ChatLinkResp)
+
+	@handler GetAllTopic
+	get /get_all_topic (ChatGetAllTopicReq) returns (ChatGetAllTopicResp)
 }
 

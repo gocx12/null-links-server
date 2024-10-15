@@ -3,6 +3,74 @@
 
 package types
 
+type Chat struct {
+	ChatID    int64  `json:"chat_id"`
+	WebsetID  int64  `json:"webset_id"`
+	UserID    int64  `json:"user_id"`
+	UserName  string `json:"user_name"`
+	Content   string `json:"content"`
+	CreatedAt string `json:"created_at"`
+}
+
+type ChatGetAllTopicReq struct {
+	UserId   int64 `json:"user_id"`
+	WebsetId int64 `json:"webset_id"`
+}
+
+type ChatGetAllTopicResp struct {
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg,optional"`
+	TopicList  []Topic `json:"topic_list"`
+}
+
+type ChatHistoryReq struct {
+	Token      string `form:"token,optional"`
+	WebsetID   int64  `form:"webset_id"`
+	Type       int32  `form:"type"`
+	Page       int32  `form:"page,optional"`
+	PageSize   int32  `form:"page_size,optional"`
+	LastChatId int64  `form:"last_chat_id,optional"`
+	StartTime  string `form:"start_time,optional"`
+	EndTime    string `form:"end_time,optional"`
+	Keyword    string `form:"keyword,optional"`
+}
+
+type ChatHistoryResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+	ChatList   []Chat `json:"chat_list"`
+}
+
+type ChatLikeReq struct {
+	UserId int64 `json:"user_id"`
+	ChatId int64 `json:"chat_id"`
+}
+
+type ChatLikeResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
+type ChatLinkReq struct {
+	UserId  int64 `json:"user_id"`
+	ChatId  int64 `json:"chat_id"`
+	TopicId int64 `json:"topic_id"`
+}
+
+type ChatLinkResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
+type ChatWsReq struct {
+	Token    string `form:"token,optional"`
+	WebsetID int64  `form:"webset_id"`
+	UserID   int64  `form:"user_id"`
+}
+
+type ChatWsResp struct {
+}
+
 type CheckUsernameReq struct {
 	Username string `form:"username,optional"`
 }
@@ -213,6 +281,11 @@ type ReportReq struct {
 type ReportResp struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,optional"`
+}
+
+type Topic struct {
+	TopicId    int64  `json:"topic_id"`
+	TopicTitle string `json:"topic_title"`
 }
 
 type UploadFileReq struct {

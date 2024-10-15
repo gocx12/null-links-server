@@ -1,0 +1,12 @@
+syntax = "v1"
+
+type ChatLinkReq {
+    UserId      int64   `json:"user_id"`
+    ChatId      int64   `json:"chat_id"`
+    TopicId     int64   `json:"topic_id"`
+}
+
+type ChatLinkResp {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}

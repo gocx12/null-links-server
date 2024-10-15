@@ -1,0 +1,29 @@
+syntax = "v1"
+
+type Chat {
+	ChatID    int64  `json:"chat_id"`
+	WebsetID  int64  `json:"webset_id"`
+	UserID    int64  `json:"user_id"`
+	UserName  string `json:"user_name"`
+	Content   string `json:"content"`
+	CreatedAt string `json:"created_at"`
+}
+
+
+type ChatHistoryReq {
+	Token      string `form:"token,optional"`
+	WebsetID   int64  `form:"webset_id"`
+	Type       int32  `form:"type"`
+	Page       int32  `form:"page,optional"`
+	PageSize   int32  `form:"page_size,optional"`
+	LastChatId int64  `form:"last_chat_id,optional"`
+	StartTime  string `form:"start_time,optional"`
+	EndTime    string `form:"end_time,optional"`
+	Keyword    string `form:"keyword,optional"`
+}
+
+type ChatHistoryResp {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+	ChatList   []Chat `json:"chat_list"`
+}

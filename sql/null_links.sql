@@ -81,7 +81,8 @@ CREATE TABLE `t_chat`
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  INDEX idx_webset_id_created_at_status (`webset_id`, `created_at`, `status`)
+  INDEX idx_webset_id_created_at_status (`webset_id`, `created_at`, `status`),
+  INDEX idx_topic_id_created_at_status (`topic_id`, `created_at`, `status`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '聊天表';
@@ -90,6 +91,7 @@ DROP TABLE IF EXISTS `t_topic`;
 CREATE TABLE `t_topic`
 (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `topic_title` varchar(255) NOT NULL DEFAULT '' COMMENT '话题标题',
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

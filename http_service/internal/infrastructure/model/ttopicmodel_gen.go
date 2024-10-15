@@ -37,10 +37,11 @@ type (
 	}
 
 	TTopic struct {
-		Id        int64     `db:"id"`         // 主键id
-		Status    int64     `db:"status"`     // 在库状态
-		CreatedAt time.Time `db:"created_at"` // 创建时间
-		UpdatedAt time.Time `db:"updated_at"` // 更新时间
+		Id         int64     `db:"id"`          // 主键id
+		TopicTitle string    `db:"topic_title"` // 话题标题
+		Status     int64     `db:"status"`      // 在库状态
+		CreatedAt  time.Time `db:"created_at"`  // 创建时间
+		UpdatedAt  time.Time `db:"updated_at"`  // 更新时间
 	}
 )
 
@@ -72,14 +73,14 @@ func (m *defaultTTopicModel) FindOne(ctx context.Context, id int64) (*TTopic, er
 }
 
 func (m *defaultTTopicModel) Insert(ctx context.Context, data *TTopic) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?)", m.table, tTopicRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Status)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?)", m.table, tTopicRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.TopicTitle, data.Status)
 	return ret, err
 }
 
 func (m *defaultTTopicModel) Update(ctx context.Context, data *TTopic) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, tTopicRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Status, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.TopicTitle, data.Status, data.Id)
 	return err
 }
 

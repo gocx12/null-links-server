@@ -16,6 +16,7 @@ type ServiceContext struct {
 	// WebsetRpc webset.WebsetServiceClient
 
 	FavoriteModel      model.TFavoriteModel
+	ChatModel          model.TChatModel
 	LikeModel          model.TLikeModel
 	WeblinkModel       model.TWeblinkModel
 	WebsetModel        model.TWebsetModel
@@ -31,6 +32,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config: c,
 		// UserRpc:       user.NewUserServiceClient(zrpc.MustNewClient(c.UserRpcConf).Conn()),
 		// WebsetRpc:     webset.NewWebsetServiceClient(zrpc.MustNewClient(c.WebsetRpcConf).Conn()),
+		ChatModel:     model.NewTChatModel(sqlx.NewMysql(c.DataSource)),
 		UserModel:     model.NewTUserModel(sqlx.NewMysql(c.DataSource)),
 		FavoriteModel: model.NewTFavoriteModel(sqlx.NewMysql(c.DataSource)),
 		LikeModel:     model.NewTLikeModel(sqlx.NewMysql(c.DataSource)),

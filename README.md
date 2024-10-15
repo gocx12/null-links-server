@@ -79,6 +79,7 @@ docker compose -f compose.yaml up --remove-orphans -d
 # modify
 ```
 goctl api go --api http_service/api/main.api --dir http_service
+
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_user --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_webset --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_weblink --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&

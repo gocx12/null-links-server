@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	chat "null-links/http_service/internal/handler/chat"
 	common "null-links/http_service/internal/handler/common"
 	social "null-links/http_service/internal/handler/social"
 	user "null-links/http_service/internal/handler/user"
@@ -24,6 +25,37 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: PingHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/get_all_topic",
+				Handler: chat.GetAllTopicHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/history",
+				Handler: chat.HistoryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/like",
+				Handler: chat.LikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/link",
+				Handler: chat.LinkHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/ws",
+				Handler: chat.ChatWsHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/chat"),
 	)
 
 	server.AddRoutes(

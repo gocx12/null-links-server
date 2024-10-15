@@ -1,0 +1,17 @@
+syntax = "v1"
+
+type Topic {
+    TopicId     int64   `json:"topic_id"`
+    TopicTitle  string  `json:"topic_title"`
+}
+
+type ChatGetAllTopicReq {
+    UserId    int64     `json:"user_id"`
+    WebsetId  int64     `json:"webset_id"`
+}
+
+type ChatGetAllTopicResp {
+	StatusCode  int32   `json:"status_code"`
+	StatusMsg   string  `json:"status_msg,optional"`
+	TopicList   []Topic `json:"topic_list"`
+}

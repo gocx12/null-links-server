@@ -1,0 +1,11 @@
+syntax = "v1"
+
+type ChatLikeReq {
+    UserId    int64     `json:"user_id"`
+    ChatId      int64   `json:"chat_id"`
+}
+
+type ChatLikeResp {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
