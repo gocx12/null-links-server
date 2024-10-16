@@ -92,10 +92,10 @@ service service {
 	get /like/action (LikeActionReq) returns (LikeActionResp)
 
 	@handler PublishAction
-	post /publish/action (PublishActionReq) returns (PublishActionResp)
+	get /publish/action (PublishActionReq) returns (PublishActionResp)
 
 	@handler PublishList
-	post /publish/list (PublishListReq) returns (PublishListResp)
+	get /publish/list (PublishListReq) returns (PublishListResp)
 
 	@handler FavoriteAction
 	get /favorite/action (FavoriteActionReq) returns (FavoriteActionResp)
@@ -111,7 +111,7 @@ service service {
 )
 service service {
 	@handler RelationAction
-	post /relation/action (RelationActionReq) returns (RelationActionResp)
+	get /relation/action (RelationActionReq) returns (RelationActionResp)
 
 	@handler RelationFollowList
 	get /relation/follow/list (RelationFollowListReq) returns (RelationFollowListResp)
@@ -150,13 +150,20 @@ service service {
 	@handler History
 	get /history (ChatHistoryReq) returns (ChatHistoryResp)
 
+	@handler GetAllTopic
+	get /get_all_topic (ChatGetAllTopicReq) returns (ChatGetAllTopicResp)
+}
+
+@server (
+	jwt:    Auth
+	prefix: /chat
+	group:  chat
+)
+service service {
 	@handler Like
 	get /like (ChatLikeReq) returns (ChatLikeResp)
 
 	@handler Link
 	get /link (ChatLinkReq) returns (ChatLinkResp)
-
-	@handler GetAllTopic
-	get /get_all_topic (ChatGetAllTopicReq) returns (ChatGetAllTopicResp)
 }
 

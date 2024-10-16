@@ -3,13 +3,12 @@ syntax = "v1"
 import "../user.api"
 
 type FriendUser {
-	User	User	`json:"friend_user_info"`
-	Message 	string 		`json:"message,optional"`
-	MsgType 	int    		`json:"msg_type"`
+	User		User	`form:"friend_user_info"`
+	Message 	string	`form:"message,optional"`
+	MsgType 	int		`form:"msg_type"`
 }
 
 type RelationFollowListReq {
-	UserId string `form:"user_id"`
 }
 
 type RelationFollowListResp {

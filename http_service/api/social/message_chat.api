@@ -4,7 +4,6 @@ import "message.api"
 
 type MessageChatReq {
 	ToUserId string `form:"to_user_id"` 
-	Token    string `form:"token"`      
 }
 
 type MessageChatResp {

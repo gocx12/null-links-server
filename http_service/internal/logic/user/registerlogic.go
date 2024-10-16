@@ -91,7 +91,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	}
 
 	// 获取新写入用户的id
-	id, err := resDB.LastInsertId()
+	userId, err := resDB.LastInsertId()
 	if err != nil {
 		logx.Error("get last insert id error: ", err)
 		resp.StatusCode = internal.StatusRpcErr
@@ -102,8 +102,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	secretKey := l.svcCtx.Config.Auth.AccessSecret
 	iat := time.Now().Unix()
 	seconds := l.svcCtx.Config.Auth.AccessExpire
-	payload := id
-	token, err := internal.GenJwtToken(secretKey, iat, seconds, payload)
+	token, err := internal.GenJwtToken(secretKey, iat, seconds, userId)
 	if err != nil {
 		logx.Error("get jwt token error:", err)
 		resp = &types.RegisterResp{
@@ -117,7 +116,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 
 	resp.StatusCode = internal.StatusSuccess
 	resp.StatusMsg = "success"
-	resp.UserId = id
+	resp.UserId = userId
 	resp.Token = token
 	return
 }

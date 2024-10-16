@@ -8,7 +8,7 @@ type Webset {
 	Describe		string 		`json:"describe"`
 	AuthorInfo		User		`json:"author_info"`
 	CoverURL		string 		`json:"cover_url"`
-	ViewCount   int64   `json:"view_count"`
+	ViewCount   	int64   	`json:"view_count"`
 	LikeCount		int64		`json:"like_count"`
 	IsLike			bool		`json:"is_like"`
 	FavoriteCount 	int64  		`json:"favorite_count"`

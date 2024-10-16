@@ -26,7 +26,11 @@ type Config struct {
 		UseSSL          bool
 		DownloadHost    string
 	}
-	VdEmailMqPusherConf struct {
+	WlCoverKqPusherConf struct {
+		Brokers []string
+		Topic   string
+	}
+	VdEmailKqPusherConf struct {
 		Brokers []string
 		Topic   string
 	}

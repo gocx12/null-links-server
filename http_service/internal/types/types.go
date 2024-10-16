@@ -13,8 +13,7 @@ type Chat struct {
 }
 
 type ChatGetAllTopicReq struct {
-	UserId   int64 `json:"user_id"`
-	WebsetId int64 `json:"webset_id"`
+	WebsetId int64 `form:"webset_id"`
 }
 
 type ChatGetAllTopicResp struct {
@@ -24,7 +23,6 @@ type ChatGetAllTopicResp struct {
 }
 
 type ChatHistoryReq struct {
-	Token      string `form:"token,optional"`
 	WebsetID   int64  `form:"webset_id"`
 	Type       int32  `form:"type"`
 	Page       int32  `form:"page,optional"`
@@ -42,8 +40,7 @@ type ChatHistoryResp struct {
 }
 
 type ChatLikeReq struct {
-	UserId int64 `json:"user_id"`
-	ChatId int64 `json:"chat_id"`
+	ChatId int64 `form:"chat_id"`
 }
 
 type ChatLikeResp struct {
@@ -52,9 +49,8 @@ type ChatLikeResp struct {
 }
 
 type ChatLinkReq struct {
-	UserId  int64 `json:"user_id"`
-	ChatId  int64 `json:"chat_id"`
-	TopicId int64 `json:"topic_id"`
+	ChatId  int64 `form:"chat_id"`
+	TopicId int64 `form:"topic_id"`
 }
 
 type ChatLinkResp struct {
@@ -92,7 +88,6 @@ type FavoriteActionResp struct {
 }
 
 type FavoriteListReq struct {
-	UserId int64 `form:"user_id"`
 }
 
 type FavoriteListResp struct {
@@ -103,7 +98,6 @@ type FavoriteListResp struct {
 
 type FeedReq struct {
 	LatestTime string `form:"latest_time,optional"`
-	UserId     int64  `form:"user_id,optional"`
 	Page       int32  `form:"page,optional"`
 	PageSize   int32  `form:"page_size,optional"`
 }
@@ -116,9 +110,9 @@ type FeedResp struct {
 }
 
 type FriendUser struct {
-	User    User   `json:"friend_user_info"`
-	Message string `json:"message,optional"`
-	MsgType int    `json:"msg_type"`
+	User    User   `form:"friend_user_info"`
+	Message string `form:"message,optional"`
+	MsgType int    `form:"msg_type"`
 }
 
 type GetValidationCodeReq struct {
@@ -131,9 +125,8 @@ type GetValidationCodeResp struct {
 }
 
 type LikeActionReq struct {
-	ActionType int32 `json:"action_type"`
-	UserId     int64 `json:"user_id"`
-	WebsetId   int64 `json:"webset_id"`
+	ActionType int32 `form:"action_type"`
+	WebsetId   int64 `form:"webset_id"`
 }
 
 type LikeActionResp struct {
@@ -160,7 +153,6 @@ type MessageActionReq struct {
 	ActionType string `form:"action_type"`
 	Content    string `form:"content"`
 	ToUserId   string `form:"to_user_id"`
-	Token      string `form:"token"`
 }
 
 type MessageActionResp struct {
@@ -169,7 +161,6 @@ type MessageActionResp struct {
 }
 
 type ModifyReq struct {
-	UserId    int64  `json:"user_id"`
 	Username  string `json:"username,optional"`
 	AvatarUrl string `json:"avatar_url,optional"`
 }
@@ -193,7 +184,7 @@ type PublishActionReq struct {
 	Category    int32            `json:"category"`
 	AuthorId    int64            `json:"author_id"`
 	Title       string           `json:"title"`
-	Describe    string           `json:"description"`
+	Description string           `json:"description"`
 	CoverUrl    string           `json:"cover_url"`
 	WebLinkList []WebLinkPublish `json:"weblink_list"`
 	WebsetId    int64            `json:"webest_id,optional"`
@@ -205,7 +196,6 @@ type PublishActionResp struct {
 }
 
 type PublishListReq struct {
-	UserId   int64 `form:"user_id"`
 	Page     int32 `form:"page"`
 	PageSize int32 `form:"page_size"`
 }
@@ -242,7 +232,6 @@ type RelationActionResp struct {
 }
 
 type RelationFollowListReq struct {
-	UserId string `form:"user_id"`
 }
 
 type RelationFollowListResp struct {
@@ -252,7 +241,6 @@ type RelationFollowListResp struct {
 }
 
 type RelationFollowerListReq struct {
-	UserId string `form:"user_id"`
 }
 
 type RelationFollowerListResp struct {
@@ -262,7 +250,6 @@ type RelationFollowerListResp struct {
 }
 
 type RelationFriendListReq struct {
-	UserId string `form:"user_id"`
 }
 
 type RelationFriendListResp struct {
@@ -344,9 +331,9 @@ type WebLink struct {
 }
 
 type WebLinkPublish struct {
-	Url      string `json:"url"`
-	Describe string `json:"description"`
-	CoverUrl string `json:"cover_url,optional"`
+	Url         string `json:"url"`
+	Description string `json:"description"`
+	CoverUrl    string `json:"cover_url,optional"`
 }
 
 type Webset struct {
@@ -364,7 +351,6 @@ type Webset struct {
 }
 
 type WebsetInfoReq struct {
-	UserId   int64 `form:"user_id"`
 	WebsetId int64 `form:"webset_id"`
 }
 

@@ -1,9 +1,8 @@
 syntax = "v1"
 
 type ChatLinkReq {
-    UserId      int64   `json:"user_id"`
-    ChatId      int64   `json:"chat_id"`
-    TopicId     int64   `json:"topic_id"`
+    ChatId      int64   `form:"chat_id"`
+    TopicId     int64   `form:"topic_id"`
 }
 
 type ChatLinkResp {

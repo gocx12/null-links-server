@@ -4,7 +4,6 @@ type MessageActionReq {
 	ActionType string `form:"action_type"` 
 	Content    string `form:"content"`     
 	ToUserId   string `form:"to_user_id"`  
-	Token      string `form:"token"`       
 }
 
 type MessageActionResp {

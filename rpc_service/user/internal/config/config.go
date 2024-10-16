@@ -12,7 +12,7 @@ type Config struct {
 		Password string
 		DB       int
 	}
-	VdEmailMqPusherConf struct {
+	VdEmailKqPusherConf struct {
 		Brokers []string
 		Topic   string
 	}

@@ -15,16 +15,15 @@ type ServiceContext struct {
 	// UserRpc   user.UserServiceClient
 	// WebsetRpc webset.WebsetServiceClient
 
-	FavoriteModel      model.TFavoriteModel
-	ChatModel          model.TChatModel
-	LikeModel          model.TLikeModel
-	WeblinkModel       model.TWeblinkModel
-	WebsetModel        model.TWebsetModel
-	UserModel          model.TUserModel
-	RedisClient        *redis.Client
-	WlCoverKqConsumser *kq.Pusher
-
-	VdEmailMqPusher *kq.Pusher
+	FavoriteModel   model.TFavoriteModel
+	ChatModel       model.TChatModel
+	LikeModel       model.TLikeModel
+	WeblinkModel    model.TWeblinkModel
+	WebsetModel     model.TWebsetModel
+	UserModel       model.TUserModel
+	RedisClient     *redis.Client
+	WlCoverKqPusher *kq.Pusher
+	VdEmailKqPusher *kq.Pusher
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -45,6 +44,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DB:       c.RedisConf.DB,
 		}),
 
-		VdEmailMqPusher: kq.NewPusher(c.VdEmailMqPusherConf.Brokers, c.VdEmailMqPusherConf.Topic),
+		WlCoverKqPusher: kq.NewPusher(c.WlCoverKqPusherConf.Brokers, c.WlCoverKqPusherConf.Topic),
+		VdEmailKqPusher: kq.NewPusher(c.VdEmailKqPusherConf.Brokers, c.VdEmailKqPusherConf.Topic),
 	}
 }

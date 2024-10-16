@@ -15,7 +15,7 @@ RedisConf:
   Password: ""
   DB:   0
 
-VdEmailMqPusherConf:
+VdEmailKqPusherConf:
   Brokers:
     - 10.63.180.57:9092
   Topic: validation-email

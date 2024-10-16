@@ -32,22 +32,22 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 }
 
 // 发布类型
-type PublishActionTypeEnum uint32
+type PublishActionTypeEnum int32
 
 const (
-	Publish PublishActionTypeEnum = 0
-	Update  PublishActionTypeEnum = 1
-	Delete  PublishActionTypeEnum = 2
+	Publish PublishActionTypeEnum = 1
+	Update  PublishActionTypeEnum = 2
+	Delete  PublishActionTypeEnum = 3
 )
 
 // webset状态
-type WebsetStatusEnum uint32
+type WebsetStatusEnum int32
 
 const (
-	WebsetPendReview   WebsetStatusEnum = 0 // 待审核
-	WebsetPublished    WebsetStatusEnum = 1 // 已发布
-	WebsetReviewUnpass WebsetStatusEnum = 2 // 审核未通过
-	WebsetDeleted      WebsetStatusEnum = 3 // 已删除
+	WebsetPendReview   WebsetStatusEnum = 1 // 待审核
+	WebsetPublished    WebsetStatusEnum = 2 // 已发布
+	WebsetReviewUnpass WebsetStatusEnum = 3 // 审核未通过
+	WebsetDeleted      WebsetStatusEnum = 4 // 已删除
 )
 
 func (e WebsetStatusEnum) code() int32 {
@@ -66,13 +66,13 @@ func (e WebsetStatusEnum) code() int32 {
 }
 
 // weblink状态
-type WeblinkStatusEnum uint32
+type WeblinkStatusEnum int32
 
 const (
-	WeblinkPendReview   WeblinkStatusEnum = 0 // 待审核
-	WeblinkPublished    WeblinkStatusEnum = 1 // 已发布
-	WeblinkReviewUnpass WeblinkStatusEnum = 2 // 审核未通过
-	WeblinkDeleted      WeblinkStatusEnum = 3 // 已删除
+	WeblinkPendReview   WeblinkStatusEnum = 1 // 待审核
+	WeblinkPublished    WeblinkStatusEnum = 2 // 已发布
+	WeblinkReviewUnpass WeblinkStatusEnum = 3 // 审核未通过
+	WeblinkDeleted      WeblinkStatusEnum = 4 // 已删除
 )
 
 func (e WeblinkStatusEnum) code() int32 {
@@ -121,7 +121,7 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 	// 构造webset
 	websetDb := model.TWebset{
 		Title:       req.Title,
-		Description: req.Describe,
+		Description: req.Description,
 		AuthorId:    req.AuthorId,
 		CoverUrl:    req.CoverUrl,
 		Category:    0, // 分区，暂时不用
@@ -142,7 +142,7 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 			LinkId:      int64(i),
 			WebsetId:    req.WebsetId,
 			AuthorId:    req.AuthorId,
-			Description: webLink.Describe,
+			Description: webLink.Description,
 			Url:         webLink.Url,
 			CoverUrl:    webLink.CoverUrl,
 			Status:      gocast.ToInt64(WeblinkPendReview), // status==2 待审核
@@ -173,8 +173,8 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 		// 2.截图作为weblink封面
 		// kafka pusher
 		data := gocast.ToString(lastInsertId)
-		if err := l.svcCtx.WlCoverKqConsumser.Push(data); err != nil {
-			logx.Error("wlCoverKqConsumser push error:", err)
+		if err := l.svcCtx.WlCoverKqPusher.Push(data); err != nil {
+			logx.Error("wlCoverKqPusher push error:", err)
 			return err
 		}
 
@@ -183,7 +183,6 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 		if err != nil {
 			return err
 		}
-
 		if rowsAffected, err := r.RowsAffected(); err != nil {
 			return err
 		} else if rowsAffected == 0 {
@@ -203,17 +202,21 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 
 func (l *PublishActionLogic) doUpdate(req *types.PublishActionReq) (err error) {
 	// 更新
-	err = l.svcCtx.WebsetModel.UpdateWebsetInfo(l.ctx, &model.TWebset{
+	r, err := l.svcCtx.WebsetModel.UpdateWebsetInfo(l.ctx, &model.TWebset{
 		Id:          req.WebsetId,
 		Title:       req.Title,
-		Description: req.Describe,
+		Description: req.Description,
 		AuthorId:    req.AuthorId,
 		CoverUrl:    req.CoverUrl,
 		UpdatedAt:   time.Now(),
 		Category:    0,
 		Status:      gocast.ToInt64(WebsetPendReview.code()), // status==2 待审核
-
 	})
+	if rowsAffected, err := r.RowsAffected(); err != nil {
+		return err
+	} else if rowsAffected == 0 {
+		return fmt.Errorf("insert weblinks failed, rows affected: %d", rowsAffected)
+	}
 	return
 }
 

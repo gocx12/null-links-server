@@ -7,6 +7,7 @@ import (
 	"null-links/http_service/internal/types"
 	"null-links/internal"
 
+	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -25,9 +26,9 @@ func NewModifyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ModifyLogi
 }
 
 func (l *ModifyLogic) Modify(req *types.ModifyReq) (resp *types.ModifyResp, err error) {
-	// todo: add your logic here and delete this line
 
-	err = l.svcCtx.UserModel.UpdateAvatarUrl(l.ctx, req.UserId, req.AvatarUrl)
+	userId := gocast.ToInt64(l.ctx.Value("userId"))
+	err = l.svcCtx.UserModel.UpdateAvatarUrl(l.ctx, userId, req.AvatarUrl)
 	if err != nil {
 		resp = &types.ModifyResp{
 			StatusCode: internal.StatusRpcErr,

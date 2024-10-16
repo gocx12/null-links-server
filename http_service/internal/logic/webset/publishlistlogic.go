@@ -8,6 +8,7 @@ import (
 	"null-links/http_service/internal/types"
 	"null-links/internal"
 
+	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,17 +28,17 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 
 func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
 	resp = &types.PublishListResp{}
+	userId := gocast.ToInt64(l.ctx.Value("userId"))
 
-	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, req.UserId, req.Page, req.PageSize)
+	publishListDb, err := l.svcCtx.WebsetModel.FindPublishList(l.ctx, userId, req.Page, req.PageSize)
 	if err != nil {
-		logx.Error("get publish list from db error=", err, " ,userId=", req.UserId)
+		logx.Error("get publish list from db error=", err, " ,userId=", userId)
 		resp.StatusCode = internal.StatusRpcErr
 		resp.StatusMsg = "get publish list failed from db error"
 		return
 	}
-
 	// 获取用户信息
-	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, req.UserId)
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, userId)
 	if err != nil && err != model.ErrNotFound {
 		logx.Error("get user info from db error. err=", err)
 		return nil, nil

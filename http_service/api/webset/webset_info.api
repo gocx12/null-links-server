@@ -3,12 +3,11 @@ syntax = "v1"
 import "../webset.api"
 
 type WebsetInfoReq {
-	UserId 		int64 	`form:"user_id"`
 	WebsetId 	int64 	`form:"webset_id"` 
 }
 
 type WebsetInfoResp {
 	StatusCode int32   `json:"status_code"`         
 	StatusMsg  string  `json:"status_msg,optional"` 
-	WebsetInfo Webset `json:"webset_info"`
+	WebsetInfo Webset 	`json:"webset_info"`
 }

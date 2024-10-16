@@ -14,7 +14,7 @@ type ServiceContext struct {
 	Config          config.Config
 	UserModel       model.TUserModel
 	RedisClient     *redis.Client
-	VdEmailMqPusher *kq.Pusher
+	VdEmailKqPusher *kq.Pusher
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -26,6 +26,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Password: c.RedisConf.Password,
 			DB:       c.RedisConf.DB,
 		}),
-		VdEmailMqPusher: kq.NewPusher(c.VdEmailMqPusherConf.Brokers, c.VdEmailMqPusherConf.Topic),
+		VdEmailKqPusher: kq.NewPusher(c.VdEmailKqPusherConf.Brokers, c.VdEmailKqPusherConf.Topic),
 	}
 }

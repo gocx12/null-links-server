@@ -6,8 +6,7 @@ type Topic {
 }
 
 type ChatGetAllTopicReq {
-    UserId    int64     `json:"user_id"`
-    WebsetId  int64     `json:"webset_id"`
+    WebsetId  int64     `form:"webset_id"`
 }
 
 type ChatGetAllTopicResp {

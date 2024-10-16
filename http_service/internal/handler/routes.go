@@ -41,6 +41,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/ws",
+				Handler: chat.ChatWsHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/chat"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/like",
 				Handler: chat.LikeHandler(serverCtx),
 			},
@@ -49,12 +60,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/link",
 				Handler: chat.LinkHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/ws",
-				Handler: chat.ChatWsHandler(serverCtx),
-			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/chat"),
 	)
 
@@ -83,7 +90,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/relation/action",
 				Handler: social.RelationActionHandler(serverCtx),
 			},
@@ -184,12 +191,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: webset.LikeActionHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/publish/action",
 				Handler: webset.PublishActionHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/publish/list",
 				Handler: webset.PublishListHandler(serverCtx),
 			},

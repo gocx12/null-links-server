@@ -32,6 +32,8 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
+	logx.Debug("LikeActionHandler|req=", req)
+
 	if req.PageSize > 50 {
 		req.PageSize = 50
 	}
@@ -61,13 +63,15 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	websetFavoriteMap := make(map[int64]bool)
 	websetAuthorMap := make(map[int64]types.UserShort)
 
+	userId := gocast.ToInt64(l.ctx.Value("userId"))
+
 	go func() {
-		l.getLikeInfo(req.UserId, websetListDB, &websetHasLikeMap)
+		l.getLikeInfo(userId, websetListDB, &websetHasLikeMap)
 		wg.Done()
 	}()
 
 	go func() {
-		l.getFavoriteInfo(req.UserId, websetListDB, &websetFavoriteMap)
+		l.getFavoriteInfo(userId, websetListDB, &websetFavoriteMap)
 		wg.Done()
 	}()
 

@@ -32,12 +32,12 @@ Auth:
 #   #   Key: webset.rpc
 #   # NonBlock: true
 
-VdEmailMqPusherConf:
+VdEmailKqPusherConf:
   Brokers:
     - 127.0.0.1:9094
   Topic: validation-email
 
-WlCoverKqConsumser:
+WlCoverKqPusherConf:
   Brokers:
     - 127.0.0.1:9094
   Topic: weblink-cover
@@ -49,7 +49,7 @@ RedisConf:
 
 MinIO:
   EndPoint: "127.0.0.1:9000"
-  AccessKeyID: "swjTlz02UIYY7iXCyCQM"
-  SecretAccessKey: "ayNq4sY19U9PM9TTBFuGKKvP62h6kfNpYx4DQeb5"
+  AccessKeyID: "kx5GRzf9W8lrAu6L4yHa"
+  SecretAccessKey: "yD4XtDdcQ7PtFkGXrFTCgc0VW2MsfhiX6AWpHFNH"
   UseSSL: false
   DownloadHost: "http://127.0.0.1:9000"

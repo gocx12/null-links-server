@@ -56,8 +56,8 @@ func (m *customTWebsetModel) GetConn() sqlx.SqlConn {
 }
 
 func (m *defaultTWebsetModel) InsertTrans(ctx context.Context, data *TWebset, session sqlx.Session) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWebsetRowsExpectAutoSet)
-	ret, err := session.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Description, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status, data.UpdatedAt)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, tWebsetRowsExpectAutoSet)
+	ret, err := session.ExecCtx(ctx, query, data.Title, data.AuthorId, data.Description, data.CoverUrl, data.Category, data.ViewCnt, data.LikeCnt, data.FavoriteCnt, data.Status)
 	return ret, err
 }
 

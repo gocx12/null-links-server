@@ -4,17 +4,17 @@ type PublishActionReq {
 	ActionType  int32 		`json:"action_type"`
 	Category	int32		`json:"category"`
 	AuthorId	int64		`json:"author_id"`
-	Title 		string 		`json:"title"`
-	Describe 	string 		`json:"description"`
-	CoverUrl  string     `json:"cover_url"`
+	Title		string 		`json:"title"`
+	Description	string 		`json:"description"`
+	CoverUrl  	string		`json:"cover_url"`
 	WebLinkList []WebLinkPublish	`json:"weblink_list"`
-	WebsetId	int64 `json:"webest_id,optional"`
+	WebsetId	int64 		`json:"webest_id,optional"`
 }
 
 type WebLinkPublish {
 	Url 		string 	`json:"url"`
-	Describe 	string 	`json:"description"`
-	CoverUrl	string 		`json:"cover_url,optional"`
+	Description	string 	`json:"description"`
+	CoverUrl	string	`json:"cover_url,optional"`
 }
 
 type PublishActionResp {

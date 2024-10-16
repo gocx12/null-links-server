@@ -4,7 +4,6 @@ import "../webset.api"
 
 type FeedReq {
 	LatestTime 	string `form:"latest_time,optional"`
-	UserId	int64   `form:"user_id,optional"`
 	Page		int32	`form:"page,optional"`
 	PageSize	int32 	`form:"page_size,optional"`
 }

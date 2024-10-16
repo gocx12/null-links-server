@@ -69,7 +69,7 @@ func (c *customTLikeModel) GetLikeWebsetUserInfos(ctx context.Context, websetIds
 
 func (c *customTLikeModel) UpdateStatusTrans(ctx context.Context, websetId, userId int64, action int32, session sqlx.Session) (sql.Result, error) {
 	query := fmt.Sprintf("update %s set `status` = ? where `user_id` = ? and `webset_id` = ?", c.table)
-	res, err := session.ExecCtx(ctx, query, action, websetId, userId)
+	res, err := session.ExecCtx(ctx, query, action, userId, websetId)
 	switch err {
 	case nil:
 		return res, nil
@@ -82,7 +82,7 @@ func (c *customTLikeModel) UpdateStatusTrans(ctx context.Context, websetId, user
 
 func (c *customTLikeModel) InsertTrans(ctx context.Context, data *TLike, session sqlx.Session) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (`webset_id`, `user_id`, `status`) values (?, ?, ?)", c.table)
-	ret, err := session.ExecCtx(ctx, query, data.UserId, data.WebsetId, data.Status)
+	ret, err := session.ExecCtx(ctx, query, data.WebsetId, data.UserId, data.Status)
 	return ret, err
 }
 

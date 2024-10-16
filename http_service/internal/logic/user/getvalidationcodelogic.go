@@ -66,8 +66,8 @@ func (l *GetValidationCodeLogic) GetValidationCode(req *types.GetValidationCodeR
 
 	// kafka pusher
 	data := recipient + "::" + validationCode
-	if err := l.svcCtx.VdEmailMqPusher.Push(data); err != nil {
-		logx.Error("VdEmailMqPusher Push error:", err)
+	if err := l.svcCtx.VdEmailKqPusher.Push(data); err != nil {
+		logx.Error("VdEmailKqPusher Push error:", err)
 		resp = &types.GetValidationCodeResp{
 			StatusCode: internal.StatusGatewayErr,
 			StatusMsg:  "push email validation code to kq failed, err: " + err.Error(),

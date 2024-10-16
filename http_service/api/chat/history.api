@@ -11,7 +11,6 @@ type Chat {
 
 
 type ChatHistoryReq {
-	Token      string `form:"token,optional"`
 	WebsetID   int64  `form:"webset_id"`
 	Type       int32  `form:"type"`
 	Page       int32  `form:"page,optional"`
