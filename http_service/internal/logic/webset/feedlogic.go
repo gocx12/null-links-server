@@ -41,8 +41,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	resp = &types.FeedResp{}
 
 	// TODO(chancyGao): 推荐系统
-	// status: 0 未定义，1 发布，2 待审核，3 审核不通过，4 定时发布，5 删除
-	websetListDB, err := l.svcCtx.WebsetModel.FindRecent(l.ctx, req.Page, req.PageSize)
+	websetListDB, err := l.svcCtx.WebsetModel.FindRecent(l.ctx, req.Page, req.PageSize, WebsetPublished.code())
 	if err != nil {
 		logx.Error("get webset list from db error: ", err)
 		resp.StatusCode = internal.StatusGatewayErr

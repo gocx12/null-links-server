@@ -16,7 +16,7 @@ type (
 	// and implement the added methods in customTWebsetModel.
 	TWebsetModel interface {
 		tWebsetModel
-		FindRecent(ct1x context.Context, page, pageSize int32) (websets []*TWebset, err error)
+		FindRecent(ctx context.Context, page, pageSize, status int32) (websets []*TWebset, err error)
 		FindPublishList(ctx context.Context, authorId int64, page, pageSize int32) (websets []*TWebset, err error)
 		InsertTrans(ctx context.Context, data *TWebset, session sqlx.Session) (sql.Result, error)
 		UpdateLikeCntTrans(ctx context.Context, incr int32, websetId int64, session sqlx.Session) (sql.Result, error)
@@ -37,11 +37,11 @@ func NewTWebsetModel(conn sqlx.SqlConn) TWebsetModel {
 	}
 }
 
-func (m *customTWebsetModel) FindRecent(ctx context.Context, page, pageSize int32) (websets []*TWebset, err error) {
+func (m *customTWebsetModel) FindRecent(ctx context.Context, page, pageSize, status int32) (websets []*TWebset, err error) {
 	offset := (page - 1) * pageSize
 
-	query := fmt.Sprintf("select %s from %s where status = 1 order by created_at desc limit ? offset ?", tWebsetRows, m.table)
-	err = m.conn.QueryRowsCtx(ctx, &websets, query, pageSize, offset)
+	query := fmt.Sprintf("select %s from %s where status = ? order by created_at desc limit ? offset ?", tWebsetRows, m.table)
+	err = m.conn.QueryRowsCtx(ctx, &websets, query, status, pageSize, offset)
 	return
 }
 
