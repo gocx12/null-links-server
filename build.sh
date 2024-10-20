@@ -13,10 +13,10 @@ build() {
   mkdir -p ./build/kq_consumer/weblink_cover
   # mkdir -p ./build/cron
 
-  cp ./http_service/etc ./build/http_service -r
-  cp ./kq_consumer/validation_email/config.yaml ./build/kq_consumer/validation_email/config.yaml -r
-  cp ./kq_consumer/validation_email/validation_code_page.html ./build/kq_consumer/validation_email/validation_code_page.html -r
-  cp ./kq_consumer/weblink_cover/config.yaml ./build/kq_consumer/weblink_cover/config.yaml -r
+  cp -r ./http_service/etc ./build/http_service
+  cp ./kq_consumer/validation_email/config.yaml ./build/kq_consumer/validation_email/config.yaml
+  cp ./kq_consumer/validation_email/validation_code_page.html ./build/kq_consumer/validation_email/validation_code_page.html
+  cp ./kq_consumer/weblink_cover/config.yaml ./build/kq_consumer/weblink_cover/config.yaml
   
   cd $PROJECTDIR/build/http_service
   go build $PROJECTDIR/http_service/service.go
