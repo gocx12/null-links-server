@@ -10,6 +10,7 @@ type Chat struct {
 	UserName  string `json:"user_name"`
 	Content   string `json:"content"`
 	CreatedAt string `json:"created_at"`
+	TopicId   int64  `json:"topic_id"`
 }
 
 type ChatGetAllTopicReq struct {
@@ -351,6 +352,7 @@ type Webset struct {
 }
 
 type WebsetInfoReq struct {
+	UserId   int64 `form:"user_id"`
 	WebsetId int64 `form:"webset_id"`
 }
 

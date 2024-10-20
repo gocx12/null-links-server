@@ -4,7 +4,6 @@ import (
 	"context"
 	"sync"
 
-	"null-links/http_service/internal/common"
 	"null-links/http_service/internal/infrastructure/model"
 	"null-links/http_service/internal/svc"
 	"null-links/http_service/internal/types"
@@ -114,23 +113,24 @@ func (l *FeedLogic) getLikeInfo(userId int64, websetList []*model.TWebset, webse
 		}
 		likeInfosDB, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfos(l.ctx, websetIdList, userId)
 		if err != nil {
-			logx.Error("get like info failed, user, err: ", err)
+			logx.Error("get like info failed, user=", userId, ", err=", err)
 		}
 		for index, webset := range websetList {
 			hasLike := false
 			for _, likeInfo := range likeInfosDB {
 
 				// 1. 综合DB和缓存，统计该webset的总点赞数量
-				likeCnt, err := l.svcCtx.RedisClient.HGet(l.ctx, common.RdsKeyWebsetLikedCnt, gocast.ToString(webset.Id)).Result()
-				if err != nil {
-					logx.Error("get like count from redis failed, err: ", err)
-				}
+				// likeCnt, err := l.svcCtx.RedisClient.HGet(l.ctx, common.RdsKeyWebsetLikedCnt, gocast.ToString(webset.Id)).Result()
+				// if err != nil {
+				// 	logx.Error("get like count from redis failed, err: ", err)
+				// }
 				// mysql + redis = 总点赞数
-				websetList[index].LikeCnt = webset.LikeCnt + gocast.ToInt64(likeCnt)
+				// websetList[index].LikeCnt = webset.LikeCnt + gocast.ToInt64(likeCnt)
+				websetList[index].LikeCnt = webset.LikeCnt
 
 				// 2. 当前用户是否有点赞该webset
 				if webset.Id == likeInfo.WebsetId {
-					hasLike = (likeInfo.Status == 1)
+					hasLike = (likeInfo.Status == int64(Like.code()))
 					break
 				}
 			}
@@ -154,7 +154,7 @@ func (l *FeedLogic) getFavoriteInfo(userId int64, websetList []*model.TWebset, w
 		}
 		favoriteInfosDb, err := l.svcCtx.FavoriteModel.GetFavoriteWebsetUserInfos(l.ctx, websetIdList, userId)
 		if err != nil {
-			logx.Error("get like info failed, user, err: ", err)
+			logx.Error("get favorite info failed, user=", userId, ", err=", err)
 		}
 		for _, webset := range websetList {
 			isFound := false
@@ -173,15 +173,19 @@ func (l *FeedLogic) getFavoriteInfo(userId int64, websetList []*model.TWebset, w
 }
 
 func (l *FeedLogic) getAuthorInfo(websetList []*model.TWebset, websetAuthorMap *map[int64]types.UserShort) {
-	authorIdList := make([]int64, 0, len(websetList))
+	authorIdSet := make(map[int64]bool)
 	for _, webset := range websetList {
-		authorIdList = append(authorIdList, webset.AuthorId)
+		authorIdSet[webset.AuthorId] = true
+	}
+	authorIdList := make([]int64, 0, len(authorIdSet))
+	for authorId := range authorIdSet {
+		authorIdList = append(authorIdList, authorId)
 	}
 
 	// 获取作者信息
 	userInfoListDB, err := l.svcCtx.UserModel.FindMulti(l.ctx, authorIdList)
 	if err != nil {
-		logx.Error("get user info list failed, err: ", err)
+		logx.Error("get user info list failed, err=", err)
 	}
 	for _, item := range websetList {
 		isFound := false

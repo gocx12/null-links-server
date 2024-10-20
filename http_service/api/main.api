@@ -92,7 +92,7 @@ service service {
 	get /like/action (LikeActionReq) returns (LikeActionResp)
 
 	@handler PublishAction
-	get /publish/action (PublishActionReq) returns (PublishActionResp)
+	post /publish/action (PublishActionReq) returns (PublishActionResp)
 
 	@handler PublishList
 	get /publish/list (PublishListReq) returns (PublishListResp)

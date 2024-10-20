@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -30,7 +31,8 @@ func NewTFavoriteModel(conn sqlx.SqlConn) TFavoriteModel {
 }
 
 func (c *customTFavoriteModel) GetFavoriteWebsetUserInfos(ctx context.Context, websetIds []int64, userId int64) ([]*TFavorite, error) {
-	query := fmt.Sprintf("select %s from %s where `webset_id` in (?) and `user_id`=?", tLikeRows, c.table)
+	questionMarks := strings.Repeat("?,", len(websetIds))
+	query := fmt.Sprintf("select %s from %s where `webset_id` in (%s) and `user_id`=?", tLikeRows, c.table, questionMarks[:len(questionMarks)-1])
 	args := make([]interface{}, 0, len(websetIds)+1)
 	for _, v := range websetIds {
 		args = append(args, v)

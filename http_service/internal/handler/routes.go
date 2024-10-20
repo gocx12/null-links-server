@@ -191,7 +191,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: webset.LikeActionHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodGet,
+				Method:  http.MethodPost,
 				Path:    "/publish/action",
 				Handler: webset.PublishActionHandler(serverCtx),
 			},

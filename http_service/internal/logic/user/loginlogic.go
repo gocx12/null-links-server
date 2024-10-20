@@ -36,7 +36,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	if req.Username == "" && req.UserEmail == "" {
 		resp = &types.LoginResp{
 			StatusCode: internal.StatusParamErr,
-			StatusMsg:  "please input your name or your email address",
+			StatusMsg:  "no username or email address",
 			UserID:     -1,
 		}
 		err = nil
@@ -45,7 +45,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	if req.Password == "" {
 		resp = &types.LoginResp{
 			StatusCode: internal.StatusParamErr,
-			StatusMsg:  "please input your password",
+			StatusMsg:  "no password",
 			UserID:     -1,
 		}
 		err = nil

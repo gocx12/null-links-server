@@ -43,11 +43,15 @@ func (l *HistoryLogic) History(req *types.ChatHistoryReq) (resp *types.ChatHisto
 	if err != nil {
 		logx.Error("get chat history from mysql failed, error:", err)
 		resp.StatusCode = internal.StatusGatewayErr
-		resp.StatusMsg = "获取聊天记录失败"
+		resp.StatusMsg = "get chat history failed"
+		return
 	}
-	// 上划加载历史消息
-	resp.StatusCode = internal.StatusSuccess
-	resp.StatusMsg = "成功"
+
+	if len(chatDb) == 0 {
+		resp.StatusCode = internal.StatusSuccess
+		resp.StatusMsg = "no more chat history"
+		return
+	}
 
 	// 查询用户名称
 	// userid 去重
@@ -62,6 +66,9 @@ func (l *HistoryLogic) History(req *types.ChatHistoryReq) (resp *types.ChatHisto
 	UserInfoListDb, err := l.svcCtx.UserModel.FindMulti(l.ctx, userIdList)
 	if err != nil {
 		logx.Error("get user info from db error: ", err)
+		resp.StatusCode = internal.StatusGatewayErr
+		resp.StatusMsg = "get chat history failed"
+		return
 	}
 	for _, userInfo := range UserInfoListDb {
 		userIdNameMap[userInfo.Id] = userInfo.Username
@@ -75,8 +82,13 @@ func (l *HistoryLogic) History(req *types.ChatHistoryReq) (resp *types.ChatHisto
 			UserName:  userIdNameMap[chat.UserId],
 			Content:   chat.Content,
 			CreatedAt: chat.CreatedAt.Format("2006-01-02 15:04"),
+			TopicId:   -1,
 		})
 	}
+
+	// 上划加载历史消息
+	resp.StatusCode = internal.StatusSuccess
+	resp.StatusMsg = "success"
 
 	resp.ChatList = chatList
 	return

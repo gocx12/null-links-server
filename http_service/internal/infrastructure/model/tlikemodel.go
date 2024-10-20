@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -34,7 +35,7 @@ func NewTLikeModel(conn sqlx.SqlConn) TLikeModel {
 }
 
 func (c *customTLikeModel) GetLikeWebsetUserInfo(ctx context.Context, websetId int64, userId int64) (*TLike, error) {
-	query := fmt.Sprintf("select %s from %s where `webset_id`=? and `user_id`=?", tLikeRows, c.table)
+	query := fmt.Sprintf("select %s from %s where `webset_id` = ? and `user_id` = ?", tLikeRows, c.table)
 	var resp TLike
 	err := c.conn.QueryRowCtx(ctx, &resp, query, websetId, userId)
 	switch err {
@@ -48,7 +49,8 @@ func (c *customTLikeModel) GetLikeWebsetUserInfo(ctx context.Context, websetId i
 }
 
 func (c *customTLikeModel) GetLikeWebsetUserInfos(ctx context.Context, websetIds []int64, userId int64) ([]*TLike, error) {
-	query := fmt.Sprintf("select %s from %s where `webset_id` in (?) and `user_id`=?", tLikeRows, c.table)
+	questionMarks := strings.Repeat("?,", len(websetIds))
+	query := fmt.Sprintf("select %s from %s where `webset_id` in (%s) and `user_id` = ?", tLikeRows, c.table, questionMarks[:len(questionMarks)-1])
 	args := make([]interface{}, 0, len(websetIds)+1)
 	for _, v := range websetIds {
 		args = append(args, v)

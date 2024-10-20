@@ -98,7 +98,7 @@ func (l *LikeActionLogic) doLike(userId int64, websetId int64) (err error) {
 			res, err := l.svcCtx.LikeModel.Insert(l.ctx, &model.TLike{
 				UserId:   userId,
 				WebsetId: websetId,
-				Status:   gocast.ToInt64(Like),
+				Status:   gocast.ToInt64(Like.code()),
 			})
 			if err != nil {
 				return err
@@ -106,24 +106,23 @@ func (l *LikeActionLogic) doLike(userId int64, websetId int64) (err error) {
 			if rowsAffected, err := res.RowsAffected(); err != nil {
 				return err
 			} else if rowsAffected == 0 {
-				return fmt.Errorf("insert like record failed, rows affected: %d", rowsAffected)
+				return fmt.Errorf("insert like record failed, rows affected=%d", rowsAffected)
 			}
-			return nil
-		}
+		} else {
+			if likeStatus == Like.code() {
+				return fmt.Errorf("like record already exists, user_id=%d, webset_id=%d", userId, websetId)
+			}
 
-		if likeStatus == Like.code() {
-			return fmt.Errorf("like record already exists, user_id:%d, webset_id:%d", userId, websetId)
-		}
-
-		// 点赞记录已存在，修改状态
-		res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, Like.code(), session)
-		if err != nil {
-			return err
-		}
-		if rowsAffected, err := res.RowsAffected(); err != nil {
-			return err
-		} else if rowsAffected == 0 {
-			return fmt.Errorf("update like record failed, rows affected: %d", rowsAffected)
+			// 点赞记录已存在，修改状态
+			res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, Like.code(), session)
+			if err != nil {
+				return err
+			}
+			if rowsAffected, err := res.RowsAffected(); err != nil {
+				return err
+			} else if rowsAffected == 0 {
+				return fmt.Errorf("update like record failed, rows affected: %d", rowsAffected)
+			}
 		}
 
 		// 更新webset点赞数
@@ -158,7 +157,7 @@ func (l *LikeActionLogic) doCancelLike(userId int64, websetId int64) (err error)
 			res, err := l.svcCtx.LikeModel.Insert(l.ctx, &model.TLike{
 				UserId:   userId,
 				WebsetId: websetId,
-				Status:   gocast.ToInt64(UnLike),
+				Status:   gocast.ToInt64(UnLike.code()),
 			})
 			if err != nil {
 				return err
@@ -168,21 +167,21 @@ func (l *LikeActionLogic) doCancelLike(userId int64, websetId int64) (err error)
 			} else if rowsAffected == 0 {
 				return fmt.Errorf("insert like record failed, rows affected: %d", rowsAffected)
 			}
-			return nil
-		}
+		} else {
+			if likeStatus == UnLike.code() {
+				return fmt.Errorf("cancel like record already exists, user_id:%d, webset_id:%d", userId, websetId)
+			}
 
-		if likeStatus == UnLike.code() {
-			return fmt.Errorf("cancel like record already exists, user_id:%d, webset_id:%d", userId, websetId)
-		}
-		// 点赞记录已存在，修改状态
-		res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, UnLike.code(), session)
-		if err != nil {
-			return err
-		}
-		if rowsAffected, err := res.RowsAffected(); err != nil {
-			return err
-		} else if rowsAffected == 0 {
-			return fmt.Errorf("update like record failed, rows affected: %d", rowsAffected)
+			// 点赞记录已存在，修改状态
+			res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, UnLike.code(), session)
+			if err != nil {
+				return err
+			}
+			if rowsAffected, err := res.RowsAffected(); err != nil {
+				return err
+			} else if rowsAffected == 0 {
+				return fmt.Errorf("update like record failed, rows affected: %d", rowsAffected)
+			}
 		}
 
 		// 更新webset点赞数

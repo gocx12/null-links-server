@@ -6,7 +6,6 @@ import (
 	"null-links/http_service/internal/types"
 	"null-links/internal"
 
-	"github.com/demdxx/gocast"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -37,9 +36,8 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	}
 
 	// 获取是否点赞信息
-	userId := gocast.ToInt64(l.ctx.Value("userId"))
 	isLike := false
-	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, req.WebsetId, userId)
+	likeInfoDb, err := l.svcCtx.LikeModel.GetLikeWebsetUserInfo(l.ctx, req.WebsetId, req.UserId)
 	if err != nil && err != sqlx.ErrNotFound {
 		logx.Error("get like info error: ", err)
 	} else if err == sqlx.ErrNotFound {
@@ -58,7 +56,8 @@ func (l *WebsetInfoLogic) WebsetInfo(req *types.WebsetInfoReq) (resp *types.Webs
 	// }
 
 	// 获取作者信息
-	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, userId)
+	logx.Debug("authorId=", WebsetDb.AuthorId)
+	userInfoDb, err := l.svcCtx.UserModel.FindOne(l.ctx, WebsetDb.AuthorId)
 	if err != nil {
 		logx.Error("get user info from db error. err=", err)
 		return nil, err

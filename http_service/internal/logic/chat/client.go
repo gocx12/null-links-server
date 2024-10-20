@@ -40,9 +40,10 @@ var (
 )
 
 type ChatWriteMsg struct {
-	UserId  string `json:"user_id"`
-	Token   string `json:"token"`
-	Content string `json:"content"`
+	UserId       string `json:"user_id"`
+	Token        string `json:"token"`
+	Content      string `json:"content"`
+	QuatedChatId string `json:"quated_id"`
 }
 
 type ChatSendMsg struct {
