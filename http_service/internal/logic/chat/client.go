@@ -105,7 +105,6 @@ func (c *Client) ReadPump() {
 		logx.Debug("recv message: ", string(message))
 		chatWriteMsg := ChatWriteMsg{}
 		json.Unmarshal(message, &chatWriteMsg)
-		logx.Debug("chat msg: ", chatWriteMsg)
 
 		// generate chat msg id
 		chatMsgId, err := c.genChatMsgId(c.UserId, c.WebsetId)
@@ -116,11 +115,12 @@ func (c *Client) ReadPump() {
 		}
 
 		// get topic id
-		topicId, err := c.getTopicId(chatWriteMsg.QuatedChatId)
-		if err != nil {
-			logx.Error("get topic id error: ", err)
-			continue
-		}
+		// topicId, err := c.getTopicId(chatWriteMsg.QuatedChatId)
+		// if err != nil {
+		// 	logx.Error("get topic id error: ", err)
+		// 	continue
+		// }
+		topicId := int64(-1)
 
 		// save to db
 		_, err = c.SvcCtx.ChatModel.Insert(context.Background(), &model.TChat{

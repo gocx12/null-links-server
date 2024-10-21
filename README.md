@@ -116,6 +116,7 @@ alter user "admin"@"localhost" identified with mysql_native_password by "新密�
 
 # 修改host
 update user set host='localhost' where user='admin';
+grant all privileges on *.* to 'admin'@'localhost' with grant option;
 
 flush privilege
 ```

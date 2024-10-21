@@ -37,7 +37,7 @@ func (m *customTChatModel) withSession(session sqlx.Session) TChatModel {
 func (c *customTChatModel) FindChatList(ctx context.Context, websetId int64, page, pageSize int32) ([]*TChat, error) {
 	query := "select * from t_chat where webset_id = ? order by created_at desc limit ?, ?"
 	var resp []*TChat
-	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, page, pageSize)
+	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, (page-1)*pageSize, pageSize)
 	switch err {
 	case nil:
 		return resp, nil
@@ -49,7 +49,7 @@ func (c *customTChatModel) FindChatList(ctx context.Context, websetId int64, pag
 func (c *customTChatModel) FindChatListChatId(ctx context.Context, websetId, lastChatId int64, page, pageSize int32) ([]*TChat, error) {
 	query := "select * from t_chat where webset_id = ? and chat_id < ? order by created_at desc limit ?, ?"
 	var resp []*TChat
-	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, lastChatId, page, pageSize)
+	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, lastChatId, (page-1)*pageSize, pageSize)
 	switch err {
 	case nil:
 		return resp, nil
