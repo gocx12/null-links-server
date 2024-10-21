@@ -33,11 +33,15 @@ build() {
 
 # 上传文件
 syncFile() {
+  cd $PROJECTDIR
   echo '===== Mode:syncFile ====='
-  tar -czvf ./build/$IMAGE.tar.gz -C ./build .next node_modules package.json
+  tar -czvf build.tar.gz build/
   
-  rsync -avzP --progress ./build/$IMAGE.tar.gz root@$MACHINE:/data/null-links-web/ && echo "Sync successful"
-  ssh root@$MACHINE "cd /data/null-links-web && rm -rf .next node_modules package.json && tar -xzvf $IMAGE.tar.gz"
+  rsync -avzP --progress ./build.tar.gz root@$MACHINE:/data/null-links-server/ && echo "Sync successful"
+
+  ssh root@$MACHINE "cd /data/null-links-server && tar -xzvf build.tar.gz"
+
+  rm build.tar.gz
 }
 
 restart() {
@@ -61,7 +65,6 @@ do
   "--publish")
     build
     syncFile
-    restart
     ;;
   "unzip")
     echo '=====Mode:unzip ====='

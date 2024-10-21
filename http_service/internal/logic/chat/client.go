@@ -16,6 +16,7 @@ import (
 
 	"null-links/http_service/internal/infrastructure/model"
 	"null-links/http_service/internal/svc"
+	"null-links/internal"
 
 	"github.com/gorilla/websocket"
 )
@@ -39,11 +40,53 @@ var (
 	space   = []byte{' '}
 )
 
+type ChatStatusEnum int64
+
+const (
+	ChatValid    ChatStatusEnum = 1
+	ChatDeleted  ChatStatusEnum = 2
+	ChatReported ChatStatusEnum = 3
+	ChatBanned   ChatStatusEnum = 4
+)
+
+func (e ChatStatusEnum) code() int64 {
+	switch e {
+	case ChatValid:
+		return int64(ChatValid)
+	case ChatDeleted:
+		return int64(ChatDeleted)
+	case ChatReported:
+		return int64(ChatReported)
+	case ChatBanned:
+		return int64(ChatBanned)
+	default:
+		return -1
+	}
+}
+
+type TopicStatusEnum int64
+
+const (
+	TopicValid   TopicStatusEnum = 1
+	TopicDeleted TopicStatusEnum = 2
+)
+
+func (e TopicStatusEnum) code() int64 {
+	switch e {
+	case TopicValid:
+		return int64(TopicValid)
+	case TopicDeleted:
+		return int64(TopicDeleted)
+	default:
+		return -1
+	}
+}
+
 type ChatWriteMsg struct {
-	UserId       string `json:"user_id"`
+	UserId       int64  `json:"user_id"`
 	Token        string `json:"token"`
 	Content      string `json:"content"`
-	QuatedChatId string `json:"quated_id"`
+	QuatedChatId int64  `json:"quated_chat_id"`
 }
 
 type ChatSendMsg struct {
@@ -53,6 +96,7 @@ type ChatSendMsg struct {
 	Content   string `json:"content"`
 	ChatId    int64  `json:"chat_id"`
 	CreatedAt string `json:"created_at"`
+	TopicId   int64  `json:"topic_id"`
 }
 
 type InitSendMsg struct {
@@ -113,26 +157,25 @@ func (c *Client) ReadPump() {
 			continue
 		}
 
+		// get topic id
+		topicId, err := c.getTopicId(chatWriteMsg.QuatedChatId)
+		if err != nil {
+			logx.Error("get topic id error: ", err)
+			continue
+		}
+
 		// save to db
-		resDb, err := c.SvcCtx.ChatModel.Insert(context.Background(), &model.TChat{
+		_, err = c.SvcCtx.ChatModel.Insert(context.Background(), &model.TChat{
 			ChatId:   chatMsgId,
 			UserId:   c.UserId,
 			WebsetId: c.WebsetId,
 			Content:  chatWriteMsg.Content,
-			Status:   1, // 1 for online
+			Status:   ChatValid.code(),
+			TopicId:  topicId,
 		})
 		if err != nil {
 			logx.Error("insert chat msg to db failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
 			continue
-		} else {
-			rowsAffected, err := resDb.RowsAffected()
-			if err != nil {
-				logx.Error("insert chat msg to db and get RowsAffected failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
-				continue
-			} else if rowsAffected == 0 {
-				logx.Error("insert chat msg to db failed, rows affected=0", " chatWriteMsg: ", chatWriteMsg)
-				continue
-			}
 		}
 
 		// TODO(chancyGao): 机审 过关键词库
@@ -145,6 +188,7 @@ func (c *Client) ReadPump() {
 			ChatId:    chatMsgId,
 			Content:   chatWriteMsg.Content,
 			CreatedAt: time.Now().Format("2006-01-02 15:04"),
+			TopicId:   c.WebsetId,
 		}
 		chatSendMsgByte, err := json.Marshal(chatSendMsg)
 		if err != nil {
@@ -237,4 +281,30 @@ func (c *Client) genChatMsgId(userId, websetId int64) (int64, error) {
 	logx.Debug("gen chat id:", chatMsgId)
 
 	return gocast.ToInt64(chatMsgId), nil
+}
+
+func (c *Client) getTopicId(quotedChatId int64) (int64, error) {
+	// 查询引用的消息是否已在某个topic中
+	quatedChatDb, err := c.SvcCtx.ChatModel.FindOne(context.Background(), quotedChatId)
+	if err != nil {
+		return -1, err
+	}
+	topicId := quatedChatDb.TopicId
+
+	if quatedChatDb.TopicId == -1 {
+		quatedChatContent := quatedChatDb.Content[:internal.Min(len(quatedChatDb.Content), 10)]
+		resTopic, err := c.SvcCtx.TopicModel.Insert(context.Background(), &model.TTopic{
+			TopicTitle: fmt.Sprintf("新话题 %s", quatedChatContent),
+			Status:     TopicValid.code(),
+		})
+		if err != nil {
+			return -1, err
+		}
+		topicId, err = resTopic.LastInsertId()
+		if err != nil {
+			return -1, err
+		}
+	}
+
+	return topicId, nil
 }
