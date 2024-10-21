@@ -1,8 +1,11 @@
 package user
 
 import (
+	"bytes"
 	"context"
 	"math/rand"
+	"net/smtp"
+	"text/template"
 	"time"
 
 	"null-links/http_service/internal/common"
@@ -10,6 +13,7 @@ import (
 	"null-links/http_service/internal/types"
 	"null-links/internal"
 
+	"github.com/jordan-wright/email"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -64,16 +68,20 @@ func (l *GetValidationCodeLogic) GetValidationCode(req *types.GetValidationCodeR
 		return
 	}
 
-	// kafka pusher
-	data := recipient + "::" + validationCode
-	if err := l.svcCtx.VdEmailKqPusher.Push(data); err != nil {
-		logx.Error("VdEmailKqPusher Push error:", err)
-		resp = &types.GetValidationCodeResp{
-			StatusCode: internal.StatusGatewayErr,
-			StatusMsg:  "push email validation code to kq failed, err: " + err.Error(),
-		}
-		return resp, nil
-	}
+	// // kafka pusher
+	// data := recipient + "::" + validationCode
+	// if err := l.svcCtx.VdEmailKqPusher.Push(data); err != nil {
+	// 	logx.Error("VdEmailKqPusher Push error:", err)
+	// 	resp = &types.GetValidationCodeResp{
+	// 		StatusCode: internal.StatusGatewayErr,
+	// 		StatusMsg:  "push email validation code to kq failed, err: " + err.Error(),
+	// 	}
+	// 	return resp, nil
+	// }
+
+	go func() {
+		l.sendEmail(recipient, validationCode)
+	}()
 
 	resp = &types.GetValidationCodeResp{
 		StatusCode: internal.StatusSuccess,
@@ -91,4 +99,63 @@ func (l *GetValidationCodeLogic) generateValidationCode() string {
 		buf[i] = chars[rand.Intn(len(chars))]
 	}
 	return string(buf)
+}
+
+// 验证码邮件模板
+type TicketInfo struct {
+	Picture        string
+	Title          string
+	Desc           string
+	Warning        string
+	ValidationCode string
+}
+
+func (l *GetValidationCodeLogic) sendEmail(recipient, validationCode string) error {
+	logx.Info("send email to: ", recipient, ", validation code: ", validationCode)
+	// 邮件服务器地址和端口 发件人邮箱和密码
+	emailConf := l.svcCtx.Config.Email
+	smtpDomain := emailConf.SmtpDomain
+	sender := emailConf.Sender
+	password := emailConf.Password
+	auth := smtp.PlainAuth("", sender, password, smtpDomain)
+
+	// 邮件主题和内容
+	subject := "Null-Links 注册验证码"
+
+	ticketInfo := TicketInfo{
+		Picture:        "http://localhost:3000/static/logo.png",
+		Title:          "Null-Links 注册验证码",
+		Desc:           "",
+		Warning:        "请不要回复本邮件",
+		ValidationCode: validationCode,
+	}
+	tmpl, err := genHtml(ticketInfo)
+	if err != nil {
+		logx.Error("failed to render html:", err)
+		return err
+	}
+	body := new(bytes.Buffer)
+	tmpl.Execute(body, ticketInfo)
+
+	// 发送邮件
+	e := email.NewEmail()
+	e.From = sender
+	e.To = []string{recipient}
+	e.Subject = subject
+	e.HTML = body.Bytes()
+	err = e.Send(smtpDomain+":25", auth)
+	if err != nil {
+		// TODO(chancyGao): 增加告警
+		logx.Error("Failed to send email:", err, ", recipient: ", recipient)
+		return err
+	}
+
+	return nil
+}
+
+func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
+	// 解析指定文件生成模板对象
+	tmpl, err := template.ParseFiles("./kq_consumer/validation_email/validation_code_page.html")
+
+	return tmpl, err
 }

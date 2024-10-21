@@ -53,3 +53,9 @@ MinIO:
   SecretAccessKey: "yD4XtDdcQ7PtFkGXrFTCgc0VW2MsfhiX6AWpHFNH"
   UseSSL: false
   DownloadHost: "http://127.0.0.1:9000"
+
+Email:
+  SmtpDomain: "smtp.exmail.qq.com"
+  Sender: "null-links-noreply@null-links.com"
+  Password: "UwRQi9rTc4hxHKx4"
+ 

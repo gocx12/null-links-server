@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -15,6 +14,7 @@ import (
 	"time"
 
 	"null-links/http_service/internal/svc"
+	"null-links/internal"
 
 	"github.com/demdxx/gocast"
 	"github.com/minio/minio-go/v7"
@@ -69,7 +69,7 @@ func UploadPicHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		lastPicUrl := r.FormValue("last_pic_url")
 
 		// get bucket name
-		bucketName, err := UploadPicBusinessId(businessId).bucketName()
+		bucketName, err := internal.UploadPicBusinessIdEnum(businessId).BucketName()
 		if err != nil {
 			logx.Error("UploadPicHandler|unknown business_id: ", businessId)
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -162,28 +162,4 @@ type FileInfo struct {
 	Error        string `json:"error,omitempty"`
 	DeleteUrl    string `json:"delete_url,omitempty"`
 	DeleteType   string `json:"delete_type,omitempty"`
-}
-
-type UploadPicBusinessId int32
-
-const (
-	WebSetCover  UploadPicBusinessId = 1
-	WebLinkCover UploadPicBusinessId = 2
-	Avatar       UploadPicBusinessId = 3
-)
-
-/**
- * @return the bucket name for the business id.
- */
-func (id UploadPicBusinessId) bucketName() (string, error) {
-	switch id {
-	case WebSetCover:
-		return "websetcover", nil
-	case WebLinkCover:
-		return "weblinkcover", nil
-	case Avatar:
-		return "avatar", nil
-	default:
-		return "unknown", errors.New("unknown business_id")
-	}
 }

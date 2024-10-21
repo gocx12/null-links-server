@@ -34,4 +34,10 @@ type Config struct {
 		Brokers []string
 		Topic   string
 	}
+
+	Email struct {
+		SmtpDomain string
+		Sender     string
+		Password   string
+	}
 }

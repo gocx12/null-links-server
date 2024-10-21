@@ -1,9 +1,14 @@
 package webset
 
 import (
+	"bytes"
 	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
+	"io"
 	"strings"
+	"sync"
 	"time"
 
 	"null-links/http_service/internal/infrastructure/model"
@@ -13,6 +18,10 @@ import (
 	"null-links/internal"
 
 	"github.com/demdxx/gocast"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -171,12 +180,15 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 		}
 
 		// 2.截图作为weblink封面
-		// kafka pusher
-		data := gocast.ToString(lastInsertId)
-		if err := l.svcCtx.WlCoverKqPusher.Push(data); err != nil {
-			logx.Error("wlCoverKqPusher push error:", err)
-			return err
-		}
+		// // kafka pusher
+		// data := gocast.ToString(lastInsertId)
+		// if err := l.svcCtx.WlCoverKqPusher.Push(data); err != nil {
+		// 	logx.Error("wlCoverKqPusher push error:", err)
+		// 	return err
+		// }
+		go func() {
+			l.sreenShot(lastInsertId)
+		}()
 
 		// 3.批量插入weblink
 		r, err = l.svcCtx.WeblinkModel.BulkInsertTrans(l.ctx, webLinkListDb, session)
@@ -227,4 +239,76 @@ func (l *PublishActionLogic) doDelete(req *types.PublishActionReq) (err error) {
 		req.WebsetId,
 	)
 	return
+}
+
+func (l *PublishActionLogic) sreenShot(websetId int64) error {
+
+	weblinkDb, err := l.svcCtx.WeblinkModel.FindByWebsetId(context.Background(), websetId)
+	if err != nil {
+		logx.Error("get weblink from db error: ", err, " ,webset id:", weblinkDb)
+		return err
+	}
+	var wg sync.WaitGroup
+	wg.Add(len(weblinkDb))
+	for _, weblink := range weblinkDb {
+		go func(weblink *model.TWeblink) {
+			// 截图
+			page := rod.New().MustConnect().MustPage(weblink.Url).MustWaitLoad()
+			file, err := page.Screenshot(true, &proto.PageCaptureScreenshot{
+				Format: "png",
+			})
+			fileReader := bytes.NewReader(file)
+			if err != nil {
+				logx.Error("screenshot error: ", err, " ,webset id: ", websetId, " ,link id:", weblink.LinkId)
+			}
+
+			// 上传图片
+			endpoint := l.svcCtx.Config.MinIO.Endpoint
+			accessKeyID := l.svcCtx.Config.MinIO.AccessKeyID
+			secretAccessKey := l.svcCtx.Config.MinIO.SecretAccessKey
+			useSSL := l.svcCtx.Config.MinIO.UseSSL
+			bucketName := "weblinkcover"
+
+			// Initialize minio client object.
+			minioClient, err := minio.New(endpoint, &minio.Options{
+				Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+				Secure: useSSL,
+			})
+			if err != nil {
+				logx.Error("init minio client error: ", err)
+			}
+			objectName, err := l.generateUniqueFilename(fileReader, websetId)
+			if err != nil {
+				logx.Error("generate unique filename error: ", err)
+			}
+			objectName += ".png"
+			contentType := "application/octet-stream"
+			_, err = minioClient.PutObject(context.Background(), bucketName, objectName, fileReader, -1, minio.PutObjectOptions{ContentType: contentType})
+			if err != nil {
+				logx.Error("minio upload error: ", err)
+			}
+			coverUrl := l.svcCtx.Config.MinIO.DownloadHost + "/" + bucketName + "/" + objectName
+			// 封面地址落库
+			l.svcCtx.WeblinkModel.UpdateCoverUrl(context.Background(), websetId, weblink.LinkId, coverUrl)
+			wg.Done()
+		}(weblink)
+	}
+	wg.Wait()
+	return nil
+}
+
+func (l *PublishActionLogic) generateUniqueFilename(file io.ReadSeeker, id int64) (string, error) {
+	// 同一纳秒上传完全相同的文件，则生成的文件名是相同的
+	hash := md5.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		return "", err
+	}
+
+	// reset file pointer
+	file.Seek(0, 0)
+
+	hashInBytes := hash.Sum(nil)[:16]
+	md5Hash := hex.EncodeToString(hashInBytes)
+
+	return fmt.Sprintf("%s-%d-%d", md5Hash, time.Now().UnixNano(), id), nil
 }

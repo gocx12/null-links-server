@@ -40,48 +40,6 @@ var (
 	space   = []byte{' '}
 )
 
-type ChatStatusEnum int64
-
-const (
-	ChatValid    ChatStatusEnum = 1
-	ChatDeleted  ChatStatusEnum = 2
-	ChatReported ChatStatusEnum = 3
-	ChatBanned   ChatStatusEnum = 4
-)
-
-func (e ChatStatusEnum) code() int64 {
-	switch e {
-	case ChatValid:
-		return int64(ChatValid)
-	case ChatDeleted:
-		return int64(ChatDeleted)
-	case ChatReported:
-		return int64(ChatReported)
-	case ChatBanned:
-		return int64(ChatBanned)
-	default:
-		return -1
-	}
-}
-
-type TopicStatusEnum int64
-
-const (
-	TopicValid   TopicStatusEnum = 1
-	TopicDeleted TopicStatusEnum = 2
-)
-
-func (e TopicStatusEnum) code() int64 {
-	switch e {
-	case TopicValid:
-		return int64(TopicValid)
-	case TopicDeleted:
-		return int64(TopicDeleted)
-	default:
-		return -1
-	}
-}
-
 type ChatWriteMsg struct {
 	UserId       int64  `json:"user_id"`
 	Token        string `json:"token"`
@@ -170,8 +128,8 @@ func (c *Client) ReadPump() {
 			UserId:   c.UserId,
 			WebsetId: c.WebsetId,
 			Content:  chatWriteMsg.Content,
-			Status:   ChatValid.code(),
 			TopicId:  topicId,
+			Status:   internal.ChatValid.Code(),
 		})
 		if err != nil {
 			logx.Error("insert chat msg to db failed, err: ", err, " chatWriteMsg: ", chatWriteMsg)
@@ -295,7 +253,7 @@ func (c *Client) getTopicId(quotedChatId int64) (int64, error) {
 		quatedChatContent := quatedChatDb.Content[:internal.Min(len(quatedChatDb.Content), 10)]
 		resTopic, err := c.SvcCtx.TopicModel.Insert(context.Background(), &model.TTopic{
 			TopicTitle: fmt.Sprintf("新话题 %s", quatedChatContent),
-			Status:     TopicValid.code(),
+			Status:     internal.TopicValid.Code(),
 		})
 		if err != nil {
 			return -1, err

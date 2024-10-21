@@ -130,7 +130,7 @@ func (l *FeedLogic) getLikeInfo(userId int64, websetList []*model.TWebset, webse
 
 				// 2. 当前用户是否有点赞该webset
 				if webset.Id == likeInfo.WebsetId {
-					hasLike = (likeInfo.Status == int64(Like.code()))
+					hasLike = (likeInfo.Status == int64(internal.Like.Code()))
 					break
 				}
 			}

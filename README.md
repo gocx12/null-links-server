@@ -35,6 +35,12 @@ sudo apt-get update
 sudo apt-get -y install openresty
 ```
 
+
+```bash
+vim /usr/local/openresty/nginx/conf/nginx.conf
+/usr/local/openresty/bin/openresty -s reload
+```
+
 4. docker容器化部署依赖
 腾讯云教程: https://cloud.tencent.com/document/product/1207/45596
 
@@ -77,7 +83,7 @@ docker compose -f compose.yaml up --remove-orphans -d
 
 
 # modify
-```
+```bash
 goctl api go --api http_service/api/main.api --dir http_service
 
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_user --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
@@ -97,3 +103,19 @@ goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_
 name: 随便填
 host: kafka
 port: 9092
+
+
+sudo nohup ./http_service/service > nohup_http_service.log 2>&1 &
+
+
+# Mysql
+
+```bash
+# 修改密码。注意原来该user的host，需要保持一致才能修改成功
+alter user "admin"@"localhost" identified with mysql_native_password by "新密码"
+
+# 修改host
+update user set host='localhost' where user='admin';
+
+flush privilege
+```

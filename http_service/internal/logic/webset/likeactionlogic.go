@@ -28,44 +28,19 @@ func NewLikeActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeAc
 	}
 }
 
-type LikeActionTypeEnum int32
-
-const (
-	DoLike       LikeActionTypeEnum = 1
-	DoCancelLike LikeActionTypeEnum = 2
-)
-
-type LikeStatusEnum int32
-
-const (
-	Like   LikeStatusEnum = 1
-	UnLike LikeStatusEnum = 2
-)
-
-func (e LikeStatusEnum) code() int32 {
-	switch e {
-	case UnLike:
-		return int32(UnLike)
-	case Like:
-		return int32(Like)
-	default:
-		return -1
-	}
-}
-
 func (l *LikeActionLogic) LikeAction(req *types.LikeActionReq) (resp *types.LikeActionResp, err error) {
 	resp = &types.LikeActionResp{}
 	logx.Debug("LikeAction|req=", req)
 
 	userId := gocast.ToInt64(l.ctx.Value("userId"))
-	switch LikeActionTypeEnum(req.ActionType) {
-	case DoLike:
+	switch internal.LikeActionTypeEnum(req.ActionType) {
+	case internal.DoLike:
 		err = l.doLike(userId, req.WebsetId)
 		if err != nil {
 			resp.StatusMsg = "like failed"
 			resp.StatusCode = internal.StatusErr
 		}
-	case DoCancelLike:
+	case internal.DoCancelLike:
 		err = l.doCancelLike(userId, req.WebsetId)
 		if err != nil {
 			resp.StatusMsg = "cancel like failed"
@@ -98,7 +73,7 @@ func (l *LikeActionLogic) doLike(userId int64, websetId int64) (err error) {
 			res, err := l.svcCtx.LikeModel.Insert(l.ctx, &model.TLike{
 				UserId:   userId,
 				WebsetId: websetId,
-				Status:   gocast.ToInt64(Like.code()),
+				Status:   gocast.ToInt64(internal.Like.Code()),
 			})
 			if err != nil {
 				return err
@@ -109,12 +84,12 @@ func (l *LikeActionLogic) doLike(userId int64, websetId int64) (err error) {
 				return fmt.Errorf("insert like record failed, rows affected=%d", rowsAffected)
 			}
 		} else {
-			if likeStatus == Like.code() {
+			if likeStatus == internal.Like.Code() {
 				return fmt.Errorf("like record already exists, user_id=%d, webset_id=%d", userId, websetId)
 			}
 
 			// 点赞记录已存在，修改状态
-			res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, Like.code(), session)
+			res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, internal.Like.Code(), session)
 			if err != nil {
 				return err
 			}
@@ -157,7 +132,7 @@ func (l *LikeActionLogic) doCancelLike(userId int64, websetId int64) (err error)
 			res, err := l.svcCtx.LikeModel.Insert(l.ctx, &model.TLike{
 				UserId:   userId,
 				WebsetId: websetId,
-				Status:   gocast.ToInt64(UnLike.code()),
+				Status:   gocast.ToInt64(internal.UnLike.Code()),
 			})
 			if err != nil {
 				return err
@@ -168,12 +143,12 @@ func (l *LikeActionLogic) doCancelLike(userId int64, websetId int64) (err error)
 				return fmt.Errorf("insert like record failed, rows affected: %d", rowsAffected)
 			}
 		} else {
-			if likeStatus == UnLike.code() {
+			if likeStatus == internal.UnLike.Code() {
 				return fmt.Errorf("cancel like record already exists, user_id:%d, webset_id:%d", userId, websetId)
 			}
 
 			// 点赞记录已存在，修改状态
-			res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, UnLike.code(), session)
+			res, err := l.svcCtx.LikeModel.UpdateStatusTrans(l.ctx, websetId, userId, internal.UnLike.Code(), session)
 			if err != nil {
 				return err
 			}

@@ -19,6 +19,7 @@ type (
 		FindByWebsetId(ctx context.Context, websetId int64) (weblinks []*TWeblink, err error)
 		BulkInsert(ctx context.Context, data []TWeblink) (sql.Result, error)
 		BulkInsertTrans(ctx context.Context, data []TWeblink, session sqlx.Session) (sql.Result, error)
+		UpdateCoverUrl(ctx context.Context, websetId, linkId int64, url string)
 	}
 
 	customTWeblinkModel struct {
@@ -64,4 +65,9 @@ func (m *customTWeblinkModel) BulkInsert(ctx context.Context, data []TWeblink) (
 func (m *customTWeblinkModel) BulkInsertTrans(ctx context.Context, data []TWeblink, session sqlx.Session) (sql.Result, error) {
 	query, valueArgs := m.getBulkInsertQuery(data)
 	return session.ExecCtx(ctx, query, valueArgs...)
+}
+
+func (c *customTWeblinkModel) UpdateCoverUrl(ctx context.Context, websetId, linkId int64, coverUrl string) {
+	query := fmt.Sprintf("update %s set `cover_url` = ? where `webset_id` = ? and `link_id` = ?", c.tableName())
+	c.conn.ExecCtx(ctx, query, coverUrl, websetId, linkId)
 }
