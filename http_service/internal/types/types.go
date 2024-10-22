@@ -4,13 +4,14 @@
 package types
 
 type Chat struct {
-	ChatID    int64  `json:"chat_id"`
-	WebsetID  int64  `json:"webset_id"`
-	UserID    int64  `json:"user_id"`
-	UserName  string `json:"user_name"`
-	Content   string `json:"content"`
-	CreatedAt string `json:"created_at"`
-	TopicId   int64  `json:"topic_id"`
+	ChatID     int64  `json:"chat_id"`
+	WebsetID   int64  `json:"webset_id"`
+	UserID     int64  `json:"user_id"`
+	UserName   string `json:"username"`
+	Content    string `json:"content"`
+	CreatedAt  string `json:"created_at"`
+	TopicId    int64  `json:"topic_id"`
+	TopicTitle string `json:"topic_title"`
 }
 
 type ChatGetAllTopicReq struct {

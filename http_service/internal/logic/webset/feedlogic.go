@@ -31,7 +31,7 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
-	logx.Debug("LikeActionHandler|req=", req)
+	logx.Debug("Feed|req=", req)
 
 	if req.PageSize > 50 {
 		req.PageSize = 50
