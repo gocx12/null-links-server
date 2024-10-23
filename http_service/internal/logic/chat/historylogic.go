@@ -77,12 +77,13 @@ func (l *HistoryLogic) History(req *types.ChatHistoryReq) (resp *types.ChatHisto
 	chatList := make([]types.Chat, 0, len(chatDb))
 	for _, chat := range chatDb {
 		chatList = append(chatList, types.Chat{
-			UserID:    chat.UserId,
-			ChatID:    chat.ChatId,
-			UserName:  userIdNameMap[chat.UserId],
-			Content:   chat.Content,
-			CreatedAt: chat.CreatedAt.Format("2006-01-02 15:04"),
-			TopicId:   -1,
+			UserID:     chat.UserId,
+			ChatID:     chat.ChatId,
+			UserName:   userIdNameMap[chat.UserId],
+			Content:    chat.Content,
+			CreatedAt:  chat.CreatedAt.Format("2006-01-02 15:04"),
+			TopicId:    -1,
+			TopicTitle: "",
 		})
 	}
 
