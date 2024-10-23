@@ -40,4 +40,8 @@ type Config struct {
 		Sender     string
 		Password   string
 	}
+
+	DefaultAvatarUrl       string
+	DefaultWebsetCoverUrl  string
+	DefaultWeblinkCoverUrl string
 }
