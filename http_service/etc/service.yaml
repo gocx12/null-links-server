@@ -60,8 +60,8 @@ Email:
   Password: "UwRQi9rTc4hxHKx4"
  
 
-DefaultAvatarUrl: "https://pic.null-links.com/avatar/default.jpg"
+DefaultAvatarUrl: "http://127.0.0.1:9000/avatar/default.jpeg"
 
-DefaultWebsetCoverUrl: "https://pic.null-links.com/websetcover/default.jpg"
+DefaultWebsetCoverUrl: "https://pic.null-links.com/websetcover/default.jpeg"
 
-DefaultWeblinkCoverUrl: "https//pic.null-links.com/weblinkcover/default.jpg"
+DefaultWeblinkCoverUrl: "https//pic.null-links.com/weblinkcover/default.jpeg"

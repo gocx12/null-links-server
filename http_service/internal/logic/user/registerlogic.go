@@ -67,9 +67,10 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 
 	// 用户信息写入数据库
 	data := &model.TUser{
-		Username: req.Username,
-		Email:    req.UserEmail,
-		Password: encodedHash,
+		Username:  req.Username,
+		Email:     req.UserEmail,
+		Password:  encodedHash,
+		AvatarUrl: l.svcCtx.Config.DefaultAvatarUrl, // 默认头像
 	}
 	resDB, err := l.svcCtx.UserModel.Insert(l.ctx, data)
 	if err != nil {

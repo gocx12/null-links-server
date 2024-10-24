@@ -28,7 +28,7 @@ func NewModifyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ModifyLogi
 func (l *ModifyLogic) Modify(req *types.ModifyReq) (resp *types.ModifyResp, err error) {
 
 	userId := gocast.ToInt64(l.ctx.Value("userId"))
-	err = l.svcCtx.UserModel.UpdateAvatarUrl(l.ctx, userId, req.AvatarUrl)
+	err = l.svcCtx.UserModel.UpdateUserInfoUrl(l.ctx, userId, req.Username, "", req.AvatarUrl)
 	if err != nil {
 		resp = &types.ModifyResp{
 			StatusCode: internal.StatusRpcErr,

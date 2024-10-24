@@ -19,7 +19,7 @@ type (
 		FindOneByName(ctx context.Context, username string) (*TUser, error)
 		FindMulti(ctx context.Context, userIds []int64) ([]*TUser, error)
 		FindPasswordByEmail(ctx context.Context, email string) (*TUser, error)
-		UpdateAvatarUrl(ctx context.Context, userId int64, avatarUrl string) error
+		UpdateUserInfoUrl(ctx context.Context, userId int64, name string, password string, avatarUrl string) error
 	}
 
 	customTUserModel struct {
@@ -82,8 +82,29 @@ func (c *customTUserModel) FindMulti(ctx context.Context, userIds []int64) ([]*T
 	}
 }
 
-func (c *customTUserModel) UpdateAvatarUrl(ctx context.Context, userId int64, avatarUrl string) error {
-	query := fmt.Sprintf("update %s set `avatar_url` = ? where `id` = ?", c.table)
-	_, err := c.conn.ExecCtx(ctx, query, avatarUrl, userId)
-	return err
+func (c *customTUserModel) UpdateUserInfoUrl(ctx context.Context, userId int64, name string, password string, avatarUrl string) error {
+	var setClauses []string
+	var args []interface{}
+
+	if name != "" {
+		setClauses = append(setClauses, "username =?")
+		args = append(args, name)
+	}
+	if password != "" {
+		setClauses = append(setClauses, "password =?")
+		args = append(args, password)
+	}
+	if avatarUrl != "" {
+		setClauses = append(setClauses, "avatar_url =?")
+		args = append(args, avatarUrl)
+	}
+
+	if len(setClauses) > 0 {
+		query := fmt.Sprintf("update %s set %s where id =?", c.table, strings.Join(setClauses, ", "))
+		args = append(args, userId)
+		_, err := c.conn.ExecCtx(ctx, query, args...)
+		return err
+	} else {
+		return nil
+	}
 }

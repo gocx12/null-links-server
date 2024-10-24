@@ -78,7 +78,11 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		resp.StatusMsg = "success"
 		resp.UserID = UserInfoDb.Id
 		resp.Username = UserInfoDb.Username
+
 		resp.AvatarUrl = UserInfoDb.AvatarUrl
+		if UserInfoDb.AvatarUrl == "" {
+			resp.AvatarUrl = l.svcCtx.Config.DefaultAvatarUrl
+		}
 
 		secretKey := l.svcCtx.Config.Auth.AccessSecret
 		iat := time.Now().Unix()

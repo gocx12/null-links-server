@@ -146,7 +146,7 @@ func (l *GetValidationCodeLogic) sendEmail(recipient, validationCode string) err
 	err = e.Send(smtpDomain+":25", auth)
 	if err != nil {
 		// TODO(chancyGao): 增加告警
-		logx.Error("Failed to send email:", err, ", recipient: ", recipient)
+		logx.Error("Failed to send email. err=", err, ", recipient=", recipient)
 		return err
 	}
 
@@ -155,7 +155,7 @@ func (l *GetValidationCodeLogic) sendEmail(recipient, validationCode string) err
 
 func genHtml(ticketInfo TicketInfo) (*template.Template, error) {
 	// 解析指定文件生成模板对象
-	tmpl, err := template.ParseFiles("./kq_consumer/validation_email/validation_code_page.html")
+	tmpl, err := template.ParseFiles("./etc/validation_code_page.html")
 
 	return tmpl, err
 }
