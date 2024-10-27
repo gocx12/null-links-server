@@ -92,3 +92,62 @@ func (id UploadPicBusinessIdEnum) BucketName() (string, error) {
 		return "unknown", errors.New("unknown business_id")
 	}
 }
+
+// 发布类型
+type PublishActionTypeEnum int32
+
+const (
+	Publish PublishActionTypeEnum = 1
+	Update  PublishActionTypeEnum = 2
+	Delete  PublishActionTypeEnum = 3
+)
+
+// webset状态
+type WebsetStatusEnum int32
+
+const (
+	WebsetPendReview   WebsetStatusEnum = 1 // 待审核
+	WebsetPublished    WebsetStatusEnum = 2 // 已发布
+	WebsetReviewUnpass WebsetStatusEnum = 3 // 审核未通过
+	WebsetDeleted      WebsetStatusEnum = 4 // 已删除
+)
+
+func (e WebsetStatusEnum) Code() int32 {
+	switch e {
+	case WebsetPendReview:
+		return int32(WebsetPendReview)
+	case WebsetPublished:
+		return int32(WebsetPublished)
+	case WebsetReviewUnpass:
+		return int32(WebsetReviewUnpass)
+	case WebsetDeleted:
+		return int32(WebsetDeleted)
+	default:
+		return -1
+	}
+}
+
+// weblink状态
+type WeblinkStatusEnum int32
+
+const (
+	WeblinkPendReview   WeblinkStatusEnum = 1 // 待审核
+	WeblinkPublished    WeblinkStatusEnum = 2 // 已发布
+	WeblinkReviewUnpass WeblinkStatusEnum = 3 // 审核未通过
+	WeblinkDeleted      WeblinkStatusEnum = 4 // 已删除
+)
+
+func (e WeblinkStatusEnum) Code() int32 {
+	switch e {
+	case WeblinkPendReview:
+		return int32(WeblinkPendReview)
+	case WeblinkPublished:
+		return int32(WeblinkPublished)
+	case WeblinkReviewUnpass:
+		return int32(WeblinkReviewUnpass)
+	case WeblinkDeleted:
+		return int32(WeblinkDeleted)
+	default:
+		return -1
+	}
+}

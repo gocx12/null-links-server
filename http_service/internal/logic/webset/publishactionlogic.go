@@ -40,74 +40,15 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 	}
 }
 
-// 发布类型
-type PublishActionTypeEnum int32
-
-const (
-	Publish PublishActionTypeEnum = 1
-	Update  PublishActionTypeEnum = 2
-	Delete  PublishActionTypeEnum = 3
-)
-
-// webset状态
-type WebsetStatusEnum int32
-
-const (
-	WebsetPendReview   WebsetStatusEnum = 1 // 待审核
-	WebsetPublished    WebsetStatusEnum = 2 // 已发布
-	WebsetReviewUnpass WebsetStatusEnum = 3 // 审核未通过
-	WebsetDeleted      WebsetStatusEnum = 4 // 已删除
-)
-
-func (e WebsetStatusEnum) code() int32 {
-	switch e {
-	case WebsetPendReview:
-		return int32(WebsetPendReview)
-	case WebsetPublished:
-		return int32(WebsetPublished)
-	case WebsetReviewUnpass:
-		return int32(WebsetReviewUnpass)
-	case WebsetDeleted:
-		return int32(WebsetDeleted)
-	default:
-		return -1
-	}
-}
-
-// weblink状态
-type WeblinkStatusEnum int32
-
-const (
-	WeblinkPendReview   WeblinkStatusEnum = 1 // 待审核
-	WeblinkPublished    WeblinkStatusEnum = 2 // 已发布
-	WeblinkReviewUnpass WeblinkStatusEnum = 3 // 审核未通过
-	WeblinkDeleted      WeblinkStatusEnum = 4 // 已删除
-)
-
-func (e WeblinkStatusEnum) code() int32 {
-	switch e {
-	case WeblinkPendReview:
-		return int32(WeblinkPendReview)
-	case WeblinkPublished:
-		return int32(WeblinkPublished)
-	case WeblinkReviewUnpass:
-		return int32(WeblinkReviewUnpass)
-	case WeblinkDeleted:
-		return int32(WeblinkDeleted)
-	default:
-		return -1
-	}
-}
-
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.PublishActionResp, err error) {
 	resp = &types.PublishActionResp{}
 
-	switch PublishActionTypeEnum(req.ActionType) {
-	case Publish:
+	switch internal.PublishActionTypeEnum(req.ActionType) {
+	case internal.Publish:
 		err = l.doPublish(req)
-	case Update:
+	case internal.Update:
 		err = l.doUpdate(req)
-	case Delete:
+	case internal.Delete:
 		err = l.doDelete(req)
 	default:
 		resp.StatusCode = internal.StatusParamErr
@@ -137,7 +78,7 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 		ViewCnt:     0,
 		LikeCnt:     0,
 		FavoriteCnt: 0,
-		Status:      gocast.ToInt64(WebsetPendReview.code()),
+		Status:      gocast.ToInt64(internal.WebsetPendReview.Code()),
 	}
 
 	// 插入weblinks
@@ -154,7 +95,7 @@ func (l *PublishActionLogic) doPublish(req *types.PublishActionReq) (err error) 
 			Description: webLink.Description,
 			Url:         webLink.Url,
 			CoverUrl:    webLink.CoverUrl,
-			Status:      gocast.ToInt64(WeblinkPendReview), // status==2 待审核
+			Status:      gocast.ToInt64(internal.WeblinkPendReview), // status==2 待审核
 		})
 	}
 
@@ -222,7 +163,7 @@ func (l *PublishActionLogic) doUpdate(req *types.PublishActionReq) (err error) {
 		CoverUrl:    req.CoverUrl,
 		UpdatedAt:   time.Now(),
 		Category:    0,
-		Status:      gocast.ToInt64(WebsetPendReview.code()), // status==2 待审核
+		Status:      gocast.ToInt64(internal.WebsetPendReview.Code()), // status==2 待审核
 	})
 	if rowsAffected, err := r.RowsAffected(); err != nil {
 		return err
@@ -235,7 +176,7 @@ func (l *PublishActionLogic) doUpdate(req *types.PublishActionReq) (err error) {
 func (l *PublishActionLogic) doDelete(req *types.PublishActionReq) (err error) {
 	// 软删除
 	err = l.svcCtx.WebsetModel.UpdateStatus(l.ctx,
-		gocast.ToInt64(WeblinkDeleted.code()),
+		gocast.ToInt64(internal.WeblinkDeleted.Code()),
 		req.WebsetId,
 	)
 	return

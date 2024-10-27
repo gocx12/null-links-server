@@ -40,7 +40,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	resp = &types.FeedResp{}
 
 	// TODO(chancyGao): 推荐系统
-	websetListDB, err := l.svcCtx.WebsetModel.FindRecent(l.ctx, req.Page, req.PageSize, WebsetPublished.code())
+	websetListDB, err := l.svcCtx.WebsetModel.FindRecent(l.ctx, req.Page, req.PageSize, internal.WebsetPublished.Code())
 	if err != nil {
 		logx.Error("get webset list from db error: ", err)
 		resp.StatusCode = internal.StatusGatewayErr
