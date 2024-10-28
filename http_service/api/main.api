@@ -25,6 +25,7 @@ import "./chat/like.api"
 import "./chat/link.api"
 import "./chat/get_all_topic.api"
 import "./chat/chat_ws.api"
+import "./pay/withdraw.api"
 
 type PingReq {}
 
@@ -165,5 +166,15 @@ service service {
 
 	@handler Link
 	get /link (ChatLinkReq) returns (ChatLinkResp)
+}
+
+@server (
+	jwt:    Auth
+	prefix: /pay
+	group:  pay
+)
+service service {
+	@handler Withdraw
+	get /withdraw (WithdrawReq) returns (WithdrawResp)
 }
 
