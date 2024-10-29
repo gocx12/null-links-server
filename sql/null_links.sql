@@ -143,3 +143,43 @@ CREATE TABLE `t_weblink`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '网页单链接表';
+
+DROP TABLE IF EXISTS `t_balance`;
+CREATE TABLE `t_balance`
+(
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `user_id` varchar(64) NOT NULL COMMENT '用户名',
+  `amount` int(11) NOT NULL COMMENT '金额',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  INDEX idx_user_id_created_at (`user_id`, `created_at`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '用户余额表';
+
+DROP TABLE IF EXISTS `t_pay_history`;
+CREATE TABLE `t_pay_history`
+(
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `user_id` varchar(64) NOT NULL COMMENT '用户名',
+  `amount` int(11) NOT NULL COMMENT '金额',
+  `business_id` varchar(64) NOT NULL COMMENT '业务id', 
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  INDEX idx_user_id_created_at (`user_id`, `created_at`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '用户支付历史表';
+
+DROP TABLE IF EXISTS `t_business`;
+CREATE TABLE `t_user`
+(
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `business` varchar(64) NOT NULL COMMENT '业务名',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '业务表';
