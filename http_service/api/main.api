@@ -20,12 +20,14 @@ import "./social/relation_friend_list.api"
 import "./social/message_action.api"
 import "./common/upload.api"
 import "./common/report.api"
+import "./common/advice.api"
 import "./chat/history.api"
 import "./chat/like.api"
 import "./chat/link.api"
 import "./chat/get_all_topic.api"
 import "./chat/chat_ws.api"
 import "./pay/withdraw.api"
+import "./pay/pay_info.api"
 
 type PingReq {}
 
@@ -138,6 +140,9 @@ service service {
 
 	@handler Report
 	post /report (ReportReq) returns (ReportResp)
+
+	@handler Advice
+	post /advice (AdviceReq) returns (AdviceResp)
 }
 
 @server (
@@ -174,6 +179,9 @@ service service {
 	group:  pay
 )
 service service {
+	@handler Info
+	get /info (PayInfoReq) returns (PayInfoResp)
+
 	@handler Withdraw
 	get /withdraw (WithdrawReq) returns (WithdrawResp)
 }

@@ -1,0 +1,12 @@
+syntax = "v1"
+
+type AdviceReq {
+  Reason        string      `json:"reason"`
+  PicUrl        string      `json:"pic_url"`
+  ContactInfo   string      `json:"contact_info"`
+}
+
+type AdviceResp {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}

@@ -29,14 +29,15 @@ func main() {
 	cronTrigger, _ := quartz.NewCronTrigger("1/5 * * * * *")
 	likeFuncJob := job.NewFunctionJob(LikeJob)
 	favoriteFuncJob := job.NewFunctionJob(FavoriteJob)
-
+	revenueCalFuncJob := job.NewFunctionJob(RevenueCalJob)
 
 	// register jobs to scheduler
 	sched.ScheduleJob(quartz.NewJobDetail(likeFuncJob, quartz.NewJobKey("likeFuncJob")),
 		cronTrigger)
 	sched.ScheduleJob(quartz.NewJobDetail(favoriteFuncJob, quartz.NewJobKey("favoriteFuncJob")),
 		cronTrigger)
-
+	sched.ScheduleJob(quartz.NewJobDetail(revenueCalFuncJob, quartz.NewJobKey("revenueCalFuncJob")),
+		cronTrigger)
 
 	// stop scheduler
 	// sched.Stop()

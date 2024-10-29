@@ -1,0 +1,17 @@
+syntax = "v1"
+
+type PayInfoReq {
+}
+
+type WithdrawHistory {
+	Id		string
+	Amount	float64
+	Time	string
+}
+
+type PayInfoResp {
+	StatusCode	int32  	`json:"status_code"`
+	StatusMsg	string 	`json:"status_msg,optional"`
+	Balance		float64	`json:"balance"`
+	WithdrawHistoryList []WithdrawHistory `json:"withdraw_history_list"`
+}

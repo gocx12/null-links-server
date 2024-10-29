@@ -8,6 +8,7 @@ import (
 
 	chat "null-links/http_service/internal/handler/chat"
 	common "null-links/http_service/internal/handler/common"
+	pay "null-links/http_service/internal/handler/pay"
 	social "null-links/http_service/internal/handler/social"
 	user "null-links/http_service/internal/handler/user"
 	webset "null-links/http_service/internal/handler/webset"
@@ -69,6 +70,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/advice",
+				Handler: common.AdviceHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/report",
 				Handler: common.ReportHandler(serverCtx),
 			},
@@ -85,6 +91,23 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/common"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/info",
+				Handler: pay.InfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/withdraw",
+				Handler: pay.WithdrawHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/pay"),
 	)
 
 	server.AddRoutes(

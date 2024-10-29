@@ -106,10 +106,10 @@ const (
 type WebsetStatusEnum int32
 
 const (
-	WebsetPendReview   WebsetStatusEnum = 1 // 待审核
-	WebsetPublished    WebsetStatusEnum = 2 // 已发布
-	WebsetReviewUnpass WebsetStatusEnum = 3 // 审核未通过
-	WebsetDeleted      WebsetStatusEnum = 4 // 已删除
+	WebsetPendReview WebsetStatusEnum = 1 // 待审核
+	WebsetPublished  WebsetStatusEnum = 2 // 已发布
+	WebsetRejected   WebsetStatusEnum = 3 // 审核未通过
+	WebsetDeleted    WebsetStatusEnum = 4 // 已删除
 )
 
 func (e WebsetStatusEnum) Code() int32 {
@@ -118,8 +118,8 @@ func (e WebsetStatusEnum) Code() int32 {
 		return int32(WebsetPendReview)
 	case WebsetPublished:
 		return int32(WebsetPublished)
-	case WebsetReviewUnpass:
-		return int32(WebsetReviewUnpass)
+	case WebsetRejected:
+		return int32(WebsetRejected)
 	case WebsetDeleted:
 		return int32(WebsetDeleted)
 	default:

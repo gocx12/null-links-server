@@ -173,13 +173,30 @@ CREATE TABLE `t_pay_history`
   COMMENT = '用户支付历史表';
 
 DROP TABLE IF EXISTS `t_business`;
-CREATE TABLE `t_user`
+CREATE TABLE `t_business`
 (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `business` varchar(64) NOT NULL COMMENT '业务名',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '业务表';
+
+DROP TABLE IF EXISTS `t_advice`;
+CREATE TABLE `t_advice`
+(
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `advice` text NOT NULL COMMENT '建议内容',
+  `pic_url` text NOT NULL COMMENT '图片地址',
+  `contact_info` varchar(255) NOT NULL COMMENT '联系方式',
+  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  INDEX idx_user_id_created_at (`created_at`, `status`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COMMENT = '建议表';

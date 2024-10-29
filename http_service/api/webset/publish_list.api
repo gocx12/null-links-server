@@ -2,14 +2,27 @@ syntax = "v1"
 
 import "../webset.api"
 
+type PublishWebset {
+	Id            	int64  	`json:"id"`
+	Title         	string 	`json:"title"`
+	Describe		string 	`json:"describe"`
+	CoverUrl 		string 	`json:"cover_url"`
+	CreatedAt		string 	`json:"created_at"`
+	ViewCount		int64   `json:"view_count"`
+	LikeCount		int64	`json:"like_count"`
+	FavoriteCount 	int64  	`json:"favorite_count"`
+	Status			int32 	`json::"status"`
+}
+
 type PublishListReq {
-	Page   int32 `form:"page"`
-	PageSize int32 `form:"page_size"`
+	Page		int32 `form:"page"`
+	PageSize 	int32 `form:"page_size"`
+	Tag			int32 `form:"tag"`
 }
 
 type PublishListResp {
 	StatusCode int32   	`json:"status_code"`         
 	StatusMsg  string  	`json:"status_msg,optional"` 
-	WebsetList []WebsetShort `json:"webset_list"`          
+	WebsetList []PublishWebset `json:"webset_list"`          
 	Total 	   int32 	`json:"total"`
 }

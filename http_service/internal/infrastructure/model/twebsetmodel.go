@@ -18,6 +18,7 @@ type (
 		tWebsetModel
 		FindRecent(ctx context.Context, page, pageSize, status int32) (websets []*TWebset, err error)
 		FindPublishList(ctx context.Context, authorId int64, page, pageSize int32) (websets []*TWebset, err error)
+		FindPublishListWithStatus(ctx context.Context, authorId int64, page, pageSize, status int32) (websets []*TWebset, err error)
 		InsertTrans(ctx context.Context, data *TWebset, session sqlx.Session) (sql.Result, error)
 		UpdateLikeCntTrans(ctx context.Context, incr int32, websetId int64, session sqlx.Session) (sql.Result, error)
 		UpdateStatus(ctx context.Context, status int64, id int64) error
@@ -48,6 +49,12 @@ func (m *customTWebsetModel) FindRecent(ctx context.Context, page, pageSize, sta
 func (m *customTWebsetModel) FindPublishList(ctx context.Context, authorId int64, page, pageSize int32) (websets []*TWebset, err error) {
 	query := fmt.Sprintf("select %s from %s where author_id=? order by created_at desc limit ?, ?", tWebsetRows, m.table)
 	err = m.conn.QueryRowsCtx(ctx, &websets, query, authorId, page, pageSize)
+	return
+}
+
+func (m *customTWebsetModel) FindPublishListWithStatus(ctx context.Context, authorId int64, page, pageSize, status int32) (websets []*TWebset, err error) {
+	query := fmt.Sprintf("select %s from %s where author_id=? and status=? order by created_at desc limit ?, ?", tWebsetRows, m.table)
+	err = m.conn.QueryRowsCtx(ctx, &websets, query, authorId, status, page, pageSize)
 	return
 }
 

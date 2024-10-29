@@ -22,6 +22,8 @@ type ServiceContext struct {
 	WebsetModel     model.TWebsetModel
 	UserModel       model.TUserModel
 	TopicModel      model.TTopicModel
+	AdviceModel     model.TAdviceModel
+	BalanceModel    model.TBalanceModel
 	RedisClient     *redis.Client
 	WlCoverKqPusher *kq.Pusher
 	VdEmailKqPusher *kq.Pusher
@@ -39,6 +41,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		WeblinkModel:  model.NewTWeblinkModel(sqlx.NewMysql(c.DataSource)),
 		WebsetModel:   model.NewTWebsetModel(sqlx.NewMysql(c.DataSource)),
 		TopicModel:    model.NewTTopicModel(sqlx.NewMysql(c.DataSource)),
+		AdviceModel:   model.NewTAdviceModel(sqlx.NewMysql(c.DataSource)),
+		BalanceModel:  model.NewTBalanceModel(sqlx.NewMysql(c.DataSource)),
 
 		RedisClient: cache.NewClient(&redis.Options{
 			Addr:     c.RedisConf.Host,

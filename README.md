@@ -168,13 +168,17 @@ sudo nohup ./http_service/service > nohup_http_service.log 2>&1 &
 goctl api go --api http_service/api/main.api --dir http_service
 
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_user --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_favorite --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_like --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_relation --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_webset --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_weblink --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
-goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_like --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
-goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_favorite --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_topic --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
 goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_chat --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
-goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_relation --url "root:123456@tcp(127.0.0.1:3306)/db_null_links"
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_balance --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_pay_history --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_business --url "root:123456@tcp(127.0.0.1:3306)/db_null_links" &&
+goctl model mysql datasource -d http_service/internal/infrastructure/model -t t_advice --url "root:123456@tcp(127.0.0.1:3306)/db_null_links"
 ```
 
 

@@ -3,6 +3,17 @@
 
 package types
 
+type AdviceReq struct {
+	Reason      string `json:"reason"`
+	PicUrl      string `json:"pic_url"`
+	ContactInfo string `json:"contact_info"`
+}
+
+type AdviceResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+}
+
 type Chat struct {
 	ChatID     int64  `json:"chat_id"`
 	WebsetID   int64  `json:"webset_id"`
@@ -172,6 +183,16 @@ type ModifyResp struct {
 	StatusMsg  string `json:"status_msg,optional"`
 }
 
+type PayInfoReq struct {
+}
+
+type PayInfoResp struct {
+	StatusCode          int32             `json:"status_code"`
+	StatusMsg           string            `json:"status_msg,optional"`
+	Balance             float64           `json:"balance"`
+	WithdrawHistoryList []WithdrawHistory `json:"withdraw_history_list"`
+}
+
 type PingReq struct {
 }
 
@@ -200,13 +221,26 @@ type PublishActionResp struct {
 type PublishListReq struct {
 	Page     int32 `form:"page"`
 	PageSize int32 `form:"page_size"`
+	Tag      int32 `form:"tag"`
 }
 
 type PublishListResp struct {
-	StatusCode int32         `json:"status_code"`
-	StatusMsg  string        `json:"status_msg,optional"`
-	WebsetList []WebsetShort `json:"webset_list"`
-	Total      int32         `json:"total"`
+	StatusCode int32           `json:"status_code"`
+	StatusMsg  string          `json:"status_msg,optional"`
+	WebsetList []PublishWebset `json:"webset_list"`
+	Total      int32           `json:"total"`
+}
+
+type PublishWebset struct {
+	Id            int64  `json:"id"`
+	Title         string `json:"title"`
+	Describe      string `json:"describe"`
+	CoverUrl      string `json:"cover_url"`
+	CreatedAt     string `json:"created_at"`
+	ViewCount     int64  `json:"view_count"`
+	LikeCount     int64  `json:"like_count"`
+	FavoriteCount int64  `json:"favorite_count"`
+	Status        int32  `json::"status"`
 }
 
 type RegisterReq struct {
@@ -374,4 +408,19 @@ type WebsetShort struct {
 	LikeCount     int64     `json:"like_count"`
 	FavoriteCount int64     `json:"favorite_count"`
 	IsLike        bool      `json:"is_like"`
+}
+
+type WithdrawHistory struct {
+	Id     string
+	Amount float64
+	Time   string
+}
+
+type WithdrawReq struct {
+}
+
+type WithdrawResp struct {
+	StatusCode         int32  `json:"status_code"`
+	StatusMsg          string `json:"status_msg,optional"`
+	WXFriendCodePicUrl string `json:"wx_friend_code_pic_url"`
 }

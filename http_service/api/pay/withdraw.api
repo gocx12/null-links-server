@@ -3,8 +3,8 @@ syntax = "v1"
 type WithdrawReq {
 }
 
-type ReportResp {
+type WithdrawResp {
 	StatusCode          int32  `json:"status_code"`
 	StatusMsg           string `json:"status_msg,optional"`
-  WXFriendCodePicUrl  string `json:"wx_friend_code_pic_url"`
+	WXFriendCodePicUrl  string `json:"wx_friend_code_pic_url"`
 }
