@@ -252,8 +252,8 @@ func (c *Client) getTopicId(quotedChatId int64) (int64, error) {
 	if quatedChatDb.TopicId == -1 {
 		quatedChatContent := quatedChatDb.Content[:internal.Min(len(quatedChatDb.Content), 10)]
 		resTopic, err := c.SvcCtx.TopicModel.Insert(context.Background(), &model.TTopic{
-			TopicTitle: fmt.Sprintf("新话题 %s", quatedChatContent),
-			Status:     internal.TopicValid.Code(),
+			Title:  fmt.Sprintf("新话题 %s", quatedChatContent),
+			Status: internal.TopicValid.Code(),
 		})
 		if err != nil {
 			return -1, err

@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "./history.api"
+
+type ChatGetTopicReq {
+    TopicId  int64     `form:"topic_id"`
+}
+
+type ChatGetTopicResp {
+	StatusCode  int32   `json:"status_code"`
+	StatusMsg   string  `json:"status_msg,optional"`
+	ChatList    []Chat  `json:"chat_list"`
+    TopicTitle  string  `json:"topic_title"`
+}

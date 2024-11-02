@@ -37,6 +37,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/get_topic",
+				Handler: chat.GetTopicHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/history",
 				Handler: chat.HistoryHandler(serverCtx),
 			},

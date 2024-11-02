@@ -35,6 +35,17 @@ type ChatGetAllTopicResp struct {
 	TopicList  []Topic `json:"topic_list"`
 }
 
+type ChatGetTopicReq struct {
+	TopicId int64 `form:"topic_id"`
+}
+
+type ChatGetTopicResp struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg,optional"`
+	ChatList   []Chat `json:"chat_list"`
+	TopicTitle string `json:"topic_title"`
+}
+
 type ChatHistoryReq struct {
 	WebsetID   int64  `form:"webset_id"`
 	Type       int32  `form:"type"`

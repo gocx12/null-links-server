@@ -25,6 +25,7 @@ import "./chat/history.api"
 import "./chat/like.api"
 import "./chat/link.api"
 import "./chat/get_all_topic.api"
+import "./chat/get_topic.api"
 import "./chat/chat_ws.api"
 import "./pay/withdraw.api"
 import "./pay/pay_info.api"
@@ -158,6 +159,9 @@ service service {
 
 	@handler GetAllTopic
 	get /get_all_topic (ChatGetAllTopicReq) returns (ChatGetAllTopicResp)
+
+	@handler GetTopic
+	get /get_topic (ChatGetTopicReq) returns (ChatGetTopicResp)
 }
 
 @server (

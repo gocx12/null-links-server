@@ -91,7 +91,7 @@ DROP TABLE IF EXISTS `t_topic`;
 CREATE TABLE `t_topic`
 (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `topic_title` varchar(255) NOT NULL DEFAULT '' COMMENT '话题标题',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '话题标题',
   `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '在库状态',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
