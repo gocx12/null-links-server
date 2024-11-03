@@ -16,6 +16,7 @@ type (
 		withSession(session sqlx.Session) TChatModel
 		FindChatList(ctx context.Context, websetId int64, page, pageSize int32) ([]*TChat, error)
 		FindChatListChatId(ctx context.Context, websetId, lastChatId int64, page, pageSize int32) ([]*TChat, error)
+		FindChatListByTopicId(ctx context.Context, TopicId int64, page, pageSize int32) ([]*TChat, error)
 	}
 
 	customTChatModel struct {
@@ -50,6 +51,18 @@ func (c *customTChatModel) FindChatListChatId(ctx context.Context, websetId, las
 	query := "select * from t_chat where webset_id = ? and chat_id < ? order by created_at desc limit ?, ?"
 	var resp []*TChat
 	err := c.conn.QueryRowsCtx(ctx, &resp, query, websetId, lastChatId, (page-1)*pageSize, pageSize)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (c *customTChatModel) FindChatListByTopicId(ctx context.Context, TopicId int64, page, pageSize int32) ([]*TChat, error) {
+	query := "select * from t_chat where topic_id = ? order by created_at desc limit ?, ?"
+	var resp []*TChat
+	err := c.conn.QueryRowsCtx(ctx, &resp, query, TopicId, (page-1)*pageSize, pageSize)
 	switch err {
 	case nil:
 		return resp, nil

@@ -65,3 +65,5 @@ DefaultAvatarUrl: "http://127.0.0.1:9000/avatar/default.jpeg"
 DefaultWebsetCoverUrl: "https://pic.null-links.com/websetcover/default.jpeg"
 
 DefaultWeblinkCoverUrl: "https//pic.null-links.com/weblinkcover/default.jpeg"
+
+LlmApiKey: "sk-6b365e7bac8648e5a9f19cc92214dff0"
