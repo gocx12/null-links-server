@@ -158,10 +158,10 @@ service service {
 	get /history (ChatHistoryReq) returns (ChatHistoryResp)
 
 	@handler GetAllTopic
-	get /get_all_topic (ChatGetAllTopicReq) returns (ChatGetAllTopicResp)
+	get /topic/list (ChatGetAllTopicReq) returns (ChatGetAllTopicResp)
 
 	@handler GetTopic
-	get /get_topic (ChatGetTopicReq) returns (ChatGetTopicResp)
+	get /topic/detail (ChatGetTopicReq) returns (ChatGetTopicResp)
 }
 
 @server (
